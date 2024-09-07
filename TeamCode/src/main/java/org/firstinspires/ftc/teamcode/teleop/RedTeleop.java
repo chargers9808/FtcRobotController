@@ -3,14 +3,13 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.teamcode.alliance.AllianceBase;
-import org.firstinspires.ftc.teamcode.alliance.RedBase;
+import org.firstinspires.ftc.teamcode.Alliance;
 
 @TeleOp(name = "RED TELEOP (new)", group = "TeleOp")
 @Disabled
 public class RedTeleop extends Teleop {
-    private final RedBase colorBase = new RedBase();
-    protected AllianceBase getColorBase() { return colorBase; }
+    private final Alliance alliance = new Alliance(Alliance.Color.RED);
+    protected Alliance getAlliance() { return alliance; }
     protected double drone_launch_deg() { return 85.0; }
 
     protected boolean approachFarWall() {

@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.VisionBase;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 @TeleOp(name = "RED alliance TELEOP-Test", group = "Linear Opmode")
 @Disabled
@@ -36,7 +36,6 @@ public class RedTeleopTest extends LinearOpMode {
     boolean diagnosticMode = false;
     boolean driveFast = true;
 
-    private TfodProcessor tfod;
     private VisionPortal visionPortal;
 
     public double distanceFromFrontWall = 0;

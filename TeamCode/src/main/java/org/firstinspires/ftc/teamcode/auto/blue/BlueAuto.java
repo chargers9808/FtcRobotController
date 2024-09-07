@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.auto.blue;
 
-import org.firstinspires.ftc.teamcode.alliance.AllianceBase;
+import org.firstinspires.ftc.teamcode.Alliance;
+
 import org.firstinspires.ftc.teamcode.auto.Auto;
-import org.firstinspires.ftc.teamcode.alliance.BlueBase;
 
 abstract public class BlueAuto extends Auto {
-    private final BlueBase colorBase = new BlueBase();
-    protected AllianceBase getColorBase() { return colorBase; }
+    private final Alliance alliance = new Alliance(Alliance.Color.BLUE);
+    protected Alliance getAlliance() { return alliance; }
     protected double distanceToCloseWall() { return driveBase.leftDistanceToWall(); }
     protected double cameraOffset() { return driveBase.cameraOffset; }
 

@@ -310,7 +310,7 @@ public abstract class Teleop extends LinearOpMode9808 {
      */
     private void pickupPixel() {
         if (gamepad1.a) {
-            sleep(100);
+            sleep(200);
             driveBase.pickUpPixel();
         }
     }

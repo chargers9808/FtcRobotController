@@ -30,12 +30,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 import java.util.List;
 
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 
 
@@ -56,7 +54,7 @@ public class DraculaBase {
     // --------------  Vision and TensorFLow
     public String ObjectName;
     public float leftEdge;
-    public TfodProcessor tfod;
+    //public TfodProcessor tfod;
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/ChargerCustomModelCubes.tflite";
     private static final String[] LABELS =
             {
@@ -311,7 +309,7 @@ public class DraculaBase {
 
 
 
-    public void examineMarker( double timelimit) {
+/*    public void examineMarker( double timelimit) {
         runtime.reset();
         if (((LinearOpMode) callingOpMode).opModeIsActive()) {
             while (((LinearOpMode) callingOpMode).opModeIsActive()&& runtime.seconds() < timelimit) {
@@ -341,7 +339,7 @@ public class DraculaBase {
         if (tfod != null) {
             tfod.shutdown();
         }
-    }
+    }*/
 
 
     public void gyroTurn(double speed, double targetAngle) {
@@ -488,14 +486,14 @@ public class DraculaBase {
         rightRear.setPower(rrearpower);
     }
 
-    public void initVision() {
+/*    public void initVision() {
         initTfod();
 
         if (tfod != null) {
             visionPortal.setProcessorEnabled(tfod, true);
             tfod.setZoom(1.);
         }
-    }
+    }*/
     public void pickUpPixel()
     {
         //arm.setTargetPosition(armPickingPosition+500);// move the arm to a slightly raised position
@@ -811,7 +809,7 @@ public class DraculaBase {
     }
 
 
-    private void initTfod() {
+/*    private void initTfod() {
 
         // Create the TensorFlow processor by using a builder.
         tfod = new TfodProcessor.Builder()
@@ -864,7 +862,7 @@ public class DraculaBase {
         // Disable or re-enable the TFOD processor at any time.
         //visionPortal.setProcessorEnabled(tfod, true);
 
-    }   // end method initTfod()
+    }   // end method initTfod()*/
 /*
     private void telemetryTfod() {
 
@@ -886,7 +884,7 @@ public class DraculaBase {
 
  */
 
-    public void PropDetection() {
+/*    public void PropDetection() {
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         callingOpMode.telemetry.addData("# Objects Detected", currentRecognitions.size());
@@ -910,7 +908,7 @@ public class DraculaBase {
             callingOpMode.telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
         }   // end for() loop
 
-    }   // end method telemetryTfod()
+    }   // end method telemetryTfod()*/
 
 
     public double robotFieldHeading() {

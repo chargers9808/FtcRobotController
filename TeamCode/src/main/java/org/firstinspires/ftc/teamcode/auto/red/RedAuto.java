@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.auto.red;
 
-import org.firstinspires.ftc.teamcode.alliance.AllianceBase;
-import org.firstinspires.ftc.teamcode.alliance.RedBase;
+import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.auto.Auto;
 
 abstract public class RedAuto extends Auto {
-    private final RedBase colorBase = new RedBase();
-    protected AllianceBase getColorBase() { return colorBase; }
+    private final Alliance alliance = new Alliance(Alliance.Color.RED);
+    protected Alliance getAlliance() { return alliance; }
     protected double distanceToCloseWall() { return driveBase.rightDistanceToWall(); }
     protected double cameraOffset() { return -1 * driveBase.cameraOffset; }
 

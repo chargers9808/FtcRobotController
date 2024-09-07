@@ -112,6 +112,9 @@ android {
     sourceSets.main {
         jni.srcDirs = []
         jniLibs.srcDir rootProject.file('libs')
+        java {
+            exclude "**/deprecated/*.java"
+        }
     }
     ndkVersion '21.3.6528147'
 }

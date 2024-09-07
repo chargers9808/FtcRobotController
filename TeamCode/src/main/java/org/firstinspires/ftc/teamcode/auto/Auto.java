@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.auto;
 
 import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.LinearOpMode9808;
-
 import org.firstinspires.ftc.teamcode.VisionBase;
+
 import org.firstinspires.ftc.teamcode.auto.position.PositionBase;
 
 abstract public class Auto extends LinearOpMode9808 {
