@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.auto;
+package org.firstinspires.ftc.deprecated.centerstage.auto;
 
+import org.firstinspires.ftc.deprecated.centerstage.auto.position.PositionBase;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.LinearOpMode9808;
 import org.firstinspires.ftc.teamcode.VisionBase;
-
-import org.firstinspires.ftc.teamcode.auto.position.PositionBase;
 
 abstract public class Auto extends LinearOpMode9808 {
     public enum Selection {

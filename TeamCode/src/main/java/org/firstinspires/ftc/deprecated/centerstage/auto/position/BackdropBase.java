@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.auto.position;
+package org.firstinspires.ftc.deprecated.centerstage.auto.position;
 
-import org.firstinspires.ftc.teamcode.auto.Auto;
+import org.firstinspires.ftc.deprecated.centerstage.auto.Auto;
 
 public class BackdropBase extends PositionBase {
     public boolean allowParkOnly() { return false; }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.deprecated.centerstage.teleop;
 
 import org.firstinspires.ftc.teamcode.LinearOpMode9808;
 import org.firstinspires.ftc.teamcode.HeadingHolder;

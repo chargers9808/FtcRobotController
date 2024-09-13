@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.auto.red;
+package org.firstinspires.ftc.deprecated.centerstage.auto.red;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.auto.position.BackdropBase;
-import org.firstinspires.ftc.teamcode.auto.position.PositionBase;
+import org.firstinspires.ftc.deprecated.centerstage.auto.position.BackdropBase;
+import org.firstinspires.ftc.deprecated.centerstage.auto.position.PositionBase;
 
 @Autonomous(name = "Red Backdrop (State)", group = "Auto")
-public class Backdrop extends RedAuto {
+public class Backdrop extends CenterstageRedAuto {
     private final BackdropBase positionBase = new BackdropBase();
     protected PositionBase getPositionBase() { return positionBase; }
 

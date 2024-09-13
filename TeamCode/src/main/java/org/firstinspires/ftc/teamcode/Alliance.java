@@ -50,14 +50,4 @@ public class Alliance {
     public RevBlinkinLedDriver.BlinkinPattern getHeartbeatColor() {
         return this.heartbeatColor;
     }
-
-    public double getBackdropDeg() {
-        switch( alliance ) {
-            case RED:
-                return -90.0;
-            case BLUE:
-                return 90.0;
-        }
-        return 0.0;
-    }
 }

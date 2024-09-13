@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.deprecated.centerstage.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Alliance;
 

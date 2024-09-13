@@ -1,30 +1,29 @@
-package org.firstinspires.ftc.teamcode.auto.blue;
+package org.firstinspires.ftc.deprecated.centerstage.auto.red;
 
 import org.firstinspires.ftc.teamcode.Alliance;
+import org.firstinspires.ftc.deprecated.centerstage.auto.Auto;
 
-import org.firstinspires.ftc.teamcode.auto.Auto;
-
-abstract public class BlueAuto extends Auto {
-    private final Alliance alliance = new Alliance(Alliance.Color.BLUE);
+abstract public class CenterstageRedAuto extends Auto {
+    private final Alliance alliance = new Alliance(Alliance.Color.RED);
     protected Alliance getAlliance() { return alliance; }
-    protected double distanceToCloseWall() { return driveBase.leftDistanceToWall(); }
-    protected double cameraOffset() { return driveBase.cameraOffset; }
+    protected double distanceToCloseWall() { return driveBase.rightDistanceToWall(); }
+    protected double cameraOffset() { return -1 * driveBase.cameraOffset; }
 
     protected String getParkString( Selection selection ) {
-        String[] selectionStrings = { "Left", "Right", "Invalid"};
+        String[] selectionStrings = { "Right", "Left", "Invalid"};
         return selectionStrings[ Math.min(selection.ordinal(), selectionStrings.length-1) ];
     }
     protected int getAprilTagId( String propLocation ) {
         int tagId = 0;
         switch( propLocation) {
             case "Left":
-                tagId = 1;
+                tagId = 4;
                 break;
             case "Right":
-                tagId = 3;
+                tagId = 6;
                 break;
             case "Center":
-                tagId = 2;
+                tagId = 5;
                 break;
         }
         return tagId;
@@ -34,10 +33,10 @@ abstract public class BlueAuto extends Auto {
         PropLoc ret = PropLoc.LOC_INVALID;
         switch( propLocation) {
             case "Left":
-                ret = PropLoc.LOC_WALL;
+                ret = PropLoc.LOC_MID;
                 break;
             case "Right":
-                ret = PropLoc.LOC_MID;
+                ret = PropLoc.LOC_WALL;
                 break;
             case "Center":
                 ret = PropLoc.LOC_CENTER;
@@ -53,6 +52,6 @@ abstract public class BlueAuto extends Auto {
      * @return distance in inches, with correct sign for the side
      */
     protected double allianceCorrectedDistance(double distance ) {
-        return distance;
+        return -1.0 * distance;
     }
 }

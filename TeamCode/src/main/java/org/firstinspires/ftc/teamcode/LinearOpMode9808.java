@@ -13,8 +13,10 @@ public abstract class LinearOpMode9808 extends LinearOpMode {
     protected String getColorString() {return getAlliance().getColorString();}
     protected RevBlinkinLedDriver.BlinkinPattern getStaticColor() {return getAlliance().getStaticColor();}
     protected RevBlinkinLedDriver.BlinkinPattern getHeartbeatColor() {return getAlliance().getHeartbeatColor();}
-    protected double getBackdropDeg() { return getAlliance().getBackdropDeg();}
 
+    /**
+     * Run the OpMode itself
+     */
     public void runOpMode() {
         pre_init_9808();
         while (opModeInInit()) {
@@ -23,10 +25,16 @@ public abstract class LinearOpMode9808 extends LinearOpMode {
         run_9808();
     }
 
+    /**
+     * Set the LEDs to a static color for this alliance
+     */
     protected void setStaticLED() {
         driveBase.setLED(getStaticColor());
     }
 
+    /**
+     * Set the LEDs to a heartbeat color for this alliance
+     */
     protected void setLEDHeartbeat() {
         driveBase.setLED(getHeartbeatColor());
     }

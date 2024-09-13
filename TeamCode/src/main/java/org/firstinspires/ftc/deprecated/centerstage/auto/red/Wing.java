@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.auto.red;
+package org.firstinspires.ftc.deprecated.centerstage.auto.red;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.auto.position.PositionBase;
-import org.firstinspires.ftc.teamcode.auto.position.WingBase;
+import org.firstinspires.ftc.deprecated.centerstage.auto.position.PositionBase;
+import org.firstinspires.ftc.deprecated.centerstage.auto.position.WingBase;
 
 @Autonomous(name = "Red Wing (State)", group = "Auto")
-public class Wing extends RedAuto {
+public class Wing extends CenterstageRedAuto {
     private final WingBase positionBase = new WingBase();
     protected PositionBase getPositionBase() { return positionBase; }
 

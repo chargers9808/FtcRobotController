@@ -1,7 +1,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.Color;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -736,6 +735,10 @@ public class DraculaBase {
     }
 
 
+    /**
+     * Sets the active LED color {@link RevBlinkinLedDriver.BlinkinPattern}
+     * @param pattern the LED pattern to set
+     */
     public void setLED(RevBlinkinLedDriver.BlinkinPattern pattern) {
         blinkinLedDriver.setPattern(pattern);
     }
