@@ -125,7 +125,7 @@ public class DraculaBase {
     public double holderPosition=.25;
 
     public double liftPower = 0.8;
-    int liftNewTargetPosition=0;
+    public int liftNewTargetPosition=0;
     public int liftUp=2200;
     int liftDown=0;
     int liftIncrement=30;
@@ -140,7 +140,7 @@ public class DraculaBase {
     int armJustAboveThirdLine=2100;
     public int armup=2200;
     public int armPickingPosition=150;
-    int armNewTargetPosition=20;
+    public int armNewTargetPosition=20;
     int  lastArmPosition=0;
     int  currentArmPosition=0;
 
