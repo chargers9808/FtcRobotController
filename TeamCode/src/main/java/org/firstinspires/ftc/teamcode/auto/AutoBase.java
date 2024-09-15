@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.auto;
 
-import org.firstinspires.ftc.teamcode.auto.Position;
+import org.firstinspires.ftc.teamcode.HeadingHolder;
+import org.firstinspires.ftc.teamcode.LinearOpMode9808;
 
 abstract public class AutoBase extends LinearOpMode9808 {
     abstract protected void autoInit();

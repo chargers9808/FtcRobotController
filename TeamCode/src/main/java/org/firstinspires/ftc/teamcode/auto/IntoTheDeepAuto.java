@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.auto;
 
-import org.firstinspires.ftc.teamcode.AutoBase;
+import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
 
-abstract public class IntoTheDeepAuto extends AutoBase {
+abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
     protected void autoPreInit() {
 
     }
