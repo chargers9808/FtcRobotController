@@ -4,9 +4,9 @@ package org.firstinspires.ftc.teamcode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -19,18 +19,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-
-import java.util.List;
 
 import org.firstinspires.ftc.vision.VisionPortal;
 
@@ -39,7 +31,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 public class DraculaBase {
 
     // --------------  hardware devices  --------------
-    public DcMotor leftFront,rightFront,leftRear,rightRear, arm,lift;
+    public DcMotor frontLeft, frontRight, backLeft, backRight, arm,lift;
     public Servo grip,tilt,liftRelease,droneRelease,holder;
     public ColorSensor leftColor,rightColor;
     public DigitalChannel leftTouch,rightTouch;
@@ -198,14 +190,15 @@ public class DraculaBase {
         hwMap = ahwMap;
         callingOpMode = _callingOpMode;
 
-// Define and Initialize Motors and sensors
+        //region define init motors and sensors
 
-        rightFront = callingOpMode.hardwareMap.dcMotor.get("fr");
-        leftFront = callingOpMode.hardwareMap.dcMotor.get("fl");
-        rightRear = callingOpMode.hardwareMap.dcMotor.get("br");
-        leftRear = callingOpMode.hardwareMap.dcMotor.get("bl");
-        arm = callingOpMode.hardwareMap.dcMotor.get("arm");
-        lift = callingOpMode.hardwareMap.dcMotor.get("lift");
+
+        frontLeft = initMotor(getDcMotor("fl"), DcMotor.Direction.REVERSE, 0.0);
+        frontRight = initMotor(getDcMotor("fr"), DcMotor.Direction.FORWARD, 0.0);
+        backLeft = initMotor(getDcMotor("bl"), DcMotor.Direction.REVERSE, 0.0);
+        backRight = initMotor(getDcMotor("br"), DcMotor.Direction.REVERSE, 0.0);
+        arm = initMotor(getDcMotor("arm"), DcMotorSimple.Direction.REVERSE, 0.6, 0);
+        lift = initMotor(getDcMotor("lift"), DcMotorSimple.Direction.REVERSE, 0.8, 0);
 
         grip = callingOpMode.hardwareMap.get(Servo.class, "grip");
         holder = callingOpMode.hardwareMap.get(Servo.class, "holder");
@@ -220,49 +213,6 @@ public class DraculaBase {
         revRangeLeftFront = callingOpMode.hardwareMap.get(DistanceSensor.class, "revrangeleftfront");
         revRangeRightFront = callingOpMode.hardwareMap.get(DistanceSensor.class, "revrangerightfront");
 
-
-
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftFront.setPower(0.);
-
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFront.setPower(0.);
-
-        leftRear.setDirection(DcMotor.Direction.REVERSE);
-        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftRear.setPower(0.);
-
-        rightRear.setDirection(DcMotor.Direction.FORWARD);
-        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightRear.setPower(0.);
-
-        arm.setDirection(DcMotor.Direction.REVERSE);
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        arm.setPower(.6);
-        arm.setTargetPosition(0);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-        lift.setDirection(DcMotor.Direction.FORWARD);
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lift.setPower(.8);
-        lift.setTargetPosition(0);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         imu = callingOpMode.hardwareMap.get(IMU.class, "imu");
 
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD;
@@ -276,7 +226,33 @@ public class DraculaBase {
         blinkinLedDriver = callingOpMode.hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         pattern = RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE;
         blinkinLedDriver.setPattern(pattern);
+        //endregion
 
+    }
+
+    private DcMotor initMotor(DcMotor dcMotor, DcMotorSimple.Direction direction, double power) {
+        dcMotor.setDirection(direction);
+        dcMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        dcMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        dcMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        dcMotor.setPower(power);
+        return dcMotor;
+    }
+
+    private DcMotor initMotor(DcMotor dcMotor, DcMotorSimple.Direction direction, double power, int position) {
+        dcMotor.setDirection(direction);
+        dcMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        dcMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        dcMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        dcMotor.setPower(power);
+
+        dcMotor.setTargetPosition(position);
+        dcMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        return dcMotor;
+    }
+
+    private DcMotor getDcMotor(String deviceName){
+        return callingOpMode.hardwareMap.dcMotor.get(deviceName);
     }
 
     public void applyMecPower2(double x, double y, double r) {
@@ -300,10 +276,10 @@ public class DraculaBase {
         lfrontpower = lfrontpower / max;
 
 // apply the normalized power levels to each motor
-        leftFront.setPower(lfrontpower);
-        rightFront.setPower(rfrontpower);
-        leftRear.setPower(lrearpower);
-        rightRear.setPower(rrearpower);
+        frontLeft.setPower(lfrontpower);
+        frontRight.setPower(rfrontpower);
+        backLeft.setPower(lrearpower);
+        backRight.setPower(rrearpower);
     }
 
 
@@ -479,10 +455,10 @@ public class DraculaBase {
         lfrontpower = lfrontpower / max;
 
 // apply the normalized power levels to each motor
-        leftFront.setPower(lfrontpower);
-        rightFront.setPower(rfrontpower);
-        leftRear.setPower(lrearpower);
-        rightRear.setPower(rrearpower);
+        frontLeft.setPower(lfrontpower);
+        frontRight.setPower(rfrontpower);
+        backLeft.setPower(lrearpower);
+        backRight.setPower(rrearpower);
     }
 
 /*    public void initVision() {
@@ -517,59 +493,13 @@ public class DraculaBase {
         arm.setPower(armPower);
     }
 
-    public void newpickUpPixel() {
-        int loops=0;
-        boolean stillMoving=true;
-        lastArmPosition=arm.getCurrentPosition();
-        //arm.setTargetPosition(armPickingPosition+500);// move the arm to a slightly raised position
-        // while(arm.isBusy()){}
-        arm.setPower(armPower-.2);
-        tilt.setPosition(tiltToPick);
-        ((LinearOpMode) callingOpMode).sleep(300);
-        arm.setTargetPosition(armLowered);
-        lastArmPosition = arm.getCurrentPosition();
-        loops = 0;
-        while(arm.isBusy() && stillMoving) {
-            ((LinearOpMode) callingOpMode).sleep(10);// pause to let the motor move
-            currentArmPosition = arm.getCurrentPosition();
-            // check for stall... if stalled set target position to current position
-            if (Math.abs(currentArmPosition - lastArmPosition) < 2) {
-                loops++;// count how many loops the arm has not moved
-            }
-            if (loops > 5) {
-                arm.setTargetPosition((arm.getCurrentPosition()));//force completion of the motion
-                loops = 0;
-                stillMoving=false;// end the "while" loop
-            }
-            lastArmPosition = currentArmPosition;
-        }
-
-        grip.setPosition(gripOpened);
-        ((LinearOpMode) callingOpMode).sleep(300);
-        arm.setTargetPosition(armLowered+50);
-        ((LinearOpMode) callingOpMode).sleep(300);
-        tankDrive(.3,-3);
-        arm.setTargetPosition(armLowered+100);
-
-        tilt.setPosition(tiltToCarry);
-        ((LinearOpMode) callingOpMode).sleep(300);
-        arm.setTargetPosition(armLowered);
-        arm.setPower(armPower);
-    }
-    public void deliverPixelLower()
-    {
-        arm.setTargetPosition(armJustAboveFirstLine);
-        while(arm.isBusy()){}
-        tilt.setPosition(tiltToRelease);
-
-    }
-
     public void armToLow()
     {
         arm.setTargetPosition(armJustAboveFirstLine);
         while(arm.isBusy()){}
         tilt.setPosition(tiltToRelease);
     }
+
     public void blueAutoDropPixel()
     {
         gyroTurn(.5,90);
@@ -950,39 +880,39 @@ public class DraculaBase {
             // Turn On RUN_TO_POSITION
 
 
-            newLeftFrontTarget = leftFront.getCurrentPosition() - moveCounts;
-            newRightFrontTarget = rightFront.getCurrentPosition() + moveCounts;
-            newRightRearTarget = rightRear.getCurrentPosition() - moveCounts;
-            newLeftRearTarget = leftRear.getCurrentPosition() + moveCounts;
+            newLeftFrontTarget = frontLeft.getCurrentPosition() - moveCounts;
+            newRightFrontTarget = frontRight.getCurrentPosition() + moveCounts;
+            newRightRearTarget = backRight.getCurrentPosition() - moveCounts;
+            newLeftRearTarget = backLeft.getCurrentPosition() + moveCounts;
 
             // Set Targets
-            leftFront.setTargetPosition(newLeftFrontTarget);
-            rightFront.setTargetPosition(newRightFrontTarget);
-            leftRear.setTargetPosition(newLeftRearTarget);
-            rightRear.setTargetPosition(newRightRearTarget);
+            frontLeft.setTargetPosition(newLeftFrontTarget);
+            frontRight.setTargetPosition(newRightFrontTarget);
+            backLeft.setTargetPosition(newLeftRearTarget);
+            backRight.setTargetPosition(newRightRearTarget);
 
-            leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
             // keep looping while we are still active, and the left front motor is are running.
 
-            while (((LinearOpMode) callingOpMode).opModeIsActive() && leftFront.isBusy()) {
-                leftFront.setPower(speed);
-                rightFront.setPower(speed);
-                leftRear.setPower(speed);
-                rightRear.setPower(speed);
+            while (((LinearOpMode) callingOpMode).opModeIsActive() && frontLeft.isBusy()) {
+                frontLeft.setPower(speed);
+                frontRight.setPower(speed);
+                backLeft.setPower(speed);
+                backRight.setPower(speed);
             }
             // Stop all motion;
             stopMotors();
 
             // Turn off RUN_TO_POSITION
-            leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
@@ -990,32 +920,32 @@ public class DraculaBase {
     public void setMotorsRWE() {
 
 
-        leftFront.setDirection(DcMotor.Direction.REVERSE); //
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftFront.setPower(0.);
+        frontLeft.setDirection(DcMotor.Direction.REVERSE); //
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setPower(0.);
 
 
-        rightFront.setDirection(DcMotor.Direction.REVERSE);//
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFront.setPower(0.);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);//
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setPower(0.);
 
 
-        leftRear.setDirection(DcMotor.Direction.REVERSE); //
-        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftRear.setPower(0.);
+        backLeft.setDirection(DcMotor.Direction.REVERSE); //
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setPower(0.);
 
 
-        rightRear.setDirection(DcMotor.Direction.REVERSE);//
-        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightRear.setPower(0.);
+        backRight.setDirection(DcMotor.Direction.REVERSE);//
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setPower(0.);
 
     }
 
@@ -1064,43 +994,43 @@ public class DraculaBase {
             moveCounts = (int) (distance * countsperinch*scale);
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
 
-            newLeftFrontTarget = leftFront.getCurrentPosition() + moveCounts;
-            newRightFrontTarget = rightFront.getCurrentPosition() + moveCounts;
-            newRightRearTarget = rightRear.getCurrentPosition() + moveCounts;
-            newLeftRearTarget = leftRear.getCurrentPosition() + moveCounts;
+            newLeftFrontTarget = frontLeft.getCurrentPosition() + moveCounts;
+            newRightFrontTarget = frontRight.getCurrentPosition() + moveCounts;
+            newRightRearTarget = backRight.getCurrentPosition() + moveCounts;
+            newLeftRearTarget = backLeft.getCurrentPosition() + moveCounts;
 
             // Set Targets
-            leftFront.setTargetPosition(newLeftFrontTarget);
-            rightFront.setTargetPosition(newRightFrontTarget);
-            leftRear.setTargetPosition(newLeftRearTarget);
-            rightRear.setTargetPosition(newRightRearTarget);
+            frontLeft.setTargetPosition(newLeftFrontTarget);
+            frontRight.setTargetPosition(newRightFrontTarget);
+            backLeft.setTargetPosition(newLeftRearTarget);
+            backRight.setTargetPosition(newRightRearTarget);
 
 // Turn On RUN_TO_POSITION
-            leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
             // keep looping while we are still active, and the left front motor is are running.
 
 // ==================
 
-            leftFront.setPower(speed);
-            rightFront.setPower(speed);
-            leftRear.setPower(speed);
-            rightRear.setPower(speed);
+            frontLeft.setPower(speed);
+            frontRight.setPower(speed);
+            backLeft.setPower(speed);
+            backRight.setPower(speed);
 
-            while (((LinearOpMode) callingOpMode).opModeIsActive() && leftFront.isBusy()) {}
+            while (((LinearOpMode) callingOpMode).opModeIsActive() && frontLeft.isBusy()) {}
             // Stop all motion;
 
             stopMotors();
 
             // Turn off RUN_TO_POSITION
-            leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         }
     }
@@ -1129,34 +1059,34 @@ public class DraculaBase {
             moveCounts = -(int) (distance * countsperinch*scale);
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
 
-            newLeftFrontTarget = leftFront.getCurrentPosition() + moveCounts;
-            newRightFrontTarget = rightFront.getCurrentPosition() + moveCounts;
-            newRightRearTarget = rightRear.getCurrentPosition() + moveCounts;
-            newLeftRearTarget = leftRear.getCurrentPosition() + moveCounts;
+            newLeftFrontTarget = frontLeft.getCurrentPosition() + moveCounts;
+            newRightFrontTarget = frontRight.getCurrentPosition() + moveCounts;
+            newRightRearTarget = backRight.getCurrentPosition() + moveCounts;
+            newLeftRearTarget = backLeft.getCurrentPosition() + moveCounts;
 
             // Set Targets
-            leftFront.setTargetPosition(newLeftFrontTarget);
-            rightFront.setTargetPosition(newRightFrontTarget);
-            leftRear.setTargetPosition(newLeftRearTarget);
-            rightRear.setTargetPosition(newRightRearTarget);
+            frontLeft.setTargetPosition(newLeftFrontTarget);
+            frontRight.setTargetPosition(newRightFrontTarget);
+            backLeft.setTargetPosition(newLeftRearTarget);
+            backRight.setTargetPosition(newRightRearTarget);
 
 // Turn On RUN_TO_POSITION
-            leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
             // keep looping while we are still active, and the left front motor is are running.
 
 // ==================
 
-            leftFront.setPower(speed);
-            rightFront.setPower(speed);
-            leftRear.setPower(speed);
-            rightRear.setPower(speed);
+            frontLeft.setPower(speed);
+            frontRight.setPower(speed);
+            backLeft.setPower(speed);
+            backRight.setPower(speed);
 
-            while (((LinearOpMode) callingOpMode).opModeIsActive() && leftFront.isBusy()&& rightFront.isBusy()&& rightRear.isBusy()&& leftRear.isBusy()) {
+            while (((LinearOpMode) callingOpMode).opModeIsActive() && frontLeft.isBusy()&& frontRight.isBusy()&& backRight.isBusy()&& backLeft.isBusy()) {
                 error = orientation - robotFieldHeading();
 
                 while (error > 180) error = (error - 360);
@@ -1166,10 +1096,10 @@ public class DraculaBase {
 
                 if(distance<0){correction *= -1.;}
 
-                leftFront.setPower(speed-correction);
-                rightFront.setPower(speed+correction);
-                leftRear.setPower(speed-correction);
-                rightRear.setPower(speed+correction);
+                frontLeft.setPower(speed-correction);
+                frontRight.setPower(speed+correction);
+                backLeft.setPower(speed-correction);
+                backRight.setPower(speed+correction);
 
                 //((LinearOpMode) callingOpMode).sleep(20);
             }
@@ -1178,20 +1108,20 @@ public class DraculaBase {
             stopMotors();
 
             // Turn off RUN_TO_POSITION
-            leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         }
     }
 
 
     public void updateDriveMotors(double frontleft, double frontright, double backleft, double backright) {
-        rightFront.setPower(-frontright);
-        rightRear.setPower(-backright);
-        leftFront.setPower(frontleft);
-        leftRear.setPower(backleft);
+        frontRight.setPower(-frontright);
+        backRight.setPower(-backright);
+        frontLeft.setPower(frontleft);
+        backLeft.setPower(backleft);
     }
 
     public void driveStraight(double inches, float heading, double power)  throws InterruptedException {
@@ -1209,7 +1139,7 @@ public class DraculaBase {
         power = Range.clip(power, -1.0, 1.0);
 
 
-        while (Math.abs(target) > Math.abs(leftFront.getCurrentPosition())  && ((LinearOpMode) callingOpMode).opModeIsActive()) {
+        while (Math.abs(target) > Math.abs(frontLeft.getCurrentPosition())  && ((LinearOpMode) callingOpMode).opModeIsActive()) {
 
             error = heading - robotFieldHeading();
 
@@ -1233,7 +1163,7 @@ public class DraculaBase {
 
             if ((loops % 10) ==  0) {
                 callingOpMode.telemetry.addData("gyro" , robotFieldHeading());
-                callingOpMode.telemetry.addData("encoder" , leftFront.getCurrentPosition());
+                callingOpMode.telemetry.addData("encoder" , frontLeft.getCurrentPosition());
                 callingOpMode.telemetry.addData("loops", loops);
                 callingOpMode.telemetry.update();
             }
@@ -1245,23 +1175,23 @@ public class DraculaBase {
         ((LinearOpMode) callingOpMode).sleep(500);
     }
     public void resetEncoders(boolean isSpeed) {
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         if(isSpeed) {
-            leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             speedControl  = true;
         }
         else {
-            leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            leftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            rightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             speedControl  = false;
         }
     }
@@ -1311,7 +1241,7 @@ public class DraculaBase {
             }
 
             posLast = pos;
-            pos = leftFront.getCurrentPosition();
+            pos = frontLeft.getCurrentPosition();
 
             loops++;
 
@@ -1363,7 +1293,7 @@ public class DraculaBase {
         power = Range.clip(power, -1.0, 1.0);
 
 
-        while (Math.abs(target) > Math.abs(leftFront.getCurrentPosition())  && ((LinearOpMode) callingOpMode).opModeIsActive() && callingOpMode.getRuntime()<targetT) {
+        while (Math.abs(target) > Math.abs(frontLeft.getCurrentPosition())  && ((LinearOpMode) callingOpMode).opModeIsActive() && callingOpMode.getRuntime()<targetT) {
 
             zRotation= (float) robotFieldHeading();
 
@@ -1386,7 +1316,7 @@ public class DraculaBase {
 
             if ((loops % 10) ==  0) {
                 callingOpMode.telemetry.addData("gyro" , zRotation);
-                callingOpMode.telemetry.addData("encoder" , leftFront.getCurrentPosition());
+                callingOpMode.telemetry.addData("encoder" , frontLeft.getCurrentPosition());
                 callingOpMode.telemetry.addData("loops", loops);
                 callingOpMode.telemetry.update();
             }
@@ -1506,26 +1436,26 @@ public class DraculaBase {
             // Turn On RUN_TO_POSITION
 
 
-            newLeftFrontTarget = leftFront.getCurrentPosition() - moveCounts;
-            newRightFrontTarget = rightFront.getCurrentPosition() + moveCounts;
-            newRightRearTarget = rightRear.getCurrentPosition() - moveCounts;
-            newLeftRearTarget = leftRear.getCurrentPosition() + moveCounts;
+            newLeftFrontTarget = frontLeft.getCurrentPosition() - moveCounts;
+            newRightFrontTarget = frontRight.getCurrentPosition() + moveCounts;
+            newRightRearTarget = backRight.getCurrentPosition() - moveCounts;
+            newLeftRearTarget = backLeft.getCurrentPosition() + moveCounts;
 
             // Set Targets
-            leftFront.setTargetPosition(newLeftFrontTarget);
-            rightFront.setTargetPosition(newRightFrontTarget);
-            leftRear.setTargetPosition(newLeftRearTarget);
-            rightRear.setTargetPosition(newRightRearTarget);
+            frontLeft.setTargetPosition(newLeftFrontTarget);
+            frontRight.setTargetPosition(newRightFrontTarget);
+            backLeft.setTargetPosition(newLeftRearTarget);
+            backRight.setTargetPosition(newRightRearTarget);
 
-            leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
             // keep looping while we are still active, and the left front motor is running.
 
-            while (((LinearOpMode) callingOpMode).opModeIsActive() && rightFront.isBusy() && leftFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()) {
+            while (((LinearOpMode) callingOpMode).opModeIsActive() && frontRight.isBusy() && frontLeft.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
                 error = directionOfFront - robotFieldHeading();
 
                 while (error > 180) error = (error - 360);
@@ -1535,10 +1465,10 @@ public class DraculaBase {
 
                 if(distance>0){correction *= -1.;}
 
-                leftFront.setPower(speed+correction);
-                rightFront.setPower(speed+correction);
-                leftRear.setPower(speed-correction);
-                rightRear.setPower(speed-correction);
+                frontLeft.setPower(speed+correction);
+                frontRight.setPower(speed+correction);
+                backLeft.setPower(speed-correction);
+                backRight.setPower(speed-correction);
 
                 //((LinearOpMode) callingOpMode).sleep(20);
 
@@ -1547,10 +1477,10 @@ public class DraculaBase {
             stopMotors();
 
             // Turn off RUN_TO_POSITION
-            leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
@@ -1567,10 +1497,10 @@ public class DraculaBase {
         }
 
         // Stop all motion;
-        leftFront.setPower(0);
-        rightFront.setPower(0);
-        leftRear.setPower(0);
-        rightRear.setPower(0);
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
     }
 
     /**
@@ -1608,10 +1538,10 @@ public class DraculaBase {
         // Send desired speeds to motors.
 
 
-        leftFront.setPower(rightSpeed);
-        rightFront.setPower(rightSpeed);
-        leftRear.setPower(leftSpeed);
-        rightRear.setPower(leftSpeed);
+        frontLeft.setPower(rightSpeed);
+        frontRight.setPower(rightSpeed);
+        backLeft.setPower(leftSpeed);
+        backRight.setPower(leftSpeed);
 
         // Display it for the driver.
         callingOpMode.telemetry.addData("Target", "%5.2f", angle);

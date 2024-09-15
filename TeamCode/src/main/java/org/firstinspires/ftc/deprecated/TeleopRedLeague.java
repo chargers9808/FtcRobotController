@@ -371,10 +371,10 @@ public class TeleopRedLeague extends LinearOpMode {
 // ----->>> display parameters in diagnostic mode
 
             if (diagnosticMode) {
-                telemetry.addData("Left Front     : ", driveBase.leftFront.getCurrentPosition());
-                telemetry.addData("Right Front    : ", driveBase.rightFront.getCurrentPosition());
-                telemetry.addData("Left Rear      : ", driveBase.leftRear.getCurrentPosition());
-                telemetry.addData("Right Rear     : ", driveBase.rightRear.getCurrentPosition());
+                telemetry.addData("Left Front     : ", driveBase.frontLeft.getCurrentPosition());
+                telemetry.addData("Right Front    : ", driveBase.frontRight.getCurrentPosition());
+                telemetry.addData("Left Rear      : ", driveBase.backLeft.getCurrentPosition());
+                telemetry.addData("Right Rear     : ", driveBase.backRight.getCurrentPosition());
                 telemetry.addData("arm motor      : ", driveBase.arm.getCurrentPosition());
                 telemetry.addData("lift motor     : ", driveBase.lift.getCurrentPosition());
                 telemetry.addData("tiltServo      : ",(driveBase.tiltPosition));
