@@ -18,13 +18,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class DraculaBase {
-    // --------------  hardware devices  --------------
+    //region hardware devices
     public DcMotor frontLeft, frontRight, backLeft, backRight, arm, lift;
     public Servo grip, tilt, liftRelease, droneRelease, holder;
     public DistanceSensor revRangeLeft, revRangeRight, revRangeLeftFront, revRangeRightFront;
     public RevBlinkinLedDriver blinkinLedDriver;
     public RevBlinkinLedDriver.BlinkinPattern pattern;
     public IMU imu;
+    //endregion
 
     // --------------  Vision and TensorFLow
     public double cameraOffset = 4;// how far is the camera from the robot center line?
@@ -383,21 +384,16 @@ public class DraculaBase {
     }
 
     public double robotFieldHeading() {
-        double theta;// this method returns the field heading of the robot
+        // this method returns the field heading of the robot
 
-        //  this gets all the imu parameters... the "heading" is the "firstAngle + initialFieldHeading"
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        //theta = orientation.getYaw(AngleUnit.DEGREES) + HeadingHolder.getHeading();  // initialized with the saved heading
-        theta = orientation.getYaw(AngleUnit.DEGREES);  // initialized with the saved heading
+//        if (theta < 0) {
+//            theta = theta + 360.;
+//        }
+//        if (theta > 360) {
+//            theta = theta - 360.;
+//        }
 
-        if (theta < 0) {
-            theta = theta + 360.;
-        }
-        if (theta > 360) {
-            theta = theta - 360.;
-        } // correct for the "wrap around" of this angle
-        // this makes the angle 0-360 CCW same as the field angle, instead of 0-180 and then -180 to 0  (going CCW)
-        return theta;
+        return (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) + 360) % 360;
     }
 
     public void DriveSideways(double speed, double distance) {
@@ -651,39 +647,31 @@ public class DraculaBase {
         }
     }
 
+
     public double leftDistanceToWall() {
-        double lrange = 500;
-        lrange = revRangeLeft.getDistance(DistanceUnit.INCH);
-        return lrange;
+        return revRangeLeft.getDistance(DistanceUnit.INCH);
     }
 
     public double frontLeftDistance() {
-        double frontrange = 500;
-        frontrange = revRangeLeftFront.getDistance(DistanceUnit.INCH);
-
-        return frontrange;
+        return revRangeLeftFront.getDistance(DistanceUnit.INCH);
     }
 
     public double frontRightDistance() {
-        double rfrontrange = 500;
-        rfrontrange = revRangeRightFront.getDistance(DistanceUnit.INCH);
-        return rfrontrange;
+        return revRangeRightFront.getDistance(DistanceUnit.INCH);
     }
 
     public double frontDistance() {
         double frontrange = 500;
-        double tempRangeL = revRangeLeftFront.getDistance(DistanceUnit.INCH);
-        double tempRangeR = revRangeRightFront.getDistance(DistanceUnit.INCH);
+        double tempRangeL = frontLeftDistance();
+        double tempRangeR = frontRightDistance();
+
         // try three times to get a correct front distance measurement... otherwise park
-        if (tempRangeL > 15 && tempRangeR > 15) {
-            ((LinearOpMode) callingOpMode).sleep(50);//small wait and measure again
-            tempRangeL = revRangeLeftFront.getDistance(DistanceUnit.INCH);
-            tempRangeR = revRangeRightFront.getDistance(DistanceUnit.INCH);
-        }
-        if (tempRangeL > 15 && tempRangeR > 15) {
-            ((LinearOpMode) callingOpMode).sleep(50);//small wait and measure again
-            tempRangeL = revRangeLeftFront.getDistance(DistanceUnit.INCH);
-            tempRangeR = revRangeRightFront.getDistance(DistanceUnit.INCH);
+        for (int i = 0; i <= 3; i++) {
+            if (tempRangeL > 15 && tempRangeR > 15) {
+                ((LinearOpMode) callingOpMode).sleep(50);//small wait and measure again
+                tempRangeL = frontLeftDistance();
+                tempRangeR = frontRightDistance();
+            }
         }
 
         if (tempRangeL <= tempRangeR && tempRangeL < 15) {
@@ -696,9 +684,7 @@ public class DraculaBase {
     }
 
     public double rightDistanceToWall() {
-        double rrange = 500;
-        rrange = revRangeRight.getDistance(DistanceUnit.INCH);
-        return rrange;
+        return revRangeRight.getDistance(DistanceUnit.INCH); // check for distanceOutOfRange
     }
 
     // ------------------------- Blue Backdrop Pixel Plow ---------------------------------
