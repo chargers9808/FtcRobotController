@@ -228,6 +228,8 @@ public class DraculaBase {
         blinkinLedDriver.setPattern(pattern);
     }
 
+
+    //region get hardware & hardware map
     private HardwareMap getHardwareMap(){
         return callingOpMode.hardwareMap;
     }
@@ -240,6 +242,11 @@ public class DraculaBase {
     private Servo getServo(String deviceName) {
         return getHardwareMap().servo.get(deviceName);
     }
+
+    private DcMotor getDcMotor(String deviceName){
+        return getHardwareMap().dcMotor.get(deviceName);
+    }
+    //endregion
 
     private DcMotor initMotor(DcMotor dcMotor, DcMotorSimple.Direction direction, double power) {
         dcMotor.setDirection(direction);
@@ -260,10 +267,6 @@ public class DraculaBase {
         dcMotor.setTargetPosition(position);
         dcMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         return dcMotor;
-    }
-
-    private DcMotor getDcMotor(String deviceName){
-        return getHardwareMap().dcMotor.get(deviceName);
     }
 
     public void applyMecPower2(double x, double y, double r) {
