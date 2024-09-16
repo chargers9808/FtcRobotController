@@ -241,7 +241,7 @@ public abstract class Teleop extends LinearOpMode9808 {
         if (approachFarWall()) {
             targetDeg = 0.0;
         } else if (approachBackWall()) {
-            targetDeg = -1 * getBackdropDeg();
+//            targetDeg = -1 * getBackdropDeg();
         }
 
         // Process the approach if required
@@ -341,12 +341,12 @@ public abstract class Teleop extends LinearOpMode9808 {
         }
 
         if (targetLevel > 0) {
-            driveBase.gyroTurn(.5,getBackdropDeg());
+//            driveBase.gyroTurn(.5,getBackdropDeg());
             double distanceFromBackDrop = driveBase.frontDistance();// prepare to drive back
             if(distanceFromBackDrop<25)
             {
-                driveBase.tankDriveCorrected(.3,(10.-distanceFromBackDrop),getBackdropDeg());
-                driveBase.gyroTurn(.5,getBackdropDeg());
+//                driveBase.tankDriveCorrected(.3,(10.-distanceFromBackDrop),getBackdropDeg());
+//                driveBase.gyroTurn(.5,getBackdropDeg());
                 if( targetLevel == 1) {
                     driveBase.armToLow();
                 } else if (targetLevel == 2) {

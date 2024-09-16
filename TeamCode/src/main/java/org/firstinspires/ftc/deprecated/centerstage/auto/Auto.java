@@ -173,21 +173,21 @@ abstract public class Auto extends LinearOpMode9808 {
     }
 
     protected void dropPixel() {
-        driveBase.gyroTurn(.5, getBackdropDeg());
-        driveBase.tilt.setPosition(driveBase.tiltToRelease);
-        driveBase.arm.setTargetPosition(getPixelDropHeight());
-        while (driveBase.arm.isBusy());
-        driveBase.tankDrive(.3, 3.0);
-        driveBase.gyroTurn(.5, getBackdropDeg());
-        driveBase.DriveSidewaysCorrected(.3, vision.lateralOffset + driveBase.cameraOffset, getBackdropDeg());
-        driveBase.gyroTurn(.6, getBackdropDeg());
-        vision.getDistancesToAprilTag(getAprilTagId(vision.propLocation));
-        sleep(50);
-        driveBase.tankDrive(.3, vision.forwardDistanceToTag - 9.5); // AJB Updated from 9.75 2/24
-        driveBase.gyroTurn(.6, getBackdropDeg());
-        driveBase.grip.setPosition(driveBase.gripClosed);
-        sleep(1000);
-        driveBase.tankDrive(.3, -5);
+//        driveBase.gyroTurn(.5, getBackdropDeg());
+//        driveBase.tilt.setPosition(driveBase.tiltToRelease);
+//        driveBase.arm.setTargetPosition(getPixelDropHeight());
+//        while (driveBase.arm.isBusy());
+//        driveBase.tankDrive(.3, 3.0);
+//        driveBase.gyroTurn(.5, getBackdropDeg());
+//        driveBase.DriveSidewaysCorrected(.3, vision.lateralOffset + driveBase.cameraOffset, getBackdropDeg());
+//        driveBase.gyroTurn(.6, getBackdropDeg());
+//        vision.getDistancesToAprilTag(getAprilTagId(vision.propLocation));
+//        sleep(50);
+//        driveBase.tankDrive(.3, vision.forwardDistanceToTag - 9.5); // AJB Updated from 9.75 2/24
+//        driveBase.gyroTurn(.6, getBackdropDeg());
+//        driveBase.grip.setPosition(driveBase.gripClosed);
+//        sleep(1000);
+//        driveBase.tankDrive(.3, -5);
     }
 
     private void findAprilTag() {
@@ -216,7 +216,7 @@ abstract public class Auto extends LinearOpMode9808 {
         }
 
         if (distance != Double.NaN) {
-            driveBase.DriveSidewaysCorrected(.5, allianceCorrectedDistance(distance), getBackdropDeg());
+//            driveBase.DriveSidewaysCorrected(.5, allianceCorrectedDistance(distance), getBackdropDeg());
         }
     }
 
@@ -225,7 +225,7 @@ abstract public class Auto extends LinearOpMode9808 {
             driveBase.tilt.setPosition(driveBase.tiltVertical);
         }
         sleep(500);
-        driveBase.gyroTurn(.6, getBackdropDeg());
+//        driveBase.gyroTurn(.6, getBackdropDeg());
         if (modeSelection != Selection.PARK_BACKDROP) {
             driveBase.tankDrive(.3, 10);
         } else {
@@ -239,7 +239,7 @@ abstract public class Auto extends LinearOpMode9808 {
             driveBase.tilt.setPosition(driveBase.tiltVertical);
         }
         driveBase.arm.setTargetPosition(5);
-        driveBase.gyroTurn(.6, getBackdropDeg());
+//        driveBase.gyroTurn(.6, getBackdropDeg());
         HeadingHolder.setHeading(driveBase.robotFieldHeading());
         setLEDHeartbeat();
         telemetry.addData("Path", "Complete");
@@ -250,9 +250,9 @@ abstract public class Auto extends LinearOpMode9808 {
 
     protected void driveToBackdrop( String propLocation, boolean parkOnly ) {
         // Backdrop drive rules
-        driveBase.gyroTurn(.6,getBackdropDeg());
+//        driveBase.gyroTurn(.6,getBackdropDeg());
         driveBase.tankDrive(.5,10);
         double distance = getCurrentBackdropTagLocation() - distanceToCloseWall() - cameraOffset();
-        driveBase.DriveSidewaysCorrected(.5, allianceCorrectedDistance(distance), getBackdropDeg());
+//        driveBase.DriveSidewaysCorrected(.5, allianceCorrectedDistance(distance), getBackdropDeg());
     }
 }
