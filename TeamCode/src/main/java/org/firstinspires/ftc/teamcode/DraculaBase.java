@@ -185,39 +185,39 @@ public class DraculaBase {
     }
 
     public void init(HardwareMap ahwMap, OpMode _callingOpMode) {
-
         // Save reference to Hardware map
         hwMap = ahwMap;
         callingOpMode = _callingOpMode;
 
-        //region define init motors and sensors
-
-
+        //region get & init motors
         frontLeft = initMotor(getDcMotor("fl"), DcMotor.Direction.REVERSE, 0.0);
         frontRight = initMotor(getDcMotor("fr"), DcMotor.Direction.FORWARD, 0.0);
         backLeft = initMotor(getDcMotor("bl"), DcMotor.Direction.REVERSE, 0.0);
         backRight = initMotor(getDcMotor("br"), DcMotor.Direction.REVERSE, 0.0);
         arm = initMotor(getDcMotor("arm"), DcMotorSimple.Direction.REVERSE, 0.6, 0);
-        lift = initMotor(getDcMotor("lift"), DcMotorSimple.Direction.REVERSE, 0.8, 0);
+        lift = initMotor(getDcMotor("lift"), DcMotorSimple.Direction.FORWARD, 0.8, 0);
+        //endregion
+        //region get servos
+        grip = getServo("grip");
+        holder = getServo("holder");
+        tilt = getServo("tilt");
+        liftRelease = getServo("liftrelease");
+        droneRelease = getServo("dronerelease");
+        //endregion
+        //region get distance sensors
+        revRangeLeft = getDistanceSensor("revrangeleft");
+        revRangeRight = getDistanceSensor("revrangeright");
+        revRangeLeftFront = getDistanceSensor("revrangeleftfront");
+        revRangeRightFront = getDistanceSensor("revrangerightfront");
+        //endregion
 
-        grip = callingOpMode.hardwareMap.get(Servo.class, "grip");
-        holder = callingOpMode.hardwareMap.get(Servo.class, "holder");
-        tilt = callingOpMode.hardwareMap.get(Servo.class, "tilt");
-        liftRelease = callingOpMode.hardwareMap.get(Servo.class, "liftrelease");
-        droneRelease = callingOpMode.hardwareMap.get(Servo.class, "dronerelease");
+        imu = getHardwareMap().get(IMU.class, "imu");
 
-
-        revRangeLeft = callingOpMode.hardwareMap.get(DistanceSensor.class, "revrangeleft");
-        revRangeRight = callingOpMode.hardwareMap.get(DistanceSensor.class, "revrangeright");
-        //revRangeRear = callingOpMode.hardwareMap.get(DistanceSensor.class, "revrangerear");
-        revRangeLeftFront = callingOpMode.hardwareMap.get(DistanceSensor.class, "revrangeleftfront");
-        revRangeRightFront = callingOpMode.hardwareMap.get(DistanceSensor.class, "revrangerightfront");
-
-        imu = callingOpMode.hardwareMap.get(IMU.class, "imu");
-
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD;
-        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
-        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+        RevHubOrientationOnRobot orientationOnRobot =
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
+                        RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
+                );
 
         imu.initialize(new IMU.Parameters(orientationOnRobot));
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
@@ -226,8 +226,19 @@ public class DraculaBase {
         blinkinLedDriver = callingOpMode.hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         pattern = RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE;
         blinkinLedDriver.setPattern(pattern);
-        //endregion
+    }
 
+    private HardwareMap getHardwareMap(){
+        return callingOpMode.hardwareMap;
+    }
+
+    private DistanceSensor getDistanceSensor(String deviceName){
+        // Can't find distance sensor class in hardware map
+        return getHardwareMap().get(DistanceSensor.class, deviceName);
+    }
+
+    private Servo getServo(String deviceName) {
+        return getHardwareMap().servo.get(deviceName);
     }
 
     private DcMotor initMotor(DcMotor dcMotor, DcMotorSimple.Direction direction, double power) {
@@ -252,7 +263,7 @@ public class DraculaBase {
     }
 
     private DcMotor getDcMotor(String deviceName){
-        return callingOpMode.hardwareMap.dcMotor.get(deviceName);
+        return getHardwareMap().dcMotor.get(deviceName);
     }
 
     public void applyMecPower2(double x, double y, double r) {
