@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.gobilda.GoBildaPinpointDriver;
 
 public class DraculaBase {
     //region hardware devices
@@ -24,6 +25,7 @@ public class DraculaBase {
     public RevBlinkinLedDriver blinkinLedDriver;
     public RevBlinkinLedDriver.BlinkinPattern pattern;
     public IMU imu;
+    GoBildaPinpointDriver odometryComputer;
     //endregion
 
     // --------------  Vision and TensorFLow
@@ -86,38 +88,18 @@ public class DraculaBase {
 // --------------  Java, Logic, object oriented...
 
     OpMode callingOpMode;
-    HardwareMap hwMap = null;
+    HardwareMap hardwareMap = null;
     public ElapsedTime runtime = new ElapsedTime();
     protected static final double P_DRIVE_COEFF = 0.05;
 
-    public void init(HardwareMap ahwMap, OpMode _callingOpMode) {
+    public void init(HardwareMap hardwareMap, OpMode _callingOpMode) {
         // Save reference to Hardware map
-        hwMap = ahwMap;
+        this.hardwareMap = hardwareMap;
         callingOpMode = _callingOpMode;
 
-        //region get & init motors
-        frontLeft = initMotor(getDcMotor("fl"), DcMotor.Direction.REVERSE, 0.0);
-        frontRight = initMotor(getDcMotor("fr"), DcMotor.Direction.FORWARD, 0.0);
-        backLeft = initMotor(getDcMotor("bl"), DcMotor.Direction.REVERSE, 0.0);
-        backRight = initMotor(getDcMotor("br"), DcMotor.Direction.REVERSE, 0.0);
-        arm = initMotor(getDcMotor("arm"), DcMotorSimple.Direction.REVERSE, 0.6, 0);
-        lift = initMotor(getDcMotor("lift"), DcMotorSimple.Direction.FORWARD, 0.8, 0);
-        //endregion
-
-        //region get servos
-        grip = getServo("grip");
-        holder = getServo("holder");
-        tilt = getServo("tilt");
-        liftRelease = getServo("liftrelease");
-        droneRelease = getServo("dronerelease");
-        //endregion
-
-        //region get distance sensors
-        revRangeLeft = getDistanceSensor("revrangeleft");
-        revRangeRight = getDistanceSensor("revrangeright");
-        revRangeLeftFront = getDistanceSensor("revrangeleftfront");
-        revRangeRightFront = getDistanceSensor("revrangerightfront");
-        //endregion
+        initAllMotors();
+        setAllServos();
+        setAllDistanceSensors();
 
         imu = getHardwareMap().get(IMU.class, "imu");
 
@@ -134,17 +116,28 @@ public class DraculaBase {
         blinkinLedDriver.setPattern(pattern);
     }
 
-
-    //region get hardware & hardware map
     private HardwareMap getHardwareMap() {
         return callingOpMode.hardwareMap;
     }
 
+    private void setAllDistanceSensors(){
+        revRangeLeft = getDistanceSensor("revrangeleft");
+        revRangeRight = getDistanceSensor("revrangeright");
+        revRangeLeftFront = getDistanceSensor("revrangeleftfront");
+        revRangeRightFront = getDistanceSensor("revrangerightfront");
+    }
     private DistanceSensor getDistanceSensor(String deviceName) {
         // Can't find distance sensor class in hardware map
         return getHardwareMap().get(DistanceSensor.class, deviceName);
     }
 
+    private void setAllServos(){
+        grip = getServo("grip");
+        holder = getServo("holder");
+        tilt = getServo("tilt");
+        liftRelease = getServo("liftrelease");
+        droneRelease = getServo("dronerelease");
+    }
     private Servo getServo(String deviceName) {
         return getHardwareMap().servo.get(deviceName);
     }
@@ -152,9 +145,26 @@ public class DraculaBase {
     private DcMotor getDcMotor(String deviceName) {
         return getHardwareMap().dcMotor.get(deviceName);
     }
-    //endregion
 
-    //region initMotor
+    private void intiOdometryComputer(){
+        odometryComputer = getHardwareMap().get(GoBildaPinpointDriver.class,"odo");
+        odometryComputer.setOffsets(-84.0, -168.0);
+        odometryComputer.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odometryComputer.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odometryComputer.resetPosAndIMU();
+
+    }
+
+
+    private void initAllMotors(){
+        frontLeft = initMotor(getDcMotor("fl"), DcMotor.Direction.REVERSE, 0.0);
+        frontRight = initMotor(getDcMotor("fr"), DcMotor.Direction.FORWARD, 0.0);
+        backLeft = initMotor(getDcMotor("bl"), DcMotor.Direction.REVERSE, 0.0);
+        backRight = initMotor(getDcMotor("br"), DcMotor.Direction.REVERSE, 0.0);
+        arm = initMotor(getDcMotor("arm"), DcMotorSimple.Direction.REVERSE, 0.6, 0);
+        lift = initMotor(getDcMotor("lift"), DcMotorSimple.Direction.FORWARD, 0.8, 0);
+    }
+
     private DcMotor initMotor(DcMotor dcMotor, DcMotorSimple.Direction direction, double power) {
         dcMotor.setDirection(direction);
         dcMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -171,7 +181,6 @@ public class DraculaBase {
         dcMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         return dcMotor;
     }
-    //endregion
 
     public void applyMecPower2(double x, double y, double r) {
 
