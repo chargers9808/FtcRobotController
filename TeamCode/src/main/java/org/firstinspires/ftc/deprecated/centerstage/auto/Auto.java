@@ -240,7 +240,7 @@ abstract public class Auto extends LinearOpMode9808 {
         }
         driveBase.arm.setTargetPosition(5);
 //        driveBase.gyroTurn(.6, getBackdropDeg());
-        HeadingHolder.setHeading(driveBase.robotFieldHeading());
+        HeadingHolder.setHeading(driveBase.getFieldHeading());
         setLEDHeartbeat();
         telemetry.addData("Path", "Complete");
 

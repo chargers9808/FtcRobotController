@@ -52,7 +52,7 @@ abstract public class AutoBase extends LinearOpMode9808 {
      * Finalize AUTO phase in prep for Teleop
      */
     private void finish() {
-        HeadingHolder.setHeading(driveBase.robotFieldHeading());
+        HeadingHolder.setHeading(driveBase.getFieldHeading());
         setLEDHeartbeat();
         telemetry.addData("Path", "Complete");
 

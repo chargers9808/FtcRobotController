@@ -15,7 +15,6 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class DraculaBase {
     //region hardware devices
@@ -28,7 +27,7 @@ public class DraculaBase {
     //endregion
 
     // --------------  Vision and TensorFLow
-    public double cameraOffset = 4;// how far is the camera from the robot center line?
+    public double cameraOffsetFromCenterline = 4;// how far is the camera from the robot center line?
 
     // --------------  drive system and controls
     static final double COUNTS_PER_REV_gobilda435 = 384.5;    // Gobilda 435 rpm motors
@@ -155,6 +154,7 @@ public class DraculaBase {
     }
     //endregion
 
+    //region initMotor
     private DcMotor initMotor(DcMotor dcMotor, DcMotorSimple.Direction direction, double power) {
         dcMotor.setDirection(direction);
         dcMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -171,6 +171,7 @@ public class DraculaBase {
         dcMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         return dcMotor;
     }
+    //endregion
 
     public void applyMecPower2(double x, double y, double r) {
 
@@ -212,7 +213,7 @@ public class DraculaBase {
          */
 
         double error;
-        error = targetAngle - robotFieldHeading();   // how far we need to turn
+        error = targetAngle - getFieldHeading();   // how far we need to turn
 
 // ================== adjust for crossing the zenith angle, also turn thru the shortest angle
         if (error > 180.) {
@@ -227,7 +228,7 @@ public class DraculaBase {
         while (((LinearOpMode) callingOpMode).opModeIsActive() && Math.abs(error) > HEADING_THRESHOLD) {
 
             // ================== adjust for crossing the zenith angle, also turn thru the shortest angle
-            error = targetAngle - robotFieldHeading();// how far we need to turn
+            error = targetAngle - getFieldHeading();// how far we need to turn
 
             if (error > 180.) {
                 error -= 360.;
@@ -264,7 +265,9 @@ public class DraculaBase {
         x = 0.;
         y = 0.;
         r = 0.;
-        applyMecPower();
+
+
+        setWheelMotorPower(0.0, 0.0, 0.0, 0.0);
     }
 
     public void applyMecPower() {
@@ -281,16 +284,29 @@ public class DraculaBase {
         max = Math.max(max, Math.abs(lrearpower));
 
 // normalize all the powers to this max level (keeping proportions and signs)
-        rrearpower = rrearpower / max;
-        lrearpower = lrearpower / max;
-        rfrontpower = rfrontpower / max;
-        lfrontpower = lfrontpower / max;
+        rrearpower /= max;
+        lrearpower /= max;
+        rfrontpower /= max;
+        lfrontpower /= max;
 
 // apply the normalized power levels to each motor
-        frontLeft.setPower(lfrontpower);
-        frontRight.setPower(rfrontpower);
-        backLeft.setPower(lrearpower);
-        backRight.setPower(rrearpower);
+
+        setWheelMotorPower(lfrontpower, rfrontpower, lrearpower, rrearpower);
+    }
+
+    private void setWheelMotorPower(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
+        frontLeft.setPower(frontRightPower);
+        frontRight.setPower(frontLeftPower);
+        backLeft.setPower(backLeftPower);
+        backRight.setPower(backRightPower);
+    }
+
+    private double normalizeMaxPower(double maxPower, double frontRightPower, double frontLeftPower, double backRightPower, double backLeftPower){
+        maxPower = Math.max(maxPower, Math.abs(frontRightPower));
+        maxPower = Math.max(maxPower, Math.abs(frontLeftPower));
+        maxPower = Math.max(maxPower, Math.abs(backRightPower));
+        maxPower = Math.max(maxPower, Math.abs(backLeftPower));
+        return maxPower;
     }
 
     public void pickUpPixel() {
@@ -339,6 +355,8 @@ public class DraculaBase {
      *
      * @param pattern the LED pattern to set
      */
+
+    //region LED
     public void setLED(RevBlinkinLedDriver.BlinkinPattern pattern) {
         blinkinLedDriver.setPattern(pattern);
     }
@@ -382,8 +400,10 @@ public class DraculaBase {
         pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_RED;
         blinkinLedDriver.setPattern(pattern);
     }
+    //endregion
 
-    public double robotFieldHeading() {
+
+    public double getFieldHeading() {
         // this method returns the field heading of the robot
 
 //        if (theta < 0) {
@@ -548,7 +568,7 @@ public class DraculaBase {
             backRight.setPower(speed);
 
             while (((LinearOpMode) callingOpMode).opModeIsActive() && frontLeft.isBusy() && frontRight.isBusy() && backRight.isBusy() && backLeft.isBusy()) {
-                error = orientation - robotFieldHeading();
+                error = orientation - getFieldHeading();
 
                 while (error > 180) error = (error - 360);
                 while (error <= -180) error = (error + 360);
@@ -617,7 +637,7 @@ public class DraculaBase {
             // keep looping while we are still active, and the left front motor is running.
 
             while (((LinearOpMode) callingOpMode).opModeIsActive() && frontRight.isBusy() && frontLeft.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
-                error = directionOfFront - robotFieldHeading();
+                error = directionOfFront - getFieldHeading();
 
                 while (error > 180) error = (error - 360);
                 while (error <= -180) error = (error + 360);

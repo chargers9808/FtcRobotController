@@ -91,7 +91,7 @@ public abstract class Teleop extends LinearOpMode9808 {
             telemetry.addLine("OpMode is in diagnostic mode; press PLAY.");
         }
         telemetry.addData("Gyro initialized to:   ", lastSavedAngle);
-        telemetry.addData("heading:   ", driveBase.robotFieldHeading());
+        telemetry.addData("heading:   ", driveBase.getFieldHeading());
         telemetry.addLine("Waiting for START....");
         telemetry.update();
     }
@@ -147,7 +147,7 @@ public abstract class Teleop extends LinearOpMode9808 {
         }
 
         // get the robot's heading from the IMU:
-        double theta = driveBase.robotFieldHeading() * Math.PI / 180.;// convert to 0-2Pi angle
+        double theta = driveBase.getFieldHeading() * Math.PI / 180.;// convert to 0-2Pi angle
         if (theta < 0) {
             theta = theta + 2.0 * Math.PI;
         }

@@ -339,7 +339,7 @@ public class OldTeleop extends IntoTheDeepBase {
     }
 
     private void retrieveRobotHeadingFromIMU() {
-        theta = driveBase.robotFieldHeading() * Math.PI / 180.;// convert to 0-2Pi angle
+        theta = driveBase.getFieldHeading() * Math.PI / 180.;// convert to 0-2Pi angle
         if (theta < 0) {
             theta = theta + 2. * Math.PI;
         }
@@ -383,7 +383,7 @@ public class OldTeleop extends IntoTheDeepBase {
                 telemetry.addLine("OpMode is in diagnostic mode; press PLAY.");
             }
             telemetry.addData("Gyro initialized to:   ", lastSavedAngle);
-            telemetry.addData("heading:   ", driveBase.robotFieldHeading());
+            telemetry.addData("heading:   ", driveBase.getFieldHeading());
             telemetry.addLine("Waiting for START....");
             telemetry.update();
         }

@@ -71,7 +71,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
                 telemetry.addLine("OpMode is in diagnostic mode; press PLAY.");
             }
             telemetry.addData("Gyro initialized to:   ", lastSavedAngle);
-            telemetry.addData("heading:   ", driveBase.robotFieldHeading());
+            telemetry.addData("heading:   ", driveBase.getFieldHeading());
             telemetry.addLine("Waiting for START....");
             telemetry.update();
         }
