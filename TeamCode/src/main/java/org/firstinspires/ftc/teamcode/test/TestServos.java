@@ -80,14 +80,14 @@ public class TestServos extends LinearOpMode {
                 {driveBase.armNewTargetPosition -= driveBase.armIncrement;}
                 if(driveBase.armNewTargetPosition<driveBase.armLowered){driveBase.armNewTargetPosition=driveBase.armLowered;}
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //while(driveBase.arm.isBusy()){}
+                while(driveBase.arm.isBusy()){}
                 sleep(150);
 
             } else if (gamepad2.left_bumper || gamepad1.left_bumper) {
                 driveBase.armNewTargetPosition += driveBase.armIncrement;
                 if(driveBase.armNewTargetPosition > driveBase.armup ){driveBase.armNewTargetPosition =driveBase.armup;}
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //while(driveBase.arm.isBusy()){}
+                while(driveBase.arm.isBusy()){}
                 sleep(150);
             }
 

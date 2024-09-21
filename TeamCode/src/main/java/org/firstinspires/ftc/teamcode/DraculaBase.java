@@ -323,8 +323,8 @@ public class DraculaBase {
         tilt.setPosition(tiltToPick);
         ((LinearOpMode) callingOpMode).sleep(300);
         arm.setTargetPosition(armLowered);
-//        while (arm.isBusy()) {
-//        }
+        while (arm.isBusy()) {
+        }
         grip.setPosition(gripOpened);
         ((LinearOpMode) callingOpMode).sleep(300);
         arm.setTargetPosition(armLowered + 50);
@@ -340,22 +340,22 @@ public class DraculaBase {
 
     public void armToLow() {
         arm.setTargetPosition(armJustAboveFirstLine);
-//        while (arm.isBusy()) {
-//        }
+        while (arm.isBusy()) {
+        }
         tilt.setPosition(tiltToRelease);
     }
 
     public void armToMid() {
         arm.setTargetPosition(armJustAboveSecondLine);
-//        while (arm.isBusy()) {
-//        }
+        while (arm.isBusy()) {
+        }
         tilt.setPosition(tiltToRelease);
     }
 
     public void armToTop() {
         arm.setTargetPosition(armJustAboveThirdLine);
-//        while (arm.isBusy()) {
-//        }
+        while (arm.isBusy()) {
+        }
         tilt.setPosition(tiltToRelease);
     }
 

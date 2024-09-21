@@ -352,14 +352,14 @@ public class TeleopBlueLeague extends LinearOpMode {
                 //driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
                 if(driveBase.armNewTargetPosition<driveBase.armLowered){driveBase.armNewTargetPosition=driveBase.armLowered;}
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //while(driveBase.arm.isBusy()){}
+                while(driveBase.arm.isBusy()){}
                 sleep(50);
 
             } else if (gamepad2.left_bumper || gamepad1.left_bumper) {
                 driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() +driveBase.armIncrement;
                 if(driveBase.armNewTargetPosition > driveBase.armup ){driveBase.armNewTargetPosition =driveBase.armup;}
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //while(driveBase.arm.isBusy()){}
+                while(driveBase.arm.isBusy()){}
                 sleep(50);
             }
             if ((gamepad2.right_trigger > .1) || (gamepad1.right_trigger > .1))   {
