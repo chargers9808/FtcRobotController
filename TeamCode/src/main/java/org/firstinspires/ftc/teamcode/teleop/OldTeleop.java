@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.DraculaBase;
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
 
 @TeleOp(group = "Linear Opmode")
+@Disabled
 public class OldTeleop extends IntoTheDeepBase {
 
     DraculaBase driveBase = new DraculaBase();
@@ -54,12 +56,18 @@ public class OldTeleop extends IntoTheDeepBase {
 */
 
     @Override
+    protected void run_9808() {
+
+    }
+
+    @Override
     public void runOpMode() {
         initialize();
         teleOpMode();
     }
 
-    private void initialize() {
+    @Override
+     public void initialize() {
         driveBase.init(hardwareMap, this);// initialize hardware
         driveBase.setSolidBlueLED();
         driveBase.arm.setPower(.8);

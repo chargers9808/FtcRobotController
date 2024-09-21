@@ -1,17 +1,48 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
 
 abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
-    protected void autoPreInit() {
+    //TODO: Defile init operations
+    /*
+    ============================================================================================
+    Init Controls:
+        A:                      enableDiagnosticMode()
+
+
+    ============================================================================================
+     */
+
+
+    protected void preInit() {
 
     }
 
-    protected void autoInit() {
+    protected void initialize() {
         driveBase.setLED( getPosition().getStaticColor() );
     }
 
-    protected void autoRun() {
+    /**
+     * Run AUTO opmode
+     */
+    protected void run_9808() {
+        if( opModeIsActive() ) {
+            displayDiagnostics();
+            // Call the run code for the specific opmode
+            finish();
+        }
+    }
 
+    /**
+     * Finalize AUTO phase in prep for Teleop
+     */
+    private void finish() {
+        HeadingHolder.setHeading(driveBase.getFieldHeading());
+        setLEDHeartbeat();
+        telemetry.addData("Path", "Complete");
+
+        telemetry.update();
+        while (opModeIsActive());
     }
 }

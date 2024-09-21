@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
 
+@TeleOp(group = "Linear Opmode")
 public class IntoTheDeepTeleop extends IntoTheDeepBase {
-
     //TODO: Defile controller operations
     /*
     ============================================================================================
@@ -28,13 +30,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
     double lastSavedAngle = HeadingHolder.getHeading();
     boolean fieldCentric = true;
 
-    @Override
-    public void runOpMode() {
-        initialize();
-        teleOpMode();
-    }
-
-    private void initialize() {
+    protected void initialize() {
         driveBase.init(hardwareMap, this);// initialize hardware
         driveBase.setSolidBlueLED();
         driveBase.arm.setPower(.8);
@@ -77,22 +73,48 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         }
     }
 
+    @Override
+    protected void run_9808() {
+        while (opModeIsActive()) {
+            teleOpMode();
+        }
+    }
+
     private void teleOpMode() {
         driveBase.runtime.reset();
         driveBase.setBlueHeartbeatLED();
 
         while (opModeIsActive()) {
             //Example code
-            if(gamepad1.a){
+            if (gamepad1.a) {
                 sweeperInOn();
                 sleep(200);
                 sweeperInOff();
             }
-            if(gamepad1.b){
+            if (gamepad1.b) {
                 sweeperOutOn();
                 sleep(200);
                 sweeperOutOff();
             }
+        }
+    }
+
+    public void verticalArmMovement() {
+        if (gamepad2.left_trigger > .1 || gamepad1.left_trigger > .1) {
+            driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() - driveBase.armIncrement;
+            //driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
+            if (driveBase.armNewTargetPosition < driveBase.armLowered) {
+                driveBase.armNewTargetPosition = driveBase.armLowered;
+            }
+            driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+            sleep(50);
+        } else if (gamepad2.left_bumper || gamepad1.left_bumper) {
+            driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() + driveBase.armIncrement;
+            if (driveBase.armNewTargetPosition > driveBase.armup) {
+                driveBase.armNewTargetPosition = driveBase.armup;
+            }
+            driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+            sleep(50);
         }
     }
 }
