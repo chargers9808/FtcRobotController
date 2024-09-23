@@ -114,6 +114,8 @@ public class DraculaBase {
         blinkinLedDriver = callingOpMode.hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         pattern = RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE;
         blinkinLedDriver.setPattern(pattern);
+
+        gyroTurn(0.1, 260);
     }
 
     private HardwareMap getHardwareMap() {
@@ -414,15 +416,16 @@ public class DraculaBase {
 
     public double getFieldHeading() {
         // this method returns the field heading of the robot
+        double theta = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
-//        if (theta < 0) {
-//            theta = theta + 360.;
-//        }
-//        if (theta > 360) {
-//            theta = theta - 360.;
-//        }
+        if (theta < 0) {
+            theta = theta + 360.;
+        }
+        if (theta > 360) {
+            theta = theta - 360.;
+        }
 
-        return (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) + 360) % 360;
+        return theta;
     }
 
     public void DriveSideways(double speed, double distance) {
