@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.gobilda.GoBildaPinpointDriver;
 
 public class DraculaBase {
@@ -415,16 +416,20 @@ public class DraculaBase {
 
 
     public double getFieldHeading() {
-        // this method returns the field heading of the robot
-        double theta = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        double theta;// this method returns the field heading of the robot
+
+        //  this gets all the imu parameters... the "heading" is the "firstAngle + initialFieldHeading"
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        //theta = orientation.getYaw(AngleUnit.DEGREES) + HeadingHolder.getHeading();  // initialized with the saved heading
+        theta = orientation.getYaw(AngleUnit.DEGREES);  // initialized with the saved heading
 
         if (theta < 0) {
             theta = theta + 360.;
         }
         if (theta > 360) {
             theta = theta - 360.;
-        }
-
+        } // correct for the "wrap around" of this angle
+        // this makes the angle 0-360 CCW same as the field angle, instead of 0-180 and then -180 to 0  (going CCW)
         return theta;
     }
 
