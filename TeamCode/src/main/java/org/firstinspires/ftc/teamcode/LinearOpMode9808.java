@@ -36,6 +36,7 @@ public abstract class LinearOpMode9808 extends LinearOpMode {
      * Set the LEDs to a heartbeat color for this alliance
      */
     protected void setLEDHeartbeat() {
-        driveBase.setLED(getHeartbeatColor());
+
+        //driveBase.setLED(getHeartbeatColor());
     }
 }

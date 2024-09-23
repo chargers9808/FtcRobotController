@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
 
-@TeleOp(group = "Linear Opmode")
+@TeleOp(name = "Teleop", group = "Linear Opmode")
 public class IntoTheDeepTeleop extends IntoTheDeepBase {
     //TODO: Defile controller operations
     /*
