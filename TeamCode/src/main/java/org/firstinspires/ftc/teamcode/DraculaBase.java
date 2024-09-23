@@ -160,7 +160,7 @@ public class DraculaBase {
         frontLeft = initMotor(getDcMotor("fl"), DcMotor.Direction.REVERSE, 0.0);
         frontRight = initMotor(getDcMotor("fr"), DcMotor.Direction.FORWARD, 0.0);
         backLeft = initMotor(getDcMotor("bl"), DcMotor.Direction.REVERSE, 0.0);
-        backRight = initMotor(getDcMotor("br"), DcMotor.Direction.REVERSE, 0.0);
+        backRight = initMotor(getDcMotor("br"), DcMotor.Direction.FORWARD, 0.0);
         arm = initMotor(getDcMotor("arm"), DcMotorSimple.Direction.REVERSE, 0.6, 0);
         lift = initMotor(getDcMotor("lift"), DcMotorSimple.Direction.FORWARD, 0.8, 0);
     }
