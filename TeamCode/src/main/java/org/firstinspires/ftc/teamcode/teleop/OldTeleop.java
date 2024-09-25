@@ -71,7 +71,7 @@ public class OldTeleop extends IntoTheDeepBase {
         driveBase.init(hardwareMap, this);// initialize hardware
         driveBase.setSolidBlueLED();
         driveBase.arm.setPower(.8);
-        driveBase.lift.setPower(.8);
+        driveBase.slide.setPower(.8);
         driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
         driveBase.liftRelease.setPosition(driveBase.liftReleaseClosed);
         driveBase.holder.setPosition(driveBase.holderClosed);
@@ -201,30 +201,30 @@ public class OldTeleop extends IntoTheDeepBase {
     private void gripperAndArmDown() {
         if (gamepad2.y && !gamepad2.right_bumper) {
 
-            driveBase.lift.setPower(.8);
+            driveBase.slide.setPower(.8);
             driveBase.liftRelease.setPosition(driveBase.liftReleaseOpen);
-            driveBase.lift.setTargetPosition(driveBase.liftUp + 1400);
+            driveBase.slide.setTargetPosition(driveBase.liftUp + 1400);
 
             int lastPosition = 0;
             int currentPosition = 0;
             int loops = 0;
-            while (driveBase.lift.isBusy()) {
-                currentPosition = driveBase.lift.getCurrentPosition();
+            while (driveBase.slide.isBusy()) {
+                currentPosition = driveBase.slide.getCurrentPosition();
                 if (Math.abs(currentPosition - lastPosition) < 2) {
                     loops++;
                 }
                 if (loops > 5) {
-                    driveBase.liftNewTargetPosition = driveBase.lift.getCurrentPosition();
-                    driveBase.lift.setTargetPosition(driveBase.liftNewTargetPosition);
+                    driveBase.liftNewTargetPosition = driveBase.slide.getCurrentPosition();
+                    driveBase.slide.setTargetPosition(driveBase.liftNewTargetPosition);
                     loops = 0;
                 }
                 lastPosition = currentPosition;
             }
         }
         if (gamepad2.a) {
-            driveBase.lift.setPower(.8);
+            driveBase.slide.setPower(.8);
 
-            driveBase.lift.setTargetPosition(5);
+            driveBase.slide.setTargetPosition(5);
         }
         if (gamepad1.a) {
             sleep(200);

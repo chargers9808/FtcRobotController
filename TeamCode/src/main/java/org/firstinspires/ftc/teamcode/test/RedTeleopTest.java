@@ -94,7 +94,7 @@ public class RedTeleopTest extends LinearOpMode {
 
         driveBase.setRedHeartbeatLED();
         driveBase.arm.setPower(.8);
-        driveBase.lift.setPower(.8);
+        driveBase.slide.setPower(.8);
 
         driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
         driveBase.liftRelease.setPosition(driveBase.liftReleaseClosed);
@@ -261,13 +261,13 @@ public class RedTeleopTest extends LinearOpMode {
 
             // if (gamepad2.y && (driveBase.runtime.seconds()>90)) {
             if (gamepad2.y) {
-                driveBase.lift.setPower(.8);
+                driveBase.slide.setPower(.8);
                 driveBase.liftRelease.setPosition(driveBase.liftReleaseOpen);
-                driveBase.lift.setTargetPosition(driveBase.liftUp+1400);
+                driveBase.slide.setTargetPosition(driveBase.liftUp+1400);
             }
             if (gamepad2.a) {
-                driveBase.lift.setPower(.8);
-                driveBase.lift.setTargetPosition(5);
+                driveBase.slide.setPower(.8);
+                driveBase.slide.setTargetPosition(5);
             }
             if (gamepad1.a) {
                 sleep(500);
@@ -357,7 +357,7 @@ public class RedTeleopTest extends LinearOpMode {
                 telemetry.addData("Left Rear      : ", driveBase.backLeft.getCurrentPosition());
                 telemetry.addData("Right Rear     : ", driveBase.backRight.getCurrentPosition());
                 telemetry.addData("arm motor      : ", driveBase.arm.getCurrentPosition());
-                telemetry.addData("lift motor     : ", driveBase.lift.getCurrentPosition());
+                telemetry.addData("slide motor     : ", driveBase.slide.getCurrentPosition());
                 telemetry.addData("tiltServo      : ",(driveBase.tiltPosition));
                 telemetry.addData("gripServo      : ",(driveBase.gripPosition));
                 telemetry.addData("right Distance : ",(driveBase.rightDistanceToWall()));

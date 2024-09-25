@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.gobilda.GoBildaPinpointDriver;
 
 public class DraculaBase {
     //region hardware devices
-    public DcMotor frontLeft, frontRight, backLeft, backRight, arm, lift;
+    public DcMotor frontLeft, frontRight, backLeft, backRight, arm, slide;
     public Servo grip, tilt, liftRelease, droneRelease, holder;
     public DistanceSensor revRangeLeft, revRangeRight, revRangeLeftFront, revRangeRightFront;
     public RevBlinkinLedDriver blinkinLedDriver;
@@ -106,8 +106,8 @@ public class DraculaBase {
 
         RevHubOrientationOnRobot orientationOnRobot =
                 new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
-                        RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
+                        RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
+                        RevHubOrientationOnRobot.UsbFacingDirection.UP
                 );
 
         imu.initialize(new IMU.Parameters(orientationOnRobot));
@@ -164,8 +164,9 @@ public class DraculaBase {
         frontRight = initMotor(getDcMotor("fr"), DcMotor.Direction.FORWARD, 0.0);
         backLeft = initMotor(getDcMotor("bl"), DcMotor.Direction.REVERSE, 0.0);
         backRight = initMotor(getDcMotor("br"), DcMotor.Direction.FORWARD, 0.0);
+
         arm = initMotor(getDcMotor("arm"), DcMotorSimple.Direction.REVERSE, 0.6, 0);
-        lift = initMotor(getDcMotor("lift"), DcMotorSimple.Direction.FORWARD, 0.8, 0);
+        slide = initMotor(getDcMotor("slide"), DcMotorSimple.Direction.FORWARD, 0.8, 0);
     }
 
     private DcMotor initMotor(DcMotor dcMotor, DcMotorSimple.Direction direction, double power) {

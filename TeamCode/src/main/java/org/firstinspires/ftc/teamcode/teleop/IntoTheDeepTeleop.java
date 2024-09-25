@@ -33,8 +33,8 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
     protected void initialize() {
         driveBase.init(hardwareMap, this);// initialize hardware
         driveBase.setSolidBlueLED();
-        driveBase.arm.setPower(.8);
-        driveBase.lift.setPower(.8);
+        driveBase.arm.setPower(0.0);
+        driveBase.slide.setPower(0.0);
         driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
         driveBase.liftRelease.setPosition(driveBase.liftReleaseClosed);
         driveBase.holder.setPosition(driveBase.holderClosed);
