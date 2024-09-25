@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
 
 @TeleOp(name = "OldTeleop (Recatored)", group = "Linear Opmode")
-//@Disabled
+@Disabled
 public class OldTeleop extends IntoTheDeepBase {
 
     DraculaBase driveBase = new DraculaBase();

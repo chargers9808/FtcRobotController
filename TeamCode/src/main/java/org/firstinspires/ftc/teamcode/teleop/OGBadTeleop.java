@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -8,7 +9,7 @@ import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
 
-@TeleOp(name = "OG Teleop", group = "Linear Opmode")
+@TeleOp(name = "Old Teleop", group = "Linear Opmode")
 //@Disabled
 public class OGBadTeleop extends LinearOpMode {
 
@@ -84,9 +85,9 @@ public class OGBadTeleop extends LinearOpMode {
         driveBase.arm.setPower(0.0);
         driveBase.slide.setPower(0.0);
 
-        driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
-        driveBase.liftRelease.setPosition(driveBase.liftReleaseClosed);
-        driveBase.holder.setPosition(driveBase.holderClosed);
+        //driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
+        //driveBase.liftRelease.setPosition(driveBase.liftReleaseClosed);
+        //driveBase.holder.setPosition(driveBase.holderClosed);
 
 
 // -------------------------now waiting at the end of the init() -----
@@ -329,12 +330,12 @@ public class OGBadTeleop extends LinearOpMode {
 
             if ((gamepad1.left_trigger > .1)) {
                 driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() - driveBase.armIncrement;
-                //driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
+                driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
                 if (driveBase.armNewTargetPosition < driveBase.armLowered) {
                     driveBase.armNewTargetPosition = driveBase.armLowered;
                 }
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //while(driveBase.arm.isBusy()){}
+                while(driveBase.arm.isBusy()){}
                 sleep(50);
             }
             else if (gamepad1.left_bumper) {
@@ -343,7 +344,7 @@ public class OGBadTeleop extends LinearOpMode {
                     driveBase.armNewTargetPosition = driveBase.armup;
                 }
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //while(driveBase.arm.isBusy()){}
+                while(driveBase.arm.isBusy()){}
                 sleep(50);
             }
             if ((gamepad2.left_trigger > .1))   {

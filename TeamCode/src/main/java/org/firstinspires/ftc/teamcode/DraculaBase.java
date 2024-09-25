@@ -99,8 +99,8 @@ public class DraculaBase {
         callingOpMode = _callingOpMode;
 
         initAllMotors();
-        setAllServos();
-        setAllDistanceSensors();
+        //setAllServos();
+        //setAllDistanceSensors();
 
         imu = getHardwareMap().get(IMU.class, "imu");
 
@@ -116,11 +116,11 @@ public class DraculaBase {
         pattern = RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE;
         blinkinLedDriver.setPattern(pattern);
 
-        gyroTurn(0.1, 260);
+        //gyroTurn(0.1, 260);
     }
 
     private HardwareMap getHardwareMap() {
-        return callingOpMode.hardwareMap;
+        return hardwareMap;
     }
 
     private void setAllDistanceSensors(){
