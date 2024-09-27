@@ -86,6 +86,9 @@ public class DraculaBase {
     public int armup = 2200;
     public int armPickingPosition = 150;
     public int armNewTargetPosition = 20;
+
+    public int armForwardLimit = 40;
+    public int armBackLimit = 60;
 // --------------  Java, Logic, object oriented...
 
     OpMode callingOpMode;
@@ -165,7 +168,7 @@ public class DraculaBase {
         backLeft = initMotor(getDcMotor("bl"), DcMotor.Direction.REVERSE, 0.0);
         backRight = initMotor(getDcMotor("br"), DcMotor.Direction.FORWARD, 0.0);
 
-        arm = initMotor(getDcMotor("arm"), DcMotorSimple.Direction.REVERSE, 0.6, 0);
+        arm = initMotor(getDcMotor("arm"), DcMotorSimple.Direction.FORWARD, 0.6, 0);
         slide = initMotor(getDcMotor("slide"), DcMotorSimple.Direction.FORWARD, 0.8, 0);
     }
 

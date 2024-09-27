@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
@@ -82,7 +83,7 @@ public class OGBadTeleop extends LinearOpMode {
         //driveBase.initImu2(hardwareMap,this);// initialize hardware
 
         driveBase.setSolidRedLED();
-        driveBase.arm.setPower(0.0);
+        driveBase.arm.setPower(0.1);
         driveBase.slide.setPower(0.0);
 
         //driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
@@ -248,139 +249,167 @@ public class OGBadTeleop extends LinearOpMode {
 //================= put gripper in carry position   button y
 
 
-
-//================= gripper and arm down to collect/release the grip -- button a
-
-            // if (gamepad2.y && (driveBase.runtime.seconds()>90)) {
-            if (gamepad2.y) {
-
-                driveBase.slide.setPower(0.0);
-                driveBase.liftRelease.setPosition(driveBase.liftReleaseOpen);
-                //driveBase.slide.setTargetPosition(driveBase.liftUp+1400);
-            }
-            if (gamepad2.a) {
-                driveBase.slide.setPower(.8);
-                driveBase.slide.setTargetPosition(5);
-            }
-            if (gamepad1.a) {
-                sleep(100);
-                driveBase.pickUpPixel();
-            }
-
-            //if (gamepad2.b && (driveBase.runtime.seconds()>90)) {
-            if (gamepad2.b) {
-                driveBase.gyroTurn(.6,85);
-                driveBase.holder.setPosition(driveBase.holderOpen);
-                sleep(500);
-                driveBase.droneRelease.setPosition(driveBase.droneReleaseOpen);
-            }
-
-//================= Raise arm to deliver pixel into lower zone on backdrop
-//          + orient perpendicular to the backdrop, at the delivery distance.
-
-            if (gamepad1.b && !gamepad1.right_bumper) {
-                driveBase.gyroTurn(.5,-90);
-                distanceFromBackDrop=driveBase.frontDistance();// prepare to drive back
-                if(distanceFromBackDrop<35)
-                {
-                    driveBase.tankDrive(.3,distanceFromBackDrop-10);
-                    driveBase.gyroTurn(.5,-90);
-                    driveBase.armToLow();
-                    driveBase.tilt.setPosition(driveBase.tiltToRelease);
-                }
-            }
-
-            if (gamepad1.y && !gamepad1.right_bumper) {
-                driveBase.gyroTurn(.5,-90);
-                distanceFromBackDrop=driveBase.frontDistance();// prepare to drive back
-                if(distanceFromBackDrop<35)
-                {
-                    driveBase.tankDrive(.3,distanceFromBackDrop-10);
-                    driveBase.gyroTurn(.5,-90);
-
-                    driveBase.armToMid();
-                    driveBase.tilt.setPosition(driveBase.tiltToRelease);
-                }
-            }
-
-            if (gamepad1.y && gamepad1.right_bumper) {
-                driveBase.gyroTurn(.5,90);
-                distanceFromBackDrop=driveBase.frontDistance();// prepare to drive back
-                if(distanceFromBackDrop<35)
-                {
-                    driveBase.tankDrive(.3,distanceFromBackDrop-10);
-                    driveBase.gyroTurn(.5,-90);
-
-                    driveBase.armToTop();
-                    driveBase.tilt.setPosition(driveBase.tiltToRelease);
-                }
-            }
-
-//================= lower and retract the arm after delivering pixels -- back button
-
-            if (gamepad1.back|| gamepad2.back){
-                driveBase.tilt.setPosition(driveBase.tiltToCarry);
-                sleep(300);
-                driveBase.armNewTargetPosition= driveBase.armLowered;
-                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                driveBase.grip.setPosition(driveBase.gripClosed);
-            }
-
-// ----->>> Use the left bumper and right trigger to raise/lower the arm
-
-            if (gamepad2.left_trigger > 0.1) {
-                driveBase.arm.setTargetPosition(30);
-            }
-
-//            if ((gamepad1.left_trigger > .1)) {
-//                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() - driveBase.armIncrement;
-//                driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
-//                if (driveBase.armNewTargetPosition < driveBase.armLowered) {
-//                    driveBase.armNewTargetPosition = driveBase.armLowered;
+//
+////================= gripper and arm down to collect/release the grip -- button a
+//
+//            // if (gamepad2.y && (driveBase.runtime.seconds()>90)) {
+//            if (gamepad2.y) {
+//
+//                driveBase.slide.setPower(0.0);
+//                driveBase.liftRelease.setPosition(driveBase.liftReleaseOpen);
+//                //driveBase.slide.setTargetPosition(driveBase.liftUp+1400);
+//            }
+//            if (gamepad2.a) {
+//                driveBase.slide.setPower(.8);
+//                driveBase.slide.setTargetPosition(5);
+//            }
+//            if (gamepad1.a) {
+//                sleep(100);
+//                driveBase.pickUpPixel();
+//            }
+//
+//            //if (gamepad2.b && (driveBase.runtime.seconds()>90)) {
+//            if (gamepad2.b) {
+//                driveBase.gyroTurn(.6,85);
+//                driveBase.holder.setPosition(driveBase.holderOpen);
+//                sleep(500);
+//                driveBase.droneRelease.setPosition(driveBase.droneReleaseOpen);
+//            }
+//
+////================= Raise arm to deliver pixel into lower zone on backdrop
+////          + orient perpendicular to the backdrop, at the delivery distance.
+//
+//            if (gamepad1.b && !gamepad1.right_bumper) {
+//                driveBase.gyroTurn(.5,-90);
+//                distanceFromBackDrop=driveBase.frontDistance();// prepare to drive back
+//                if(distanceFromBackDrop<35)
+//                {
+//                    driveBase.tankDrive(.3,distanceFromBackDrop-10);
+//                    driveBase.gyroTurn(.5,-90);
+//                    driveBase.armToLow();
+//                    driveBase.tilt.setPosition(driveBase.tiltToRelease);
 //                }
-//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-//                while(driveBase.arm.isBusy()){}
-//                sleep(50);
 //            }
-//            else if (gamepad1.left_bumper) {
-//                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() + driveBase.armIncrement;
-//                if (driveBase.armNewTargetPosition > driveBase.armup) {
-//                    driveBase.armNewTargetPosition = driveBase.armup;
+//
+//            if (gamepad1.y && !gamepad1.right_bumper) {
+//                driveBase.gyroTurn(.5,-90);
+//                distanceFromBackDrop=driveBase.frontDistance();// prepare to drive back
+//                if(distanceFromBackDrop<35)
+//                {
+//                    driveBase.tankDrive(.3,distanceFromBackDrop-10);
+//                    driveBase.gyroTurn(.5,-90);
+//
+//                    driveBase.armToMid();
+//                    driveBase.tilt.setPosition(driveBase.tiltToRelease);
 //                }
-//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-//                while(driveBase.arm.isBusy()){}
-//                sleep(50);
 //            }
-//            if ((gamepad2.left_trigger > .1))   {
-//                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() -driveBase.armIncrement;
-//                //driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
-//                //if(driveBase.armNewTargetPosition<driveBase.armLowered){driveBase.armNewTargetPosition=driveBase.armLowered;}
-//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-//                //while(driveBase.arm.isBusy()){}
-//                sleep(50);
-//            } else if (gamepad2.left_bumper) {
-//                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() +driveBase.armIncrement;
-//                //if(driveBase.armNewTargetPosition > driveBase.armup ){driveBase.armNewTargetPosition =driveBase.armup;}
-//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-//                //while(driveBase.arm.isBusy()){}
-//                sleep(50);
+//
+//            if (gamepad1.y && gamepad1.right_bumper) {
+//                driveBase.gyroTurn(.5,90);
+//                distanceFromBackDrop=driveBase.frontDistance();// prepare to drive back
+//                if(distanceFromBackDrop<35)
+//                {
+//                    driveBase.tankDrive(.3,distanceFromBackDrop-10);
+//                    driveBase.gyroTurn(.5,-90);
+//
+//                    driveBase.armToTop();
+//                    driveBase.tilt.setPosition(driveBase.tiltToRelease);
+//                }
 //            }
-            if ((gamepad2.right_trigger > .1) || (gamepad1.right_trigger > .1))   {
-                driveBase.grip.setPosition(driveBase.gripClosed);
-                sleep(200);
+//
+////================= lower and retract the arm after delivering pixels -- back button
+//
+//            if (gamepad1.back|| gamepad2.back){
+//                driveBase.tilt.setPosition(driveBase.tiltToCarry);
+//                sleep(300);
+//                driveBase.armNewTargetPosition= driveBase.armLowered;
+//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+//                driveBase.grip.setPosition(driveBase.gripClosed);
+//            }
+//
+//// ----->>> Use the left bumper and right trigger to raise/lower the arm
+//
+//            if (gamepad2.left_trigger > 0.1) {
+//                driveBase.arm.setTargetPosition(30);
+//            }
+//
+////            if ((gamepad1.left_trigger > .1)) {
+////                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() - driveBase.armIncrement;
+////                driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
+////                if (driveBase.armNewTargetPosition < driveBase.armLowered) {
+////                    driveBase.armNewTargetPosition = driveBase.armLowered;
+////                }
+////                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+////                while(driveBase.arm.isBusy()){}
+////                sleep(50);
+////            }
+////            else if (gamepad1.left_bumper) {
+////                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() + driveBase.armIncrement;
+////                if (driveBase.armNewTargetPosition > driveBase.armup) {
+////                    driveBase.armNewTargetPosition = driveBase.armup;
+////                }
+////                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+////                while(driveBase.arm.isBusy()){}
+////                sleep(50);
+////            }
+////            if ((gamepad2.left_trigger > .1))   {
+////                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() -driveBase.armIncrement;
+////                //driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
+////                //if(driveBase.armNewTargetPosition<driveBase.armLowered){driveBase.armNewTargetPosition=driveBase.armLowered;}
+////                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+////                //while(driveBase.arm.isBusy()){}
+////                sleep(50);
+////            } else if (gamepad2.left_bumper) {
+////                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() +driveBase.armIncrement;
+////                //if(driveBase.armNewTargetPosition > driveBase.armup ){driveBase.armNewTargetPosition =driveBase.armup;}
+////                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+////                //while(driveBase.arm.isBusy()){}
+////                sleep(50);
+////            }
+//            if ((gamepad2.right_trigger > .1) || (gamepad1.right_trigger > .1))   {
+//                driveBase.grip.setPosition(driveBase.gripClosed);
+//                sleep(200);
+//            }
+//            if (gamepad1.x)  {
+//                driveBase.grip.setPosition(driveBase.gripOpened);
+//                sleep(200);
+//            }
+//
+//// ----->>> display parameters in diagnostic mode
+//
+//            if(driveBase.runtime.seconds()>90){driveBase.setSolidGoldLED();}
+//            telemetry.addData("run-time : ",(driveBase.runtime.seconds()));
+//
+//            ---------------- arm movement ---------------------
+            if (gamepad1.left_trigger > 0.1){
+                driveBase.arm.setTargetPosition(700);
             }
-            if (gamepad1.x)  {
-                driveBase.grip.setPosition(driveBase.gripOpened);
-                sleep(200);
+            if (gamepad1.left_bumper)
+            {
+                driveBase.arm.setTargetPosition(-900);
+            }
+            if (gamepad1.right_bumper)
+            {
+                driveBase.arm.setTargetPosition(0);
+            }
+            if (gamepad1.right_trigger > 0.1)
+            {
+                driveBase.arm.setTargetPosition(1500);
             }
 
-// ----->>> display parameters in diagnostic mode
+            // ----------------------- Slide Movement ---------------------------
+            if (gamepad2.left_trigger > 0.1)
+            {
+                driveBase.slide.setTargetPosition(100);
+            }
+            if (gamepad2.left_bumper){
+                driveBase.slide.setTargetPosition(1000);
+            }
 
-            if(driveBase.runtime.seconds()>90){driveBase.setSolidGoldLED();}
-            telemetry.addData("run-time : ",(driveBase.runtime.seconds()));
 
 
 
+            //--------------------- Diagnostics -------------------------------
             if (diagnosticMode) {
                 telemetry.addData("Left Front     : ", driveBase.frontLeft.getCurrentPosition());
                 telemetry.addData("Right Front    : ", driveBase.frontRight.getCurrentPosition());
