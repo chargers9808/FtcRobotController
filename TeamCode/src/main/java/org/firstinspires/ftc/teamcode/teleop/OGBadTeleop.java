@@ -381,21 +381,16 @@ public class OGBadTeleop extends LinearOpMode {
 //            telemetry.addData("run-time : ",(driveBase.runtime.seconds()));
 //
 //            ---------------- arm movement ---------------------
-            if (gamepad1.left_trigger > 0.1){
+            if (gamepad1.right_trigger > 0.1) {
+                driveBase.slide.setPower(0.5);
                 driveBase.arm.setTargetPosition(700);
-            }
-            if (gamepad1.left_bumper)
-            {
-                driveBase.arm.setTargetPosition(-900);
             }
             if (gamepad1.right_bumper)
             {
-                driveBase.arm.setTargetPosition(0);
+                driveBase.slide.setPower(0.5);
+                driveBase.arm.setTargetPosition(-900);
             }
-            if (gamepad1.right_trigger > 0.1)
-            {
-                driveBase.arm.setTargetPosition(1500);
-            }
+
 
             // ----------------------- Slide Movement ---------------------------
             if (gamepad2.left_trigger > 0.1)
@@ -403,7 +398,13 @@ public class OGBadTeleop extends LinearOpMode {
                 driveBase.slide.setTargetPosition(100);
             }
             if (gamepad2.left_bumper){
-                driveBase.slide.setTargetPosition(1000);
+                //driveBase.slide.setTargetPosition(1000);
+
+                driveBase.slide.setPower(0.5);
+
+                // Setup positions
+                //driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
+                driveBase.slide.setTargetPosition(-1500);
             }
 
 
