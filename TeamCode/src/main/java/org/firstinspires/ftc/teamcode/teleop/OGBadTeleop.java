@@ -328,39 +328,43 @@ public class OGBadTeleop extends LinearOpMode {
 
 // ----->>> Use the left bumper and right trigger to raise/lower the arm
 
-            if ((gamepad1.left_trigger > .1)) {
-                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() - driveBase.armIncrement;
-                driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
-                if (driveBase.armNewTargetPosition < driveBase.armLowered) {
-                    driveBase.armNewTargetPosition = driveBase.armLowered;
-                }
-                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                while(driveBase.arm.isBusy()){}
-                sleep(50);
+            if (gamepad2.left_trigger > 0.1) {
+                driveBase.arm.setTargetPosition(30);
             }
-            else if (gamepad1.left_bumper) {
-                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() + driveBase.armIncrement;
-                if (driveBase.armNewTargetPosition > driveBase.armup) {
-                    driveBase.armNewTargetPosition = driveBase.armup;
-                }
-                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                while(driveBase.arm.isBusy()){}
-                sleep(50);
-            }
-            if ((gamepad2.left_trigger > .1))   {
-                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() -driveBase.armIncrement;
-                //driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
-                //if(driveBase.armNewTargetPosition<driveBase.armLowered){driveBase.armNewTargetPosition=driveBase.armLowered;}
-                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //while(driveBase.arm.isBusy()){}
-                sleep(50);
-            } else if (gamepad2.left_bumper) {
-                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() +driveBase.armIncrement;
-                //if(driveBase.armNewTargetPosition > driveBase.armup ){driveBase.armNewTargetPosition =driveBase.armup;}
-                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //while(driveBase.arm.isBusy()){}
-                sleep(50);
-            }
+
+//            if ((gamepad1.left_trigger > .1)) {
+//                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() - driveBase.armIncrement;
+//                driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
+//                if (driveBase.armNewTargetPosition < driveBase.armLowered) {
+//                    driveBase.armNewTargetPosition = driveBase.armLowered;
+//                }
+//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+//                while(driveBase.arm.isBusy()){}
+//                sleep(50);
+//            }
+//            else if (gamepad1.left_bumper) {
+//                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() + driveBase.armIncrement;
+//                if (driveBase.armNewTargetPosition > driveBase.armup) {
+//                    driveBase.armNewTargetPosition = driveBase.armup;
+//                }
+//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+//                while(driveBase.arm.isBusy()){}
+//                sleep(50);
+//            }
+//            if ((gamepad2.left_trigger > .1))   {
+//                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() -driveBase.armIncrement;
+//                //driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
+//                //if(driveBase.armNewTargetPosition<driveBase.armLowered){driveBase.armNewTargetPosition=driveBase.armLowered;}
+//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+//                //while(driveBase.arm.isBusy()){}
+//                sleep(50);
+//            } else if (gamepad2.left_bumper) {
+//                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() +driveBase.armIncrement;
+//                //if(driveBase.armNewTargetPosition > driveBase.armup ){driveBase.armNewTargetPosition =driveBase.armup;}
+//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+//                //while(driveBase.arm.isBusy()){}
+//                sleep(50);
+//            }
             if ((gamepad2.right_trigger > .1) || (gamepad1.right_trigger > .1))   {
                 driveBase.grip.setPosition(driveBase.gripClosed);
                 sleep(200);
@@ -372,23 +376,28 @@ public class OGBadTeleop extends LinearOpMode {
 
 // ----->>> display parameters in diagnostic mode
 
+            if(driveBase.runtime.seconds()>90){driveBase.setSolidGoldLED();}
+            telemetry.addData("run-time : ",(driveBase.runtime.seconds()));
+
+
+
             if (diagnosticMode) {
                 telemetry.addData("Left Front     : ", driveBase.frontLeft.getCurrentPosition());
                 telemetry.addData("Right Front    : ", driveBase.frontRight.getCurrentPosition());
                 telemetry.addData("Left Rear      : ", driveBase.backLeft.getCurrentPosition());
                 telemetry.addData("Right Rear     : ", driveBase.backRight.getCurrentPosition());
-                telemetry.addData("arm motor      : ", driveBase.arm.getCurrentPosition());
+                telemetry.addData("arm motor      : ", driveBase.armNewTargetPosition);
                 telemetry.addData("slide motor     : ", driveBase.slide.getCurrentPosition());
-                telemetry.addData("tiltServo      : ",(driveBase.tiltPosition));
-                telemetry.addData("gripServo      : ",(driveBase.gripPosition));
-                telemetry.addData("right Distance : ",(driveBase.rightDistanceToWall()));
-                telemetry.addData("left distance  : ",(driveBase.leftDistanceToWall()));
-                telemetry.addData("front distance : ",(driveBase.frontDistance()));
+//                telemetry.addData("tiltServo      : ",(driveBase.tiltPosition));
+//                telemetry.addData("gripServo      : ",(driveBase.gripPosition));
+//                telemetry.addData("right Distance : ",(driveBase.rightDistanceToWall()));
+//                telemetry.addData("left distance  : ",(driveBase.leftDistanceToWall()));
+//                telemetry.addData("left front distance : ",(driveBase.frontLeftDistance()));
+//                telemetry.addData("right front distance : ",(driveBase.frontRightDistance()));
+
                 telemetry.update();
             }
-            if(driveBase.runtime.seconds()>90){driveBase.setSolidGoldLED();}
-            telemetry.addData("run-time : ",(driveBase.runtime.seconds()));
-
+            //telemetry.addData("run-time : ",(driveBase.runtime.seconds()));
 
 //==================== put everything in motion.. calculate tilt adjustment ==========================
 
