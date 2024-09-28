@@ -1,18 +1,14 @@
 
 package org.firstinspires.ftc.teamcode.teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
-import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
 
-@TeleOp(name = "Old Teleop", group = "Linear Opmode")
-//@Disabled
-public class OGBadTeleop extends LinearOpMode {
+@TeleOp(name = "Teleop", group = "Linear Opmode")
+public class Teleop extends LinearOpMode {
 
 //  Declare OpMode members.
 
@@ -90,9 +86,20 @@ public class OGBadTeleop extends LinearOpMode {
         //driveBase.liftRelease.setPosition(driveBase.liftReleaseClosed);
         //driveBase.holder.setPosition(driveBase.holderClosed);
 
+        //now waiting at the end of the init() -----
+        initiation();
 
-// -------------------------now waiting at the end of the init() -----
+//--------------------------Start of the TeleOp Loop--------------------------------------------
 
+        driveBase.runtime.reset();
+        driveBase.setSolidRedLED();
+
+        opMode();
+
+        //          end of "While Opmode is active"
+    }       //          end of  End of the TeleOp Loop ================================================
+
+    public void  initiation(){
         while (!isStarted()) {
 
             if (gamepad1.a) {
@@ -113,20 +120,21 @@ public class OGBadTeleop extends LinearOpMode {
                 driveBase.setSolidGoldLED();
             }
 
-            telemetry.addLine("Press A button to the enter diagnostic mode");
-            if (diagnosticMode) {
-                telemetry.addLine("OpMode is in diagnostic mode; press PLAY.");
+            if (!diagnosticMode) {
+                telemetry.addLine("Diagnostic Mode (press A to toggle): false");
             }
+            else {
+                telemetry.addLine("Diagnostic Mode (press A to toggle): true (press PLAY to start)");
+            }
+
             telemetry.addData("Gyro initialized to:   ", lastSavedAngle);
             telemetry.addData("heading:   ", driveBase.getFieldHeading());
             telemetry.addLine("Waiting for START....");
             telemetry.update();
         }
+    }
 
-//--------------------------Start of the TeleOp Loop--------------------------------------------
-
-        driveBase.runtime.reset();
-        driveBase.setSolidRedLED();
+    public void opMode(){
 
         while (opModeIsActive()) {
             // get the steering commands from either gamepad #1 or #2
@@ -245,135 +253,6 @@ public class OGBadTeleop extends LinearOpMode {
                     driveBase.tankDrive(.5, driveBase.frontLeftDistance() - 8);
                 }
             }
-
-//================= put gripper in carry position   button y
-
-
-//
-////================= gripper and arm down to collect/release the grip -- button a
-//
-//            // if (gamepad2.y && (driveBase.runtime.seconds()>90)) {
-//            if (gamepad2.y) {
-//
-//                driveBase.slide.setPower(0.0);
-//                driveBase.liftRelease.setPosition(driveBase.liftReleaseOpen);
-//                //driveBase.slide.setTargetPosition(driveBase.liftUp+1400);
-//            }
-//            if (gamepad2.a) {
-//                driveBase.slide.setPower(.8);
-//                driveBase.slide.setTargetPosition(5);
-//            }
-//            if (gamepad1.a) {
-//                sleep(100);
-//                driveBase.pickUpPixel();
-//            }
-//
-//            //if (gamepad2.b && (driveBase.runtime.seconds()>90)) {
-//            if (gamepad2.b) {
-//                driveBase.gyroTurn(.6,85);
-//                driveBase.holder.setPosition(driveBase.holderOpen);
-//                sleep(500);
-//                driveBase.droneRelease.setPosition(driveBase.droneReleaseOpen);
-//            }
-//
-////================= Raise arm to deliver pixel into lower zone on backdrop
-////          + orient perpendicular to the backdrop, at the delivery distance.
-//
-//            if (gamepad1.b && !gamepad1.right_bumper) {
-//                driveBase.gyroTurn(.5,-90);
-//                distanceFromBackDrop=driveBase.frontDistance();// prepare to drive back
-//                if(distanceFromBackDrop<35)
-//                {
-//                    driveBase.tankDrive(.3,distanceFromBackDrop-10);
-//                    driveBase.gyroTurn(.5,-90);
-//                    driveBase.armToLow();
-//                    driveBase.tilt.setPosition(driveBase.tiltToRelease);
-//                }
-//            }
-//
-//            if (gamepad1.y && !gamepad1.right_bumper) {
-//                driveBase.gyroTurn(.5,-90);
-//                distanceFromBackDrop=driveBase.frontDistance();// prepare to drive back
-//                if(distanceFromBackDrop<35)
-//                {
-//                    driveBase.tankDrive(.3,distanceFromBackDrop-10);
-//                    driveBase.gyroTurn(.5,-90);
-//
-//                    driveBase.armToMid();
-//                    driveBase.tilt.setPosition(driveBase.tiltToRelease);
-//                }
-//            }
-//
-//            if (gamepad1.y && gamepad1.right_bumper) {
-//                driveBase.gyroTurn(.5,90);
-//                distanceFromBackDrop=driveBase.frontDistance();// prepare to drive back
-//                if(distanceFromBackDrop<35)
-//                {
-//                    driveBase.tankDrive(.3,distanceFromBackDrop-10);
-//                    driveBase.gyroTurn(.5,-90);
-//
-//                    driveBase.armToTop();
-//                    driveBase.tilt.setPosition(driveBase.tiltToRelease);
-//                }
-//            }
-//
-////================= lower and retract the arm after delivering pixels -- back button
-//
-//            if (gamepad1.back|| gamepad2.back){
-//                driveBase.tilt.setPosition(driveBase.tiltToCarry);
-//                sleep(300);
-//                driveBase.armNewTargetPosition= driveBase.armLowered;
-//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-//                driveBase.grip.setPosition(driveBase.gripClosed);
-//            }
-//
-//// ----->>> Use the left bumper and right trigger to raise/lower the arm
-//
-//            if (gamepad2.left_trigger > 0.1) {
-//                driveBase.arm.setTargetPosition(30);
-//            }
-//
-////            if ((gamepad1.left_trigger > .1)) {
-////                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() - driveBase.armIncrement;
-////                driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
-////                if (driveBase.armNewTargetPosition < driveBase.armLowered) {
-////                    driveBase.armNewTargetPosition = driveBase.armLowered;
-////                }
-////                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-////                while(driveBase.arm.isBusy()){}
-////                sleep(50);
-////            }
-////            else if (gamepad1.left_bumper) {
-////                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() + driveBase.armIncrement;
-////                if (driveBase.armNewTargetPosition > driveBase.armup) {
-////                    driveBase.armNewTargetPosition = driveBase.armup;
-////                }
-////                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-////                while(driveBase.arm.isBusy()){}
-////                sleep(50);
-////            }
-////            if ((gamepad2.left_trigger > .1))   {
-////                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() -driveBase.armIncrement;
-////                //driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
-////                //if(driveBase.armNewTargetPosition<driveBase.armLowered){driveBase.armNewTargetPosition=driveBase.armLowered;}
-////                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-////                //while(driveBase.arm.isBusy()){}
-////                sleep(50);
-////            } else if (gamepad2.left_bumper) {
-////                driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() +driveBase.armIncrement;
-////                //if(driveBase.armNewTargetPosition > driveBase.armup ){driveBase.armNewTargetPosition =driveBase.armup;}
-////                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-////                //while(driveBase.arm.isBusy()){}
-////                sleep(50);
-////            }
-//            if ((gamepad2.right_trigger > .1) || (gamepad1.right_trigger > .1))   {
-//                driveBase.grip.setPosition(driveBase.gripClosed);
-//                sleep(200);
-//            }
-//            if (gamepad1.x)  {
-//                driveBase.grip.setPosition(driveBase.gripOpened);
-//                sleep(200);
-//            }
 //
 //// ----->>> display parameters in diagnostic mode
 //
@@ -433,7 +312,7 @@ public class OGBadTeleop extends LinearOpMode {
 
             driveBase.applyMecPower2(x,y,r);
 
-        }   //          end of "While Opmode is active"
-    }       //          end of  End of the TeleOp Loop ================================================
+        }
+    }
 }
 
