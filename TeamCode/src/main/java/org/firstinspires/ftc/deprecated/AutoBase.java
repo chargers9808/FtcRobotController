@@ -1,5 +1,7 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.deprecated;
 
+import org.firstinspires.ftc.teamcode.HeadingHolder;
+import org.firstinspires.ftc.teamcode.LinearOpMode9808;
 import org.firstinspires.ftc.teamcode.auto.Position;
 
 abstract public class AutoBase extends LinearOpMode9808 {
@@ -51,7 +53,7 @@ abstract public class AutoBase extends LinearOpMode9808 {
      * Finalize AUTO phase in prep for Teleop
      */
     private void finish() {
-        HeadingHolder.setHeading(driveBase.robotFieldHeading());
+        HeadingHolder.setHeading(driveBase.getFieldHeading());
         setLEDHeartbeat();
         telemetry.addData("Path", "Complete");
 

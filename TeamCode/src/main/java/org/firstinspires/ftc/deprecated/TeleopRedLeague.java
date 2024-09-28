@@ -1,8 +1,11 @@
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.deprecated;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.DraculaBase;
+import org.firstinspires.ftc.teamcode.HeadingHolder;
 
 @TeleOp(name = "RED TELEOP", group = "Linear Opmode")
 //@Disabled
@@ -112,7 +115,7 @@ public class TeleopRedLeague extends LinearOpMode {
                 telemetry.addLine("OpMode is in diagnostic mode; press PLAY.");
             }
             telemetry.addData("Gyro initialized to:   ", lastSavedAngle);
-            telemetry.addData("heading:   ", driveBase.robotFieldHeading());
+            telemetry.addData("heading:   ", driveBase.getFieldHeading());
             telemetry.addLine("Waiting for START....");
             telemetry.update();
         }
@@ -139,7 +142,7 @@ public class TeleopRedLeague extends LinearOpMode {
                 r = 0.;
             }
 // get the robot's heading from the IMU:
-            theta = driveBase.robotFieldHeading() * Math.PI / 180.;// convert to 0-2Pi angle
+            theta = driveBase.getFieldHeading() * Math.PI / 180.;// convert to 0-2Pi angle
             if (theta < 0) {
                 theta = theta + 2. * Math.PI;
             }
@@ -330,7 +333,7 @@ public class TeleopRedLeague extends LinearOpMode {
                     driveBase.armNewTargetPosition = driveBase.armLowered;
                 }
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //while(driveBase.arm.isBusy()){}
+                while(driveBase.arm.isBusy()){}
                 sleep(50);
             }
             else if (gamepad1.left_bumper) {
@@ -339,7 +342,7 @@ public class TeleopRedLeague extends LinearOpMode {
                     driveBase.armNewTargetPosition = driveBase.armup;
                 }
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //while(driveBase.arm.isBusy()){}
+                while(driveBase.arm.isBusy()){}
                 sleep(50);
             }
             if ((gamepad2.left_trigger > .1))   {
@@ -347,13 +350,13 @@ public class TeleopRedLeague extends LinearOpMode {
                     //driveBase.armNewTargetPosition -= .8*driveBase.armIncrement;
                     //if(driveBase.armNewTargetPosition<driveBase.armLowered){driveBase.armNewTargetPosition=driveBase.armLowered;}
                     driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                    //while(driveBase.arm.isBusy()){}
+                    while(driveBase.arm.isBusy()){}
                     sleep(50);
             } else if (gamepad2.left_bumper) {
                 driveBase.armNewTargetPosition = driveBase.arm.getCurrentPosition() +driveBase.armIncrement;
                 //if(driveBase.armNewTargetPosition > driveBase.armup ){driveBase.armNewTargetPosition =driveBase.armup;}
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //while(driveBase.arm.isBusy()){}
+                while(driveBase.arm.isBusy()){}
                 sleep(50);
             }
             if ((gamepad2.right_trigger > .1) || (gamepad1.right_trigger > .1))   {
@@ -368,10 +371,10 @@ public class TeleopRedLeague extends LinearOpMode {
 // ----->>> display parameters in diagnostic mode
 
             if (diagnosticMode) {
-                telemetry.addData("Left Front     : ", driveBase.leftFront.getCurrentPosition());
-                telemetry.addData("Right Front    : ", driveBase.rightFront.getCurrentPosition());
-                telemetry.addData("Left Rear      : ", driveBase.leftRear.getCurrentPosition());
-                telemetry.addData("Right Rear     : ", driveBase.rightRear.getCurrentPosition());
+                telemetry.addData("Left Front     : ", driveBase.frontLeft.getCurrentPosition());
+                telemetry.addData("Right Front    : ", driveBase.frontRight.getCurrentPosition());
+                telemetry.addData("Left Rear      : ", driveBase.backLeft.getCurrentPosition());
+                telemetry.addData("Right Rear     : ", driveBase.backRight.getCurrentPosition());
                 telemetry.addData("arm motor      : ", driveBase.arm.getCurrentPosition());
                 telemetry.addData("lift motor     : ", driveBase.lift.getCurrentPosition());
                 telemetry.addData("tiltServo      : ",(driveBase.tiltPosition));

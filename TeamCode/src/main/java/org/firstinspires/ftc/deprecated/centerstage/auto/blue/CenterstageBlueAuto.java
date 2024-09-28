@@ -8,7 +8,7 @@ abstract public class CenterstageBlueAuto extends Auto {
     private final Alliance alliance = new Alliance(Alliance.Color.BLUE);
     protected Alliance getAlliance() { return alliance; }
     protected double distanceToCloseWall() { return driveBase.leftDistanceToWall(); }
-    protected double cameraOffset() { return driveBase.cameraOffset; }
+    protected double cameraOffset() { return driveBase.cameraOffsetFromCenterline; }
 
     protected String getParkString( Selection selection ) {
         String[] selectionStrings = { "Left", "Right", "Invalid"};

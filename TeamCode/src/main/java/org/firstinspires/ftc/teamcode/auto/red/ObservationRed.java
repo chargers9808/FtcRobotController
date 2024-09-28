@@ -1,14 +1,14 @@
-package org.firstinspires.ftc.teamcode.auto.blue;
+package org.firstinspires.ftc.teamcode.auto.red;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.auto.Position;
 
 /**
- * Observation side code for Blue Alliance
+ * Observation side code for Red Alliance
  */
-@Autonomous(name = "Blue Observation", group = "Auto")
-public class Observation extends IntoTheDeepBlueAuto {
+@Autonomous(name = "Red Observation", group = "Auto")
+public class ObservationRed extends IntoTheDeepRedAuto {
     private final Position position = new Position(Position.Location.OBSERVATION);
     protected Position getPosition() { return position; }
 }

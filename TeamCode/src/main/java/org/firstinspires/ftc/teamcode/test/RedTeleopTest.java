@@ -1,10 +1,12 @@
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.DraculaBase;
+import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.VisionBase;
 import org.firstinspires.ftc.vision.VisionPortal;
 
@@ -92,7 +94,7 @@ public class RedTeleopTest extends LinearOpMode {
 
         driveBase.setRedHeartbeatLED();
         driveBase.arm.setPower(.8);
-        driveBase.lift.setPower(.8);
+        driveBase.slide.setPower(.8);
 
         driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
         driveBase.liftRelease.setPosition(driveBase.liftReleaseClosed);
@@ -125,7 +127,7 @@ public class RedTeleopTest extends LinearOpMode {
                 telemetry.addLine("OpMode is in diagnostic mode; press PLAY.");
             }
             telemetry.addData("Gyro initialized to:   ", lastSavedAngle);
-            telemetry.addData("heading:   ", driveBase.robotFieldHeading());
+            telemetry.addData("heading:   ", driveBase.getFieldHeading());
             telemetry.addLine("Waiting for START....");
             telemetry.update();
         }
@@ -152,7 +154,7 @@ public class RedTeleopTest extends LinearOpMode {
                 r = 0.;
             }
 // get the robot's heading from the IMU:
-            theta = driveBase.robotFieldHeading() * Math.PI / 180.;// convert to 0-2Pi angle
+            theta = driveBase.getFieldHeading() * Math.PI / 180.;// convert to 0-2Pi angle
             if (theta < 0) {
                 theta = theta + 2. * Math.PI;
             }
@@ -259,13 +261,13 @@ public class RedTeleopTest extends LinearOpMode {
 
             // if (gamepad2.y && (driveBase.runtime.seconds()>90)) {
             if (gamepad2.y) {
-                driveBase.lift.setPower(.8);
+                driveBase.slide.setPower(.8);
                 driveBase.liftRelease.setPosition(driveBase.liftReleaseOpen);
-                driveBase.lift.setTargetPosition(driveBase.liftUp+1400);
+                driveBase.slide.setTargetPosition(driveBase.liftUp+1400);
             }
             if (gamepad2.a) {
-                driveBase.lift.setPower(.8);
-                driveBase.lift.setTargetPosition(5);
+                driveBase.slide.setPower(.8);
+                driveBase.slide.setTargetPosition(5);
             }
             if (gamepad1.a) {
                 sleep(500);
@@ -332,14 +334,14 @@ public class RedTeleopTest extends LinearOpMode {
                 {driveBase.armNewTargetPosition -= driveBase.armIncrement;}
                 if(driveBase.armNewTargetPosition<driveBase.armLowered){driveBase.armNewTargetPosition=driveBase.armLowered;}
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //while(driveBase.arm.isBusy()){}
+                while(driveBase.arm.isBusy()){}
                 sleep(150);
 
             } else if (gamepad2.left_bumper || gamepad1.left_bumper) {
                 driveBase.armNewTargetPosition += driveBase.armIncrement;
                 if(driveBase.armNewTargetPosition > driveBase.armup ){driveBase.armNewTargetPosition =driveBase.armup;}
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //while(driveBase.arm.isBusy()){}
+                while(driveBase.arm.isBusy()){}
                 sleep(150);
             }
             if ((gamepad2.right_trigger > .1) || (gamepad1.right_trigger > .1))   {
@@ -350,12 +352,12 @@ public class RedTeleopTest extends LinearOpMode {
 // ----->>> display parameters in diagnostic mode
 
             if (diagnosticMode) {
-                telemetry.addData("Left Front     : ", driveBase.leftFront.getCurrentPosition());
-                telemetry.addData("Right Front    : ", driveBase.rightFront.getCurrentPosition());
-                telemetry.addData("Left Rear      : ", driveBase.leftRear.getCurrentPosition());
-                telemetry.addData("Right Rear     : ", driveBase.rightRear.getCurrentPosition());
+                telemetry.addData("Left Front     : ", driveBase.frontLeft.getCurrentPosition());
+                telemetry.addData("Right Front    : ", driveBase.frontRight.getCurrentPosition());
+                telemetry.addData("Left Rear      : ", driveBase.backLeft.getCurrentPosition());
+                telemetry.addData("Right Rear     : ", driveBase.backRight.getCurrentPosition());
                 telemetry.addData("arm motor      : ", driveBase.arm.getCurrentPosition());
-                telemetry.addData("lift motor     : ", driveBase.lift.getCurrentPosition());
+                telemetry.addData("slide motor     : ", driveBase.slide.getCurrentPosition());
                 telemetry.addData("tiltServo      : ",(driveBase.tiltPosition));
                 telemetry.addData("gripServo      : ",(driveBase.gripPosition));
                 telemetry.addData("right Distance : ",(driveBase.rightDistanceToWall()));
