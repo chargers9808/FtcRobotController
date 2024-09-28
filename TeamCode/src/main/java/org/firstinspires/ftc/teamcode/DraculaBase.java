@@ -76,6 +76,11 @@ public class DraculaBase {
 
     public int liftNewTargetPosition = 0;
     public int liftUp = 2200;
+    public int liftIncrement = 30;
+
+    public int slideNewTargetPosition = 20;
+    public int slideOut = -1600;
+    public int slideIncrement = 30;
 
     double armPower = 0.8;
     public int armIncrement = 30;

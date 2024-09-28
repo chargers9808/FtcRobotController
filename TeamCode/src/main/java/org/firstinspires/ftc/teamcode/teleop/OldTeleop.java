@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
-
-@TeleOp(name = "Old Recatored Teleop", group = "Linear Opmode")
+@TeleOp(name = "Old Refatored Teleop", group = "Linear Opmode")
+@Disabled
 public class OldTeleop extends IntoTheDeepBase {
 
     DraculaBase driveBase = new DraculaBase();
@@ -71,9 +71,9 @@ public class OldTeleop extends IntoTheDeepBase {
         driveBase.setSolidBlueLED();
         driveBase.arm.setPower(.8);
         driveBase.slide.setPower(.8);
-        driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
-        driveBase.liftRelease.setPosition(driveBase.liftReleaseClosed);
-        driveBase.holder.setPosition(driveBase.holderClosed);
+//        driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
+//        driveBase.liftRelease.setPosition(driveBase.liftReleaseClosed);
+//        driveBase.holder.setPosition(driveBase.holderClosed);
         updateTelemetry();
     }
 

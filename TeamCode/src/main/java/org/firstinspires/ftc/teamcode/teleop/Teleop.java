@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
 
-@TeleOp(name = "Teleop", group = "Linear Opmode")
+@TeleOp(name = "Teleop 1.0", group = "Linear Opmode")
 public class Teleop extends LinearOpMode {
 
 //  Declare OpMode members.
@@ -234,7 +234,8 @@ public class Teleop extends LinearOpMode {
                 driveBase.arm.setTargetPosition(driveBase.armPickingPosition);
                 driveBase.tilt.setPosition(driveBase.tiltToPick);
 
-                if (driveBase.rightDistanceToWall() < 48) {
+                if (driveBase.rightDistanceToWall() < 48)
+                {
                     driveBase.DriveSideways(.5, driveBase.rightDistanceToWall() - 16.5);
                     driveBase.gyroTurn(.6,90);
                     driveBase.tankDrive(.4, driveBase.frontLeftDistance() - 8);
@@ -260,32 +261,47 @@ public class Teleop extends LinearOpMode {
 //            telemetry.addData("run-time : ",(driveBase.runtime.seconds()));
 //
 //            ---------------- arm movement ---------------------
-            if (gamepad1.right_trigger > 0.1) {
-                driveBase.slide.setPower(0.5);
-                driveBase.arm.setTargetPosition(700);
-            }
-            if (gamepad1.right_bumper)
+
+            if ((gamepad2.left_trigger > .1) || (gamepad1.left_trigger > .1))
             {
-                driveBase.slide.setPower(0.5);
-                driveBase.arm.setTargetPosition(-900);
+                {driveBase.armNewTargetPosition -= driveBase.armIncrement;}
+                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+                sleep(150);
+
+            }
+            else if (gamepad2.left_bumper || gamepad1.left_bumper)
+            {
+                driveBase.armNewTargetPosition += driveBase.armIncrement;
+                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+                sleep(150);
             }
 
 
             // ----------------------- Slide Movement ---------------------------
-            if (gamepad2.left_trigger > 0.1)
+
+            if ((gamepad2.right_trigger > .1) || (gamepad1.right_trigger > .1))
             {
-                driveBase.slide.setTargetPosition(100);
+                {driveBase.slideNewTargetPosition -= driveBase.slideIncrement;}
+                driveBase.slide.setPower(.8);
+                if (driveBase.slideNewTargetPosition < driveBase.slideOut)
+                {
+                    driveBase.slideNewTargetPosition = driveBase.slideOut;
+                }
+                driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
+                sleep(100);
+
             }
-            if (gamepad2.left_bumper){
-                //driveBase.slide.setTargetPosition(1000);
-
-                driveBase.slide.setPower(0.5);
-
-                // Setup positions
-                //driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
-                driveBase.slide.setTargetPosition(-1500);
+            else if (gamepad2.right_bumper || gamepad1.right_bumper)
+            {
+                driveBase.slideNewTargetPosition += driveBase.slideIncrement;
+                driveBase.slide.setPower(.8);
+                if (driveBase.slideNewTargetPosition < driveBase.slideOut)
+                {
+                    driveBase.slideNewTargetPosition = driveBase.slideOut;
+                }
+                driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
+                sleep(100);
             }
-
 
 
 
@@ -296,7 +312,7 @@ public class Teleop extends LinearOpMode {
                 telemetry.addData("Left Rear      : ", driveBase.backLeft.getCurrentPosition());
                 telemetry.addData("Right Rear     : ", driveBase.backRight.getCurrentPosition());
                 telemetry.addData("arm motor      : ", driveBase.armNewTargetPosition);
-                telemetry.addData("slide motor     : ", driveBase.slide.getCurrentPosition());
+                telemetry.addData("slide motor     : ", driveBase.slideNewTargetPosition);
 //                telemetry.addData("tiltServo      : ",(driveBase.tiltPosition));
 //                telemetry.addData("gripServo      : ",(driveBase.gripPosition));
 //                telemetry.addData("right Distance : ",(driveBase.rightDistanceToWall()));

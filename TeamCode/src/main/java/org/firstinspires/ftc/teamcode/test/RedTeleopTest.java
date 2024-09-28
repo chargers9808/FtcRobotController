@@ -332,8 +332,8 @@ public class RedTeleopTest extends LinearOpMode {
 
             if ((gamepad2.left_trigger > .1) || (gamepad1.left_trigger > .1))   {
                 {driveBase.armNewTargetPosition -= driveBase.armIncrement;}
-                if(driveBase.armNewTargetPosition<driveBase.armLowered){driveBase.armNewTargetPosition=driveBase.armLowered;}
-                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+//                if(driveBase.armNewTargetPosition<driveBase.armLowered){driveBase.armNewTargetPosition=driveBase.armLowered;}
+//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
                 while(driveBase.arm.isBusy()){}
                 sleep(150);
 
