@@ -37,9 +37,9 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         driveBase.setSolidBlueLED();
         driveBase.arm.setPower(0.0);
         driveBase.slide.setPower(0.0);
-        driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
-        driveBase.liftRelease.setPosition(driveBase.liftReleaseClosed);
-        driveBase.holder.setPosition(driveBase.holderClosed);
+        //driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
+        //driveBase.liftRelease.setPosition(driveBase.liftReleaseClosed);
+        //driveBase.holder.setPosition(driveBase.holderClosed);
         updateTelemetry();
     }
 
@@ -108,6 +108,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
             if (driveBase.armNewTargetPosition < driveBase.armLowered) {
                 driveBase.armNewTargetPosition = driveBase.armLowered;
             }
+            // need to set the arm motor power first.
             driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
             sleep(50);
         } else if (gamepad2.left_bumper || gamepad1.left_bumper) {

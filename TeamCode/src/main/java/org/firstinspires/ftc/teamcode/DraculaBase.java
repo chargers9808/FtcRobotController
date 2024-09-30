@@ -34,7 +34,11 @@ public class DraculaBase {
 
     // --------------  drive system and controls
     static final double COUNTS_PER_REV_gobilda435 = 384.5;    // Gobilda 435 rpm motors
-    static final double WHEEL_CIRCUMFERENCE = (96. / 25.4) * Math.PI;//  circumference in inches
+    //static final double WHEEL_CIRCUMFERENCE = (96. / 25.4) * Math.PI;//  circumference in inches
+    // the new wheels have a diameter of 104mm
+
+    static final double WHEEL_CIRCUMFERENCE = (104. / 25.4) * Math.PI;//  circumference in inches
+
     static final double COUNTS_PER_INCH_435 = COUNTS_PER_REV_gobilda435 / WHEEL_CIRCUMFERENCE;// counts/inch travelled
 
     double y = 0.0;
