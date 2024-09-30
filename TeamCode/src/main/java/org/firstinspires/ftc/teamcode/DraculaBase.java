@@ -80,9 +80,9 @@ public class DraculaBase {
 
     public int slideNewTargetPosition = 20;
     public int slideOut = -1600;
-    public int slideIncrement = 30;
+    public int slideIncrement = 20;
 
-    double armPower = 0.8;
+    double armPower = 1;
     public int armIncrement = 30;
     public int armLowered = 0;
     int armJustAboveFirstLine = 700;
