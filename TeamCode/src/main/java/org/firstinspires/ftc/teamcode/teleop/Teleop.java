@@ -265,14 +265,14 @@ public class Teleop extends LinearOpMode {
             if ((gamepad2.left_trigger > .1) || (gamepad1.left_trigger > .1)) //Raise
             {
                 {driveBase.armNewTargetPosition -= driveBase.armIncrement;}
+                driveBase.arm.setPower(.8);
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                sleep(150);
             }
             else if (gamepad2.left_bumper || gamepad1.left_bumper) //Lower
             {
-                driveBase.armNewTargetPosition += driveBase.armIncrement;
+                driveBase.armNewTargetPosition += (driveBase.armIncrement - 12);
+                driveBase.arm.setPower(.4);
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                sleep(150);
             }
 
 
