@@ -385,7 +385,7 @@ public class TeleopBlueLeague extends LinearOpMode {
                 telemetry.addData("right Distance : ",(driveBase.rightDistanceToWall()));
                 telemetry.addData("left distance  : ",(driveBase.leftDistanceToWall()));
                 telemetry.addData("left front distance : ",(driveBase.frontLeftDistance()));
-                telemetry.addData("right front distance : ",(driveBase.frontRightDistance()));
+                telemetry.addData("right front distance : ",(driveBase.rearDistance()));
 
                 telemetry.update();
             }
