@@ -66,6 +66,11 @@ public class OldTeleop extends IntoTheDeepBase {
     }
 
     @Override
+    public void pre_initialize() {
+
+    }
+
+    @Override
      public void initialize() {
         driveBase.init(hardwareMap, this);// initialize hardware
         driveBase.setSolidBlueLED();
