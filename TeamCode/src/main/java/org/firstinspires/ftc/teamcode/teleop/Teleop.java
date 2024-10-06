@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
@@ -42,6 +43,7 @@ public class Teleop extends LinearOpMode {
     double  deadZone = .02;
     double  speedfactor = 1.5;   // higher number reduces the speed
 
+    private CRServo intake;
 /*
 ============================================================================================
 
@@ -77,6 +79,9 @@ public class Teleop extends LinearOpMode {
         driveBase.init(hardwareMap,this);// initialize hardware
         //driveBase.initImu(hardwareMap,this);// initialize hardware
         //driveBase.initImu2(hardwareMap,this);// initialize hardware
+
+        intake = this.hardwareMap.crservo.get("intake");
+
 
         driveBase.setSolidRedLED();
         driveBase.arm.setPower(0.1);
@@ -161,12 +166,15 @@ public class Teleop extends LinearOpMode {
 // for Field Centric, rotate the joystick commands into the frame of reference of the robot ("coordinate system rotation")
             x = xCommand * Math.cos(theta) + yCommand * Math.sin(theta);
             y = yCommand * Math.cos(theta) - xCommand * Math.sin(theta);
-
+            x = -x;
+            y = -y;
 // or... for robot-centric steering, use the scaled joystick inputs directly
 
             if (!fieldCentric) { // make the joystick inputs non-linear to make it easier to control the rotation rate at slow speeds
                 x = xCommand * xCommand* xCommand;
                 y = yCommand * yCommand* yCommand;
+                x = -x;
+                y = -y;
             }
 
             if (!diagnosticMode) {
@@ -238,7 +246,7 @@ public class Teleop extends LinearOpMode {
                 {
                     driveBase.DriveSideways(.5, driveBase.rightDistanceToWall() - 16.5);
                     driveBase.gyroTurn(.6,90);
-                    driveBase.tankDrive(.4, driveBase.frontLeftDistance() - 8);
+                    driveBase.tankDrive(.4, driveBase.frontDistanceToWall() - 8);
                 }
 
             }
@@ -251,7 +259,7 @@ public class Teleop extends LinearOpMode {
 
                 if (driveBase.leftDistanceToWall() < 48) {
                     driveBase.DriveSideways(.5, -(driveBase.leftDistanceToWall() - 17));
-                    driveBase.tankDrive(.5, driveBase.frontLeftDistance() - 8);
+                    driveBase.tankDrive(.5, driveBase.frontDistanceToWall() - 8);
                 }
             }
 //
@@ -260,25 +268,82 @@ public class Teleop extends LinearOpMode {
 //            if(driveBase.runtime.seconds()>90){driveBase.setSolidGoldLED();}
 //            telemetry.addData("run-time : ",(driveBase.runtime.seconds()));
 //
-//            ---------------- arm movement ---------------------
 
-            if ((gamepad2.left_trigger > .1) || (gamepad1.left_trigger > .1)) //Raise
+//            ------------------ Intake/Outake --------------------
+            if (gamepad1.a) //in
+            {
+                intake.setPower(-1);
+            }
+            else if (gamepad1.b) //out
+            {
+                intake.setPower(1);
+            }
+            else //off
+            {
+                intake.setPower(0);
+            }
+//            ---------------- presets ---------------------
+            if (gamepad1.y) //preset to Scoring Position
+            {
+                //Arm
+                driveBase.armNewTargetPosition = driveBase.armScoringPositon;
+                driveBase.arm.setPower(.4);
+                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+                //Slide
+                driveBase.slideNewTargetPosition = driveBase.slideOut;
+                driveBase.slide.setPower(.6);
+                driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
+                //Outtake
+                intake.setPower(1);
+                sleep(5000);
+                intake.setPower(0);
+                //store
+//                driveBase.slideNewTargetPosition = driveBase.slideIn;
+//                driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
+//                while (driveBase.slide.isBusy()){}
+//                driveBase.armNewTargetPosition = driveBase.armLowered;
+//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+            }
+
+            if (gamepad1.x) //preset to Travel Position
+            {
+                //Arm
+                driveBase.armNewTargetPosition = driveBase.armTravelPosition;
+                driveBase.arm.setPower(.8);
+                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+                //Slide
+                driveBase.slideNewTargetPosition = driveBase.slideIn;
+                driveBase.slide.setPower(.8);
+                driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
+            }
+
+//            ---------------- arm movement ---------------------
+            if (gamepad1.left_bumper) // Manual Raise
             {
                 {driveBase.armNewTargetPosition -= driveBase.armIncrement;}
                 driveBase.arm.setPower(.8);
+                if (driveBase.armNewTargetPosition < driveBase.armTravelPosition);
+                {
+                    driveBase.armNewTargetPosition = driveBase.armTravelPosition;
+                }
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
             }
-            else if (gamepad2.left_bumper || gamepad1.left_bumper) //Lower
+            else if (gamepad1.left_trigger > .1) // Manual Lower
             {
-                driveBase.armNewTargetPosition += (driveBase.armIncrement - 12);
+                driveBase.armNewTargetPosition += (driveBase.armIncrement);
                 driveBase.arm.setPower(.4);
+                if (driveBase.armNewTargetPosition > driveBase.armLowered);
+                {
+                    driveBase.armNewTargetPosition = driveBase.armLowered;
+                }
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+                sleep(50);
             }
 
 
             // ----------------------- Slide Movement ---------------------------
 
-            if ((gamepad2.right_trigger > .1) || (gamepad1.right_trigger > .1))
+            if (gamepad1.right_trigger > .1) //Out
             {
                 {driveBase.slideNewTargetPosition -= driveBase.slideIncrement;}
                 driveBase.slide.setPower(.8);
@@ -288,7 +353,7 @@ public class Teleop extends LinearOpMode {
                 }
                 driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
             }
-            else if (gamepad2.right_bumper || gamepad1.right_bumper)
+            else if (gamepad1.right_bumper) //In
             {
                 driveBase.slideNewTargetPosition += driveBase.slideIncrement;
                 driveBase.slide.setPower(.8);
@@ -311,10 +376,10 @@ public class Teleop extends LinearOpMode {
                 telemetry.addData("slide motor     : ", driveBase.slideNewTargetPosition);
 //                telemetry.addData("tiltServo      : ",(driveBase.tiltPosition));
 //                telemetry.addData("gripServo      : ",(driveBase.gripPosition));
-//                telemetry.addData("right Distance : ",(driveBase.rightDistanceToWall()));
-//                telemetry.addData("left distance  : ",(driveBase.leftDistanceToWall()));
-//                telemetry.addData("left front distance : ",(driveBase.frontLeftDistance()));
-//                telemetry.addData("right front distance : ",(driveBase.frontRightDistance()));
+                telemetry.addData("right Distance : ",(driveBase.rightDistanceToWall()));
+                telemetry.addData("left distance  : ",(driveBase.leftDistanceToWall()));
+                telemetry.addData("front distance : ",(driveBase.frontDistanceToWall()));
+                telemetry.addData("rear distance : ",(driveBase.rearDistanceToWall()));
 
                 telemetry.update();
             }

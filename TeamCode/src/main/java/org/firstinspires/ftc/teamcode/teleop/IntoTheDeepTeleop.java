@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
 
 @TeleOp(name = "Teleop", group = "Linear Opmode")
+@Disabled
 
 public class IntoTheDeepTeleop extends IntoTheDeepBase {
     //TODO: Defile controller operations

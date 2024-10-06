@@ -66,7 +66,7 @@ public class Wing extends CenterstageRedAuto {
         driveBase.tankDrive(.6,backdropDriveDistance);// drive under the stage door, into the middle
 //        driveBase.gyroTurn(.6, getBackdropDeg());
         sleep(200);
-        distanceFromWall = driveBase.frontRightDistance();
+        distanceFromWall = driveBase.rearDistance();
         driveBase.tankDrive(.6,distanceFromWall-32);
 
         // Move from the current location 54in from the wall, to in front of the target tag

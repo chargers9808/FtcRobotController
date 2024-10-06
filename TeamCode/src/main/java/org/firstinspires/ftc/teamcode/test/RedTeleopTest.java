@@ -284,7 +284,7 @@ public class RedTeleopTest extends LinearOpMode {
 
             if (gamepad1.b && !gamepad1.right_bumper) {
                 driveBase.gyroTurn(.5,90);
-                distanceFromBackDrop=driveBase.frontDistance();// prepare to drive back
+                distanceFromBackDrop=driveBase.frontDistanceToWall();// prepare to drive back
                 if(distanceFromBackDrop<25)
                 {
                     driveBase.tankDriveCorrected(.3,(10.-distanceFromBackDrop),90);
@@ -296,7 +296,7 @@ public class RedTeleopTest extends LinearOpMode {
 
             if (gamepad1.y && !gamepad1.right_bumper) {
                 driveBase.gyroTurn(.5,90);
-                distanceFromBackDrop=driveBase.frontDistance();// prepare to drive back
+                distanceFromBackDrop=driveBase.frontDistanceToWall();// prepare to drive back
                 if(distanceFromBackDrop<25)
                 {
                     driveBase.tankDriveCorrected(.3,(10.-distanceFromBackDrop),90);
@@ -309,7 +309,7 @@ public class RedTeleopTest extends LinearOpMode {
 
             if (gamepad1.y && gamepad1.right_bumper) {
                 driveBase.gyroTurn(.5,90);
-                distanceFromBackDrop=driveBase.frontDistance();// prepare to drive back
+                distanceFromBackDrop=driveBase.frontDistanceToWall();// prepare to drive back
                 if(distanceFromBackDrop<25)
                 {
                     driveBase.tankDriveCorrected(.3,(10.-distanceFromBackDrop),90);
@@ -362,7 +362,7 @@ public class RedTeleopTest extends LinearOpMode {
                 telemetry.addData("gripServo      : ",(driveBase.gripPosition));
                 telemetry.addData("right Distance : ",(driveBase.rightDistanceToWall()));
                 telemetry.addData("left distance  : ",(driveBase.leftDistanceToWall()));
-                telemetry.addData("front distance : ",(driveBase.frontDistance()));
+                telemetry.addData("front distance : ",(driveBase.frontDistanceToWall()));
                 telemetry.update();
             }
             if(driveBase.runtime.seconds()>90){driveBase.setSolidGoldLED();}
@@ -391,7 +391,7 @@ public class RedTeleopTest extends LinearOpMode {
             driveBase.gyroTurn(.5,90);
             driveBase.DriveSidewaysCorrected( .4,vision.lateralOffset+largeTagtoPickupLocation,90);
             driveBase.gyroTurn(.5,90);
-            driveBase.tankDrive(.4,driveBase.frontDistance()-3);
+            driveBase.tankDrive(.4,driveBase.frontDistanceToWall()-3);
         }
     }
 }

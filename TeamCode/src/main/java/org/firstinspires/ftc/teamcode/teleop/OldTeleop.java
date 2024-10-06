@@ -163,7 +163,7 @@ public class OldTeleop extends IntoTheDeepBase {
     private void gripperAndArmToDeliveryPosition() {
         if (gamepad1.b && !gamepad1.right_bumper) {
             driveBase.gyroTurn(.5, 90);
-            distanceFromBackDrop = driveBase.frontDistance();// prepare to drive back
+            distanceFromBackDrop = driveBase.frontDistanceToWall();// prepare to drive back
             if (distanceFromBackDrop < 25) {
                 driveBase.tankDriveCorrected(.3, (10. - distanceFromBackDrop), 90);
                 driveBase.gyroTurn(.5, 90);
@@ -174,7 +174,7 @@ public class OldTeleop extends IntoTheDeepBase {
 
         if (gamepad1.y && !gamepad1.right_bumper) {
             driveBase.gyroTurn(.5, 90);
-            distanceFromBackDrop = driveBase.frontDistance();// prepare to drive back
+            distanceFromBackDrop = driveBase.frontDistanceToWall();// prepare to drive back
             if (distanceFromBackDrop < 25) {
                 driveBase.tankDriveCorrected(.3, (10. - distanceFromBackDrop), 90);
                 driveBase.gyroTurn(.5, 90);
@@ -186,7 +186,7 @@ public class OldTeleop extends IntoTheDeepBase {
 
         if (gamepad1.y && gamepad1.right_bumper) {
             driveBase.gyroTurn(.5, 90);
-            distanceFromBackDrop = driveBase.frontDistance();// prepare to drive back
+            distanceFromBackDrop = driveBase.frontDistanceToWall();// prepare to drive back
             if (distanceFromBackDrop < 25) {
                 driveBase.tankDriveCorrected(.3, (10. - distanceFromBackDrop), 90);
                 driveBase.gyroTurn(.5, 90);
@@ -268,7 +268,7 @@ public class OldTeleop extends IntoTheDeepBase {
             if (driveBase.rightDistanceToWall() < 48) {
                 driveBase.DriveSideways(.5, driveBase.rightDistanceToWall() - 16.5);
                 driveBase.gyroTurn(.6, 0);
-                driveBase.tankDrive(.4, driveBase.frontLeftDistance() - 8);
+                driveBase.tankDrive(.4, driveBase.frontDistanceToWall() - 8);
             }
 
         }
@@ -282,7 +282,7 @@ public class OldTeleop extends IntoTheDeepBase {
 
             if (driveBase.leftDistanceToWall() < 48) {
                 driveBase.DriveSideways(.5, -(driveBase.leftDistanceToWall() - 17));
-                driveBase.tankDrive(.5, driveBase.frontLeftDistance() - 8);
+                driveBase.tankDrive(.5, driveBase.frontDistanceToWall() - 8);
             }
         }
     }

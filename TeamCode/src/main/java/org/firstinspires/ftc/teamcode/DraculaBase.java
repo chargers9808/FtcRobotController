@@ -22,7 +22,7 @@ public class DraculaBase {
     //region hardware devices
     public DcMotor frontLeft, frontRight, backLeft, backRight, arm, slide;
     public Servo grip, tilt, liftRelease, droneRelease, holder;
-    public DistanceSensor revRangeLeft, revRangeRight, revRangeLeftFront, revRangeRightFront;
+    public DistanceSensor revRangeLeft, revRangeRight, revRangeFront, revRangeRear;
     public RevBlinkinLedDriver blinkinLedDriver;
     public RevBlinkinLedDriver.BlinkinPattern pattern;
     public IMU imu;
@@ -85,17 +85,21 @@ public class DraculaBase {
     public int slideNewTargetPosition = 20;
     public int slideOut = -1580;
     public int slideIncrement = 20;
+    public int slideIn = 20;
+
 
     double armPower = .8;
     public int armIncrement = 20;
-    public int armLowered = 0;
-    int armJustAboveFirstLine = 700;
-    public int armJustAboveSecondLine = 1358;
-    int armJustAboveThirdLine = 2100;
+    public int armLowered = -50;
+    public int armTravelPosition = -2000;
+    public int armScoringPositon =  -1730;
     public int armup = 2200;
     public int armPickingPosition = 150;
     public int armNewTargetPosition = 50;
 
+    public int armJustAboveSecondLine = 1;
+    public int armJustAboveFirstLine = 1;
+    public int armJustAboveThirdLine = 1;
     public int armForwardLimit = 40;
     public int armBackLimit = 60;
 // --------------  Java, Logic, object oriented...
@@ -111,15 +115,15 @@ public class DraculaBase {
         callingOpMode = _callingOpMode;
 
         initAllMotors();
-        //setAllServos();
-        //setAllDistanceSensors();
+        setAllServos();
+        setAllDistanceSensors();
 
         imu = getHardwareMap().get(IMU.class, "imu");
 
         RevHubOrientationOnRobot orientationOnRobot =
                 new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
-                        RevHubOrientationOnRobot.UsbFacingDirection.UP
+                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
                 );
 
         imu.initialize(new IMU.Parameters(orientationOnRobot));
@@ -135,11 +139,11 @@ public class DraculaBase {
         return hardwareMap;
     }
 
-    private void setAllDistanceSensors(){
-        revRangeLeft = getDistanceSensor("revrangeleft");
-        revRangeRight = getDistanceSensor("revrangeright");
-        revRangeLeftFront = getDistanceSensor("revrangeleftfront");
-        revRangeRightFront = getDistanceSensor("revrangerightfront");
+    public void setAllDistanceSensors(){
+        revRangeLeft = getDistanceSensor("leftdistance");
+        revRangeRight = getDistanceSensor("rightdistance");
+        revRangeFront = getDistanceSensor("frontdistance");
+        revRangeRear = getDistanceSensor("reardistance");
     }
     private DistanceSensor getDistanceSensor(String deviceName) {
         // Can't find distance sensor class in hardware map
@@ -147,13 +151,13 @@ public class DraculaBase {
     }
 
     private void setAllServos(){
-        grip = getServo("grip");
-        holder = getServo("holder");
-        tilt = getServo("tilt");
-        liftRelease = getServo("liftrelease");
-        droneRelease = getServo("dronerelease");
+//        grip = getCrServo("intake");
+//        holder = getServo("holder");
+//        tilt = getServo("tilt");
+//        liftRelease = getServo("liftrelease");
+//        droneRelease = getServo("dronerelease");
     }
-    private Servo getServo(String deviceName) {
+    private Servo getCrServo(String deviceName) {
         return getHardwareMap().servo.get(deviceName);
     }
 
@@ -702,41 +706,39 @@ public class DraculaBase {
         return revRangeLeft.getDistance(DistanceUnit.INCH);
     }
 
-    public double frontLeftDistance() {
-        return revRangeLeftFront.getDistance(DistanceUnit.INCH);
+    public double frontDistanceToWall() {
+        return revRangeFront.getDistance(DistanceUnit.INCH);
     }
 
-    public double frontRightDistance() {
-        return revRangeRightFront.getDistance(DistanceUnit.INCH);
-    }
-
-    public double frontDistance() {
-        double frontrange = 500;
-        double tempRangeL = frontLeftDistance();
-        double tempRangeR = frontRightDistance();
-
-        // try three times to get a correct front distance measurement... otherwise park
-        for (int i = 0; i <= 3; i++) {
-            if (tempRangeL > 15 && tempRangeR > 15) {
-                ((LinearOpMode) callingOpMode).sleep(50);//small wait and measure again
-                tempRangeL = frontLeftDistance();
-                tempRangeR = frontRightDistance();
-            }
-        }
-
-        if (tempRangeL <= tempRangeR && tempRangeL < 15) {
-            frontrange = tempRangeL;
-        } else if (tempRangeR < tempRangeL && tempRangeR < 15) {
-            frontrange = tempRangeR;
-        }
-
-        return frontrange;
+    public double rearDistanceToWall() {
+        return revRangeRear.getDistance(DistanceUnit.INCH);
     }
 
     public double rightDistanceToWall() {
         return revRangeRight.getDistance(DistanceUnit.INCH); // check for distanceOutOfRange
     }
-
+//    public double frontDistance() {
+//        double frontrange = 500;
+//        double tempRangeL = frontLeftDistance();
+//        double tempRangeR = rearDistance();
+//
+//        // try three times to get a correct front distance measurement... otherwise park
+////        for (int i = 0; i <= 3; i++) {
+////            if (tempRangeL > 15 && tempRangeR > 15) {
+////                ((LinearOpMode) callingOpMode).sleep(50);//small wait and measure again
+////                tempRangeL = frontLeftDistance();
+////                tempRangeR = rearDistance();
+////            }
+////        }
+//
+//        if (tempRangeL <= tempRangeR && tempRangeL < 15) {
+//            frontrange = tempRangeL;
+//        } else if (tempRangeR < tempRangeL && tempRangeR < 15) {
+//            frontrange = tempRangeR;
+//        }
+//
+//        return frontrange;
+//    }
     // ------------------------- Blue Backdrop Pixel Plow ---------------------------------
     public void plowFromBlueBackdropStartToLeftSpike() { // Left
         tankDrive(.5, 2);
