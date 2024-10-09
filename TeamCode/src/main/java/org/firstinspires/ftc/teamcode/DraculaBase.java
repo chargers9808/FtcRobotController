@@ -34,7 +34,11 @@ public class DraculaBase {
 
     // --------------  drive system and controls
     static final double COUNTS_PER_REV_gobilda435 = 384.5;    // Gobilda 435 rpm motors
-    static final double WHEEL_CIRCUMFERENCE = (96. / 25.4) * Math.PI;//  circumference in inches
+    //static final double WHEEL_CIRCUMFERENCE = (96. / 25.4) * Math.PI;//  circumference in inches
+    // the new wheels have a diameter of 104mm
+
+    static final double WHEEL_CIRCUMFERENCE = (104. / 25.4) * Math.PI;//  circumference in inches
+
     static final double COUNTS_PER_INCH_435 = COUNTS_PER_REV_gobilda435 / WHEEL_CIRCUMFERENCE;// counts/inch travelled
 
     double y = 0.0;
@@ -846,5 +850,23 @@ public class DraculaBase {
         gyroTurn(.3, 40);
         tankDrive(.3, 6.5);
         tankDrive(.5, -10);
+    }
+
+    /**
+     * Move a motor safely to the target
+     * @param motor Motor to move
+     * @param increment Target position
+     * @param power Motor power
+     * @param min Minimum value for the motor
+     * @param max Maximum value for the motor
+     * @return Actual target used
+     */
+    public int incrementMotorSafe(DcMotor motor, int increment, double power, int min, int max) {
+        motor.setPower( power );
+        int target = motor.getCurrentPosition() + increment;
+        // Bound the target between the min and max values
+        target = Math.max( Math.min(target,max), min );
+        motor.setTargetPosition(target);
+        return target;
     }
 }

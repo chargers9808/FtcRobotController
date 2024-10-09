@@ -11,10 +11,4 @@ import org.firstinspires.ftc.teamcode.auto.Position;
 public class NetBlue extends IntoTheDeepBlueAuto {
     private final Position position = new Position(Position.Location.NET);
     protected Position getPosition() { return position; }
-
-    public void doTheThing(){
-    //go forward
-    //turn on sweeper
-        sweeperInOn();
-    }
 }
