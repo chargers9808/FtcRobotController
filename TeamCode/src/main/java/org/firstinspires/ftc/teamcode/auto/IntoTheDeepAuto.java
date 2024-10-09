@@ -13,12 +13,13 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
 
     ============================================================================================
      */
-
-
-    protected void preInit() {
+    abstract protected Position getPosition();
+    @Override
+    protected void pre_initialize() {
 
     }
 
+    @Override
     protected void initialize() {
         driveBase.setLED( getPosition().getStaticColor() );
     }
@@ -26,6 +27,7 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
     /**
      * Run AUTO opmode
      */
+    @Override
     protected void run_9808() {
         if( opModeIsActive() ) {
             displayDiagnostics();
