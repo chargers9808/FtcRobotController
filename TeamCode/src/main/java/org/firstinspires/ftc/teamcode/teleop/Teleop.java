@@ -35,7 +35,7 @@ public class Teleop extends LinearOpMode {
 
 
     double selectedAngle=-HeadingHolder.getHeading();// imu angle to the quarry
-    double lastSavedAngle= HeadingHolder.getHeading();// field heading of robot at start of telex
+//    double lastSavedAngle= HeadingHolder.getHeading();// field heading of robot at start of telex
 
     //int     lastSavedArmPosition = HeadingHolder.getLastArmPosition();
 
@@ -132,7 +132,6 @@ public class Teleop extends LinearOpMode {
                 telemetry.addLine("Diagnostic Mode (press A to toggle): true (press PLAY to start)");
             }
 
-            telemetry.addData("Gyro initialized to:   ", lastSavedAngle);
             telemetry.addData("heading:   ", driveBase.getFieldHeading());
             telemetry.addLine("Waiting for START....");
             telemetry.update();
@@ -166,15 +165,11 @@ public class Teleop extends LinearOpMode {
 // for Field Centric, rotate the joystick commands into the frame of reference of the robot ("coordinate system rotation")
             x = xCommand * Math.cos(theta) + yCommand * Math.sin(theta);
             y = yCommand * Math.cos(theta) - xCommand * Math.sin(theta);
-            x = -x;
-            y = -y;
 // or... for robot-centric steering, use the scaled joystick inputs directly
 
             if (!fieldCentric) { // make the joystick inputs non-linear to make it easier to control the rotation rate at slow speeds
                 x = xCommand * xCommand* xCommand;
                 y = yCommand * yCommand* yCommand;
-                x = -x;
-                y = -y;
             }
 
             if (!diagnosticMode) {
@@ -293,14 +288,22 @@ public class Teleop extends LinearOpMode {
                 driveBase.slideNewTargetPosition = driveBase.slideOut;
                 driveBase.slide.setPower(.6);
                 driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
+                //Move
+                driveBase.gyroTurn(.5,180);
+                while (driveBase.frontRight.isBusy());
+                driveBase.DriveSideways(.5,driveBase.rightDistanceToWall()-7);// determine the correct distance for this
+                driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-5);// determine the correct distance for this
+                driveBase.gyroTurn(.5,135);
+                driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-7);
                 //Outtake
+                sleep(1500);
                 intake.setPower(1);
-                sleep(5000);
+                sleep(2000);
                 intake.setPower(0);
                 //store
 //                driveBase.slideNewTargetPosition = driveBase.slideIn;
 //                driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
-//                while (driveBase.slide.isBusy()){}
+//                while (driveBase.slide.isBusy());
 //                driveBase.armNewTargetPosition = driveBase.armLowered;
 //                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
             }
@@ -309,7 +312,7 @@ public class Teleop extends LinearOpMode {
             {
                 //Arm
                 driveBase.armNewTargetPosition = driveBase.armTravelPosition;
-                driveBase.arm.setPower(.8);
+                driveBase.arm.setPower(.4);
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
                 //Slide
                 driveBase.slideNewTargetPosition = driveBase.slideIn;
@@ -380,6 +383,8 @@ public class Teleop extends LinearOpMode {
                 telemetry.addData("left distance  : ",(driveBase.leftDistanceToWall()));
                 telemetry.addData("front distance : ",(driveBase.frontDistanceToWall()));
                 telemetry.addData("rear distance : ",(driveBase.rearDistanceToWall()));
+
+                telemetry.addData("heading:   ", driveBase.getFieldHeading());
 
                 telemetry.update();
             }

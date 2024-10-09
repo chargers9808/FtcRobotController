@@ -278,7 +278,7 @@ public class DraculaBase {
 
             x = 0.;             // make sure we are stopped while rotating
             y = 0.;
-            applyMecPower();    // set the motor speed using r
+            applyMecPower2(x,y,r);    // set the motor speed using r
         }
         r = 0;
         stopMotors();  // the turn is complete within the HEADING_THRESHOLD
