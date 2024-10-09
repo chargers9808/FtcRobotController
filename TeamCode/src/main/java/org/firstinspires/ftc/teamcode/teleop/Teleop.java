@@ -285,7 +285,16 @@ public class Teleop extends LinearOpMode {
 //            ---------------- presets ---------------------
             if (gamepad1.y) //preset to Scoring Position
             {
-                //Arm
+
+                // first, turn to 180 deg, move to correct distance from right and front walls, then
+                // do the arm and slider moves below...
+                // (turning and orientation commands added by RM on Oct 9.  needs testing)
+                driveBase.gyroTurn(.5,180);
+                driveBase.DriveSideways(.5,driveBase.rightDistanceToWall()-8);// determine the correct distance for this
+                driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-8);// determine the correct distance for this
+                driveBase.gyroTurn(.5,135);
+                //
+                //Arm and slide move to scoring position
                 driveBase.armNewTargetPosition = driveBase.armScoringPositon;
                 driveBase.arm.setPower(.4);
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
@@ -297,7 +306,7 @@ public class Teleop extends LinearOpMode {
                 intake.setPower(1);
                 sleep(5000);
                 intake.setPower(0);
-                //store
+                //retract slide and lower arm
 //                driveBase.slideNewTargetPosition = driveBase.slideIn;
 //                driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
 //                while (driveBase.slide.isBusy()){}

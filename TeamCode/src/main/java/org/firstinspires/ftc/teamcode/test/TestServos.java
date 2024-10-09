@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.test;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.teamcode.DraculaBase;
 
@@ -14,11 +15,12 @@ public class TestServos extends LinearOpMode {
 //  Declare OpMode members.
 
     DraculaBase driveBase = new DraculaBase(); // Use Chargerbot's PowerPlay hardware class
-
+    public CRServo intake;
     @Override
     public void runOpMode() {
 
         driveBase.init(hardwareMap,this);// initialize hardware
+
 
 // -------------------------now waiting at the end of the init() -----
         while (!isStarted()) {
