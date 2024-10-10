@@ -280,15 +280,6 @@ public class Teleop extends LinearOpMode {
 //            ---------------- presets ---------------------
             if (gamepad1.y) //preset to Scoring Position
             {
-
-                // first, turn to 180 deg, move to correct distance from right and front walls, then
-                // do the arm and slider moves below...
-                // (turning and orientation commands added by RM on Oct 9.  needs testing)
-                driveBase.gyroTurn(.5,180);
-                driveBase.DriveSideways(.5,driveBase.rightDistanceToWall()-8);// determine the correct distance for this
-                driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-8);// determine the correct distance for this
-                driveBase.gyroTurn(.5,135);
-                //
                 //Arm and slide move to scoring position
                 driveBase.armNewTargetPosition = driveBase.armScoringPositon;
                 driveBase.arm.setPower(.4);
@@ -300,14 +291,15 @@ public class Teleop extends LinearOpMode {
                 //Move
                 driveBase.gyroTurn(.5,180);
                 while (driveBase.frontRight.isBusy());
-                driveBase.DriveSideways(.5,driveBase.rightDistanceToWall()-7);// determine the correct distance for this
-                driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-5);// determine the correct distance for this
+                driveBase.DriveSideways(.5,driveBase.rightDistanceToWall()-9);// determine the correct distance for this
+                driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-7);// determine the correct distance for this
+                while (driveBase.frontRight.isBusy());
                 driveBase.gyroTurn(.5,135);
-                driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-7);
+                driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-6);
                 //Outtake
-                sleep(1500);
+                while (driveBase.frontRight.isBusy());
                 intake.setPower(1);
-                sleep(2000);
+                sleep(350);
                 intake.setPower(0);
                 //retract slide and lower arm
 //                driveBase.slideNewTargetPosition = driveBase.slideIn;
@@ -319,9 +311,13 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad1.x) //preset to Travel Position
             {
+                //Intake
+                intake.setPower(-1);
+                sleep(150);
+                intake.setPower(0);
                 //Arm
                 driveBase.armNewTargetPosition = driveBase.armTravelPosition;
-                driveBase.arm.setPower(.4);
+                driveBase.arm.setPower(.8);
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
                 //Slide
                 driveBase.slideNewTargetPosition = driveBase.slideIn;
@@ -334,20 +330,20 @@ public class Teleop extends LinearOpMode {
             {
                 {driveBase.armNewTargetPosition -= driveBase.armIncrement;}
                 driveBase.arm.setPower(.8);
-                if (driveBase.armNewTargetPosition < driveBase.armTravelPosition);
-                {
-                    driveBase.armNewTargetPosition = driveBase.armTravelPosition;
-                }
+//                if (driveBase.armNewTargetPosition < driveBase.armTravelPosition)
+//                {
+//                    driveBase.armNewTargetPosition = driveBase.armTravelPosition;
+//                }
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
             }
             else if (gamepad1.left_trigger > .1) // Manual Lower
             {
                 driveBase.armNewTargetPosition += (driveBase.armIncrement);
                 driveBase.arm.setPower(.4);
-                if (driveBase.armNewTargetPosition > driveBase.armLowered);
-                {
-                    driveBase.armNewTargetPosition = driveBase.armLowered;
-                }
+//                if (driveBase.armNewTargetPosition > driveBase.armLowered)
+//                {
+//                    driveBase.armNewTargetPosition = driveBase.armLowered;
+//                }
                 driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
                 sleep(50);
             }
@@ -380,14 +376,15 @@ public class Teleop extends LinearOpMode {
 
             //--------------------- Diagnostics -------------------------------
             if (diagnosticMode) {
+
                 telemetry.addData("Left Front     : ", driveBase.frontLeft.getCurrentPosition());
                 telemetry.addData("Right Front    : ", driveBase.frontRight.getCurrentPosition());
                 telemetry.addData("Left Rear      : ", driveBase.backLeft.getCurrentPosition());
                 telemetry.addData("Right Rear     : ", driveBase.backRight.getCurrentPosition());
+
                 telemetry.addData("arm motor      : ", driveBase.armNewTargetPosition);
                 telemetry.addData("slide motor     : ", driveBase.slideNewTargetPosition);
-//                telemetry.addData("tiltServo      : ",(driveBase.tiltPosition));
-//                telemetry.addData("gripServo      : ",(driveBase.gripPosition));
+
                 telemetry.addData("right Distance : ",(driveBase.rightDistanceToWall()));
                 telemetry.addData("left distance  : ",(driveBase.leftDistanceToWall()));
                 telemetry.addData("front distance : ",(driveBase.frontDistanceToWall()));
