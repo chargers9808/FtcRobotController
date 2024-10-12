@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
 
 @TeleOp(name = "Teleop 1.0", group = "Linear Opmode")
+@Disabled
 public class Teleop extends LinearOpMode {
 
 //  Declare OpMode members.
@@ -86,10 +88,6 @@ public class Teleop extends LinearOpMode {
         driveBase.setSolidRedLED();
         driveBase.arm.setPower(0.1);
         driveBase.slide.setPower(0.0);
-
-        //driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
-        //driveBase.liftRelease.setPosition(driveBase.liftReleaseClosed);
-        //driveBase.holder.setPosition(driveBase.holderClosed);
 
         //now waiting at the end of the init() -----
         initiation();
@@ -267,16 +265,18 @@ public class Teleop extends LinearOpMode {
 //            ------------------ Intake/Outake --------------------
             if (gamepad1.a) //in
             {
-                intake.setPower(-1);
+                driveBase.DriveSideways(.5,driveBase.rightDistanceToWall()-9);// determine the correct distance for this
+                driveBase.waitForMotor(driveBase.frontRight);
             }
             else if (gamepad1.b) //out
             {
-                intake.setPower(1);
+                driveBase.tankDrive(.5, 5);
+                sleep(5000);
             }
-            else //off
-            {
-                intake.setPower(0);
-            }
+//            else //off
+//            {
+//                intake.setPower(0);
+//            }
 //            ---------------- presets ---------------------
             if (gamepad1.y) //preset to Scoring Position
             {
@@ -288,6 +288,7 @@ public class Teleop extends LinearOpMode {
                 driveBase.slideNewTargetPosition = driveBase.slideOut;
                 driveBase.slide.setPower(.6);
                 driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
+                while (driveBase.arm.isBusy()); // Not Pushed: Test Friday.
                 //Move
                 driveBase.gyroTurn(.5,180);
                 while (driveBase.frontRight.isBusy());

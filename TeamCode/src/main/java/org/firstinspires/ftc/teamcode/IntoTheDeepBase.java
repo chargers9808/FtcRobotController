@@ -22,7 +22,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     /**
      * Delays
      */
-    private final long DELAY_SCORE = 5000;
+    private final long DELAY_SCORE = 350;
     public boolean diagnosticMode = false;
     protected CRServo intake;
 
@@ -83,54 +83,89 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
      * @param pos Target basket
      */
     public void score(Basket pos) {
+        driveBase.stopMotors();
         switch( pos ) {
             case TOP:
                 //Arm
-                driveBase.armNewTargetPosition = driveBase.armScoringPositon;
-                driveBase.arm.setPower(.4);
-                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+                driveBase.moveMotor(driveBase.arm, (driveBase.armScoringPositon-75), 0.4, false);
                 //Slide
-                driveBase.slideNewTargetPosition = driveBase.slideOut;
-                driveBase.slide.setPower(.6);
-                driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
+                driveBase.moveMotor(driveBase.slide, driveBase.slideOut, 0.6, false);
                 break;
             case MID:
             case BOTTOM:
                 // TODO: Implement preset for lower baskets
         }
+        // Move the bot
+        driveBase.gyroTurn(.5,180);
+        driveBase.waitForMotor(driveBase.frontRight);
+        driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-5);// determine the correct distance for this
+        driveBase.DriveSideways(.5,driveBase.rightDistanceToWall()-9);// determine the correct distance for this
+        driveBase.gyroTurn(.5,140);
+        driveBase.waitForMotor(driveBase.frontRight);
+
+        driveBase.moveMotor(driveBase.arm, (driveBase.armScoringPositon), 0.1, false);
+        driveBase.tankDrive(.2,2);
+
         //Outtake
         sweeperOut();
         sleep( DELAY_SCORE );
         sweeperOff();
+
+        // Back up from baskets
+        driveBase.tankDrive( 0.5, -2);
+        driveBase.gyroTurn(.5,90);
+        driveBase.tankDrive( 0.5, -5);
+
+        // Retract the slide
+        driveBase.moveMotor(driveBase.slide, driveBase.slideIn, 0.8, false);
+        // Retract the arm
+        driveBase.moveMotor(driveBase.arm, driveBase.armLowered-50, 0.8, false);
+        driveBase.moveMotor(driveBase.arm, driveBase.armLowered, 0.2, false);
+    }
+
+    public void pickup() {
+
+    }
+
+    public void prepareToTravel() {
+        //        1. Lift arm parallel w/ mat
+//        2. Pull slide in
+//        3. Back away from center
     }
 
     public void travel() {
-        //Sweeper
+        // From PickUp To Travel
+
+//        4. Lift arm to Travel Position
         sweeperOff();
-        //Arm
-        driveBase.armNewTargetPosition = driveBase.armTravelPosition;
-        driveBase.arm.setPower(.8);
-        driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-        //Slide
-        driveBase.slideNewTargetPosition = driveBase.slideIn;
-        driveBase.slide.setPower(.8);
-        driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
+        if (driveBase.arm.getCurrentPosition() > -20){
+        driveBase.moveMotor(driveBase.arm, driveBase.armLowered, 0.4, false);
+        }
+        driveBase.moveMotor(driveBase.slide, driveBase.slideIn, 0.8, true);
+        driveBase.moveMotor(driveBase.arm, driveBase.armTravelPosition, 0.8, false);
+        driveBase.slide.setPower(0);
+
     }
 
     public void displayDiagnostics() {
         if (diagnosticMode) {
-//            telemetry.addData("Left Front     : ", driveBase.frontLeft.getCurrentPosition());
-//            telemetry.addData("Right Front    : ", driveBase.frontRight.getCurrentPosition());
-//            telemetry.addData("Left Rear      : ", driveBase.backLeft.getCurrentPosition());
-//            telemetry.addData("Right Rear     : ", driveBase.backRight.getCurrentPosition());
-            telemetry.addData("arm motor      : ", driveBase.arm.getCurrentPosition());
+            telemetry.addData("Left Front     : ", driveBase.frontLeft.getCurrentPosition());
+            telemetry.addData("Right Front    : ", driveBase.frontRight.getCurrentPosition());
+            telemetry.addData("Left Rear      : ", driveBase.backLeft.getCurrentPosition());
+            telemetry.addData("Right Rear     : ", driveBase.backRight.getCurrentPosition());
+//            telemetry.addData("arm motor      : ", driveBase.arm.getCurrentPosition());
 //            telemetry.addData("lift motor     : ", driveBase.lift.getCurrentPosition());
 //            telemetry.addData("tiltServo      : ", driveBase.tiltPosition);
 //            telemetry.addData("gripServo      : ", driveBase.gripPosition);
-//            telemetry.addData("right Distance : ", driveBase.rightDistanceToWall());
-//            telemetry.addData("left distance  : ", driveBase.leftDistanceToWall());
-//            telemetry.addData("left front distance : ", driveBase.frontLeftDistance());
-//            telemetry.addData("right front distance : ", driveBase.frontRightDistance());
+            telemetry.addData("arm motor      : ", driveBase.arm.getCurrentPosition());
+            telemetry.addData("slide motor     : ", driveBase.slide.getCurrentPosition());
+
+            telemetry.addData("right Distance : ", driveBase.rightDistanceToWall());
+            telemetry.addData("left distance  : ", driveBase.leftDistanceToWall());
+            telemetry.addData("front distance : ", driveBase.frontDistanceToWall());
+            telemetry.addData("rear distance : ", driveBase.rearDistanceToWall());
+
+            telemetry.addData("heading:   ", driveBase.getFieldHeading());
             telemetry.update();
         }
         telemetry.addData("run-time : ", (driveBase.runtime.seconds()));

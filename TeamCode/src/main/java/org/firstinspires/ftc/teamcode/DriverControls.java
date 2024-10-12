@@ -55,7 +55,7 @@ public class DriverControls {
         double yCommand = (-opmode.gamepad1.left_stick_y - opmode.gamepad2.left_stick_y) / speedFactor; // forward and backward with respect to robot
         // (note: The joystick goes negative when pushed up, so we negate it)
         double xCommand = (opmode.gamepad1.left_stick_x + opmode.gamepad2.left_stick_x) / speedFactor;  // left and right with respect to robot
-        double r = (-opmode.gamepad1.right_stick_x - opmode.gamepad2.right_stick_x) / 3*speedFactor;        // spin cw or ccw
+        r = (-opmode.gamepad1.right_stick_x - opmode.gamepad2.right_stick_x) / 3*speedFactor;        // spin cw or ccw
         // create a steering "deadzone" near zero joystick deflection
         if (Math.abs(yCommand) < DEAD_ZONE) {
             yCommand = 0.;
@@ -75,15 +75,11 @@ public class DriverControls {
         // for Field Centric, rotate the joystick commands into the frame of reference of the robot ("coordinate system rotation")
         x = xCommand * Math.cos(theta) + yCommand * Math.sin(theta);
         y = yCommand * Math.cos(theta) - xCommand * Math.sin(theta);
-        x = -x;
-        y = -y;
 // or... for robot-centric steering, use the scaled joystick inputs directly
 
         if (!fieldCentric) { // make the joystick inputs non-linear to make it easier to control the rotation rate at slow speeds
             x = xCommand * xCommand* xCommand;
             y = yCommand * yCommand* yCommand;
-            x = -x;
-            y = -y;
         }
     }
 
@@ -154,6 +150,6 @@ public class DriverControls {
     }
 
     public boolean triggered(float trigger) {
-        return trigger < TRIGGER_THRESHOLD;
+        return trigger >= TRIGGER_THRESHOLD;
     }
 }

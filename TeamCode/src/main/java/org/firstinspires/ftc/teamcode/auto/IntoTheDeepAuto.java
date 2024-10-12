@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auto;
 
 import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
+import org.firstinspires.ftc.teamcode.LinearOpMode9808;
 
 abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
     //TODO: Defile init operations

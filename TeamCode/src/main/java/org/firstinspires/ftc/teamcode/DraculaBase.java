@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.gobilda.GoBildaPinpointDriver;
 public class DraculaBase {
     //region hardware devices
     public DcMotor frontLeft, frontRight, backLeft, backRight, arm, slide;
-    public Servo grip, tilt, liftRelease, droneRelease, holder;
+    public Servo grip, tilt, liftRelease, droneRelease, holder, led;
     public DistanceSensor revRangeLeft, revRangeRight, revRangeFront, revRangeRear;
     public RevBlinkinLedDriver blinkinLedDriver;
     public RevBlinkinLedDriver.BlinkinPattern pattern;
@@ -85,13 +85,13 @@ public class DraculaBase {
     public int slideNewTargetPosition = 20;
     public int slideOut = -1580;
     public int slideIncrement = 20;
-    public int slideIn = 20;
+    public int slideIn = -20;
 
 
     double armPower = .8;
     public int armIncrement = 20;
     public int armLowered = -50;
-    public int armTravelPosition = -2000;
+    public int armTravelPosition = -1990;
     public int armScoringPositon =  -1730;
     public int armup = 2200;
     public int armPickingPosition = 150;
@@ -156,6 +156,7 @@ public class DraculaBase {
 //        tilt = getServo("tilt");
 //        liftRelease = getServo("liftrelease");
 //        droneRelease = getServo("dronerelease");
+        led = getHardwareMap().servo.get("led");
     }
     private Servo getCrServo(String deviceName) {
         return getHardwareMap().servo.get(deviceName);
@@ -390,6 +391,10 @@ public class DraculaBase {
         blinkinLedDriver.setPattern(pattern);
     }
 
+    public void setLED(double color) {
+        led.setPosition( color );
+    }
+
     public void setSolidGreenLED() {
         pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
         blinkinLedDriver.setPattern(pattern);
@@ -527,6 +532,7 @@ public class DraculaBase {
             backLeft.setTargetPosition(newLeftRearTarget);
             backRight.setTargetPosition(newRightRearTarget);
 
+
 // Turn On RUN_TO_POSITION
             frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -542,8 +548,8 @@ public class DraculaBase {
             backLeft.setPower(speed);
             backRight.setPower(speed);
 
-//            while (((LinearOpMode) callingOpMode).opModeIsActive() && frontLeft.isBusy()) {
-//            }
+            while (((LinearOpMode) callingOpMode).opModeIsActive() && frontLeft.isBusy()) {
+            }
             stopMotors();
 
             // Turn off RUN_TO_POSITION
@@ -868,5 +874,28 @@ public class DraculaBase {
         target = Math.max( Math.min(target,max), min );
         motor.setTargetPosition(target);
         return target;
+    }
+
+    /**
+     * Move a motor and wait for it to finish
+     *
+     * @param motor Motor to move
+     * @param target Target position
+     * @param power Motor power
+     */
+    public void moveMotor(DcMotor motor, int target, double power, boolean wait) {
+        motor.setPower(power);
+        motor.setTargetPosition(target);
+        if (wait) {
+            waitForMotor(motor);
+        }
+    }
+
+    /**
+     * Wait for the current motor to finish moving
+     * @param motor Motor to wait for
+     */
+    public void waitForMotor(DcMotor motor) {
+        while (motor.isBusy());
     }
 }
