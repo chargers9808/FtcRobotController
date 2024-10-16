@@ -87,8 +87,13 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
                 score(Basket.TOP);
             }
 
-            // Preset to travel
-            if( gamepad1.x) {
+            if (gamepad1.x)
+                pickup();
+
+            if (gamepad1.b)
+                prepareToTravel();
+
+            if( gamepad1.a) {
                 travel();
             }
 
@@ -99,28 +104,29 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
     }
 
     private void processArm() {
-        if( gamepad1.left_bumper ) {
+        if( gamepad2.left_bumper ) {
             driveBase.incrementMotorSafe(driveBase.arm,-1 * ARM_INCREMENT, .8, driveBase.armTravelPosition, driveBase.armLowered);
-        } else if (controller.triggered(gamepad1.left_trigger)) {
+        } else if (controller.triggered(gamepad2.left_trigger)) {
             driveBase.incrementMotorSafe(driveBase.arm, ARM_INCREMENT, .8, driveBase.armTravelPosition, driveBase.armLowered);
         }
     }
 
     private void processSlide() {
-        if( gamepad1.right_bumper ) {
+        if( gamepad2.right_bumper ) {
             driveBase.incrementMotorSafe(driveBase.slide, SLIDE_INCREMENT, .8, driveBase.slideOut, driveBase.slideIn);
-        } else if (controller.triggered(gamepad1.right_trigger)) {
+        } else if (controller.triggered(gamepad2.right_trigger)) {
             driveBase.incrementMotorSafe(driveBase.slide, -1 * SLIDE_INCREMENT, .8, driveBase.slideOut, driveBase.slideIn);
         }
     }
 
     private void processSweeper() {
-        if (gamepad1.a) {
+        if (gamepad2.a) {
             sweeperIn();
-        } else if (gamepad1.b) {
+        } else if (gamepad2.b) {
             sweeperOut();
-        } else {
-            sweeperOff();
         }
+//        else {
+//            sweeperOff();
+//        }
     }
 }

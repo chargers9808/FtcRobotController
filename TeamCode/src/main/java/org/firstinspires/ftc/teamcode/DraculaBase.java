@@ -104,11 +104,20 @@ public class DraculaBase {
     public int slideIn = -20;
 
 
+    public int slideCollectPosition = -1150;
+
+
+
+
     double armPower = .8;
     public int armIncrement = 20;
-    public int armLowered = -50;
+    public int armLowered = -250;
     public int armTravelPosition = -1990;
     public int armScoringPositon =  -1730;
+
+    public int armCollectPositonUp = -460; //Middle position
+    public int armCollectPositonDown = -250; //Middle position
+
     public int armup = 2200;
     public int armPickingPosition = 150;
     public int armNewTargetPosition = 50;
