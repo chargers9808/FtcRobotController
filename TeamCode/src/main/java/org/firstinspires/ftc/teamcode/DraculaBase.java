@@ -19,6 +19,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.gobilda.GoBildaPinpointDriver;
 
 public class DraculaBase {
+    public enum LEDColor {
+        OFF,
+        RED,
+        ORANGE,
+        YELLOW,
+        SAGE,
+        GREEN,
+        AZURE,
+        BLUE,
+        INDIGO,
+        VIOLET,
+        WHITE
+    }
     //region hardware devices
     public DcMotor frontLeft, frontRight, backLeft, backRight, arm, slide;
     public Servo grip, tilt, liftRelease, droneRelease, holder, led;
@@ -40,6 +53,9 @@ public class DraculaBase {
     static final double WHEEL_CIRCUMFERENCE = (104. / 25.4) * Math.PI;//  circumference in inches
 
     static final double COUNTS_PER_INCH_435 = COUNTS_PER_REV_gobilda435 / WHEEL_CIRCUMFERENCE;// counts/inch travelled
+
+    // Set to indicate which LED driver to use
+    public static final boolean useBlinkinDriver = false;
 
     double y = 0.0;
     double x = 0.0;
@@ -391,8 +407,45 @@ public class DraculaBase {
         blinkinLedDriver.setPattern(pattern);
     }
 
-    public void setLED(double color) {
-        led.setPosition( color );
+    /**
+     * Sets the active LED color on the goBILDA LED
+     *
+     * @param color the LED color to set
+     */
+    public void setLED(LEDColor color) {
+        double value = 0.0;
+        switch( color ) {
+            case OFF:
+                value = 0.0;
+                break;
+            case RED:
+                value = 0.277;
+                break;
+            case ORANGE:
+                value = 0.333;
+                break;
+            case YELLOW:
+                value = 0.388;
+                break;
+            case SAGE:
+                value = 0.444;
+                break;
+            case GREEN:
+                value = 0.500;
+                break;
+            case AZURE:
+                value = 0.555;
+                break;
+            case BLUE:
+                value = 0.611;
+                break;
+            case VIOLET:
+                value = 0.722;
+                break;
+            case WHITE:
+                value = 1.0;
+        }
+        led.setPosition( value );
     }
 
     public void setSolidGreenLED() {
