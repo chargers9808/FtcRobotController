@@ -90,10 +90,10 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
             if (gamepad1.x)
                 pickup();
 
-            if (gamepad1.b)
+            if (gamepad1.a)
                 prepareToTravel();
 
-            if( gamepad1.a) {
+            if( gamepad1.b) {
                 travel();
             }
 

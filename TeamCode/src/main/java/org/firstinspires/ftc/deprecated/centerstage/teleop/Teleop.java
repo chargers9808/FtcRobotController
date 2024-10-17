@@ -261,7 +261,7 @@ public abstract class Teleop extends LinearOpMode9808 {
 
             if (distance < 48) {
                 // AJB: D-pad right was -17, D-pad left was -16.5
-                driveBase.DriveSidewaysCorrected(.5, distance - 17, targetDeg);
+                driveBase.driveSidewaysCorrected(.5, distance - 17, targetDeg);
                 driveBase.tankDrive(.4, driveBase.frontLeftDistance() - 8);
             }
         }

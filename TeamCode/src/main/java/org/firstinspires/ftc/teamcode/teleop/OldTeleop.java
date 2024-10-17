@@ -271,7 +271,7 @@ public class OldTeleop extends IntoTheDeepBase {
             driveBase.tilt.setPosition(driveBase.tiltToPick);
 
             if (driveBase.rightDistanceToWall() < 48) {
-                driveBase.DriveSideways(.5, driveBase.rightDistanceToWall() - 16.5);
+                driveBase.driveSideways(.5, driveBase.rightDistanceToWall() - 16.5);
                 driveBase.gyroTurn(.6, 0);
                 driveBase.tankDrive(.4, driveBase.frontDistanceToWall() - 8);
             }
@@ -286,7 +286,7 @@ public class OldTeleop extends IntoTheDeepBase {
             driveBase.tilt.setPosition(driveBase.tiltToPick);
 
             if (driveBase.leftDistanceToWall() < 48) {
-                driveBase.DriveSideways(.5, -(driveBase.leftDistanceToWall() - 17));
+                driveBase.driveSideways(.5, -(driveBase.leftDistanceToWall() - 17));
                 driveBase.tankDrive(.5, driveBase.frontDistanceToWall() - 8);
             }
         }

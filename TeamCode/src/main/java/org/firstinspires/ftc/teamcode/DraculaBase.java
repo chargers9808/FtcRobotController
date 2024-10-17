@@ -17,7 +17,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.gobilda.GoBildaPinpointDriver;
-
 public class DraculaBase {
     public enum LEDColor {
         OFF,
@@ -96,31 +95,30 @@ public class DraculaBase {
 
     public int liftNewTargetPosition = 0;
     public int liftUp = 2200;
-    public int liftIncrement = 30;
 
-    public int slideNewTargetPosition = 20;
-    public int slideOut = -1580;
-    public int slideIncrement = 20;
-    public int slideIn = -20;
+    public int slideNewTargetPosition = 20; //ITD
+    public int slideOut = -1580; //ITD
+    public int slideIncrement = 20; //ITD
+    public int slideIn = -20; //ITD
 
 
-    public int slideCollectPosition = -1150;
+    public int slideCollectPosition = -1150; //ITD
 
 
 
 
     double armPower = .8;
-    public int armIncrement = 20;
-    public int armLowered = -250;
-    public int armTravelPosition = -1990;
-    public int armScoringPositon =  -1730;
+    public int armIncrement = 20; //ITD
+    public int armLowered = -250; //ITD
+    public int armTravelPosition = -1990; //ITD
+    public int armScoringPositon =  -1730; //ITD
 
-    public int armCollectPositonUp = -460; //Middle position
-    public int armCollectPositonDown = -250; //Middle position
+    public int armCollectPositonUp = -460; //Middle position //ITD
+    public int armCollectPositonDown = -250; //Middle position //ITD
 
-    public int armup = 2200;
+    public int armup = 2200; //ITD
     public int armPickingPosition = 150;
-    public int armNewTargetPosition = 50;
+    public int armNewTargetPosition = 50; //ITD
 
     public int armJustAboveSecondLine = 1;
     public int armJustAboveFirstLine = 1;
@@ -517,7 +515,7 @@ public class DraculaBase {
         return theta;
     }
 
-    public void DriveSideways(double speed, double distance) {
+    public void driveSideways(double speed, double distance) {
         int newLeftFrontTarget;
         int newRightRearTarget;
         int newRightFrontTarget;
@@ -700,7 +698,7 @@ public class DraculaBase {
         }
     }
 
-    public void DriveSidewaysCorrected(double speed, double distance, double directionOfFront) {
+    public void driveSidewaysCorrected(double speed, double distance, double directionOfFront) {
 
         int newLeftFrontTarget;
         int newRightRearTarget;
@@ -960,4 +958,53 @@ public class DraculaBase {
     public void waitForMotor(DcMotor motor) {
         while (motor.isBusy());
     }
+
+
+    /**
+     * Drive Sideways until distance sensor reads distance
+     * @param speed speed of motor
+     * @param distance target distance
+     * @param rightSensor Are we using the Right Sensor
+     *
+     */
+    public void driveSidewaysUntil(double speed, double distance, boolean rightSensor ){
+        DistanceSensor sensor;
+        double mult = 1;
+        if ( rightSensor ) {
+            sensor = revRangeRight;
+        } else {
+            sensor = revRangeLeft;
+            mult *= -1;
+        }
+        double currentDistance = sensor.getDistance(DistanceUnit.INCH);
+        while (currentDistance == DistanceSensor.distanceOutOfRange) {
+            driveSidewaysCorrected(speed, 6 * mult, getFieldHeading());
+            currentDistance = sensor.getDistance(DistanceUnit.INCH);
+        }
+        driveSideways(speed, (sensor.getDistance(DistanceUnit.INCH)-distance)*mult);
+    }
+
+    /**
+     *
+     * @param speed speed of motor
+     * @param distance target distance
+     * @param frontSensor Are we using the Front Sensor?
+     */
+    public void tankDriveUntil(double speed, double distance, boolean frontSensor) {
+        DistanceSensor sensor;
+        double mult = 1;
+        if (frontSensor) {
+            sensor = revRangeFront;
+        } else {
+            sensor = revRangeRear;
+            mult *= -1;
+        }
+        double currentDistance = sensor.getDistance(DistanceUnit.INCH);
+        while (currentDistance == DistanceSensor.distanceOutOfRange) {
+            tankDrive(speed, 6 * mult);
+            currentDistance = sensor.getDistance(DistanceUnit.INCH);
+        }
+        tankDrive(speed, (sensor.getDistance(DistanceUnit.INCH) - distance) * mult);
+    }
+
 }

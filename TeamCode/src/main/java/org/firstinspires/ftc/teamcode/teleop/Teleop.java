@@ -237,7 +237,7 @@ public class Teleop extends LinearOpMode {
 
                 if (driveBase.rightDistanceToWall() < 48)
                 {
-                    driveBase.DriveSideways(.5, driveBase.rightDistanceToWall() - 16.5);
+                    driveBase.driveSideways(.5, driveBase.rightDistanceToWall() - 16.5);
                     driveBase.gyroTurn(.6,90);
                     driveBase.tankDrive(.4, driveBase.frontDistanceToWall() - 8);
                 }
@@ -251,7 +251,7 @@ public class Teleop extends LinearOpMode {
                 driveBase.tilt.setPosition(driveBase.tiltToPick);
 
                 if (driveBase.leftDistanceToWall() < 48) {
-                    driveBase.DriveSideways(.5, -(driveBase.leftDistanceToWall() - 17));
+                    driveBase.driveSideways(.5, -(driveBase.leftDistanceToWall() - 17));
                     driveBase.tankDrive(.5, driveBase.frontDistanceToWall() - 8);
                 }
             }
@@ -265,7 +265,7 @@ public class Teleop extends LinearOpMode {
 //            ------------------ Intake/Outake --------------------
             if (gamepad1.a) //in
             {
-                driveBase.DriveSideways(.5,driveBase.rightDistanceToWall()-9);// determine the correct distance for this
+                driveBase.driveSideways(.5,driveBase.rightDistanceToWall()-9);// determine the correct distance for this
                 driveBase.waitForMotor(driveBase.frontRight);
             }
             else if (gamepad1.b) //out
@@ -292,7 +292,7 @@ public class Teleop extends LinearOpMode {
                 //Move
                 driveBase.gyroTurn(.5,180);
                 while (driveBase.frontRight.isBusy());
-                driveBase.DriveSideways(.5,driveBase.rightDistanceToWall()-9);// determine the correct distance for this
+                driveBase.driveSideways(.5,driveBase.rightDistanceToWall()-9);// determine the correct distance for this
                 driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-7);// determine the correct distance for this
                 while (driveBase.frontRight.isBusy());
                 driveBase.gyroTurn(.5,135);

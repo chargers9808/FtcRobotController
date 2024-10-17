@@ -241,7 +241,7 @@ public class RedTeleopTest extends LinearOpMode {
        
                     if(Math.abs(vision.lateralOffset+largeTagtoPickupLocation)<24){
                     driveBase.gyroTurn(.5,90);
-                    driveBase.DriveSidewaysCorrected( .4,vision.lateralOffset+largeTagtoPickupLocation,90);
+                    driveBase.driveSidewaysCorrected( .4,vision.lateralOffset+largeTagtoPickupLocation,90);
                     driveBase.gyroTurn(.5,90);
                     driveBase.tankDrive(.3,vision.forwardDistanceToTag-6.1);
                     //driveBase.tankDrive(.3,driveBase.frontRightDistance()-5.5);
@@ -389,7 +389,7 @@ public class RedTeleopTest extends LinearOpMode {
        
         if(Math.abs(vision.lateralOffset+largeTagtoPickupLocation)<24){
             driveBase.gyroTurn(.5,90);
-            driveBase.DriveSidewaysCorrected( .4,vision.lateralOffset+largeTagtoPickupLocation,90);
+            driveBase.driveSidewaysCorrected( .4,vision.lateralOffset+largeTagtoPickupLocation,90);
             driveBase.gyroTurn(.5,90);
             driveBase.tankDrive(.4,driveBase.frontDistanceToWall()-3);
         }

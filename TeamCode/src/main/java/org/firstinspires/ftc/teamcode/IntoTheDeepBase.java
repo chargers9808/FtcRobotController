@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 
-import org.firstinspires.ftc.teamcode.auto.Position;
-
 public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBase {
 
     public enum Basket {
@@ -29,7 +27,10 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
      * Delays
      */
     private final long DELAY_SCORE = 350;
+
     public boolean diagnosticMode = false;
+    public int PickupPrimary = 0;
+
     protected CRServo intake;
 
     protected abstract void initialize();
@@ -88,6 +89,8 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
      * Score an item in the specified basket
      * @param pos Target basket
      */
+
+
     public void score(Basket pos) {
         driveBase.stopMotors();
         switch( pos ) {
@@ -105,7 +108,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         driveBase.gyroTurn(.5,180);
         driveBase.waitForMotor(driveBase.frontRight);
         driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-5);// determine the correct distance for this
-        driveBase.DriveSideways(.5,driveBase.rightDistanceToWall()-9);// determine the correct distance for this
+        driveBase.driveSideways(.5,driveBase.rightDistanceToWall()-9);// determine the correct distance for this
         driveBase.gyroTurn(.5,140);
         driveBase.waitForMotor(driveBase.frontRight);
 
@@ -130,21 +133,33 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     }
 
     public void pickup() {
-        driveBase.tankDrive(.5, driveBase.frontDistanceToWall()-9);
-        driveBase.moveMotor(driveBase.arm, (driveBase.armCollectPositonUp ), 0.6, true);
-        driveBase.moveMotor(driveBase.slide, driveBase.slideCollectPosition, .8, true);
-        driveBase.moveMotor(driveBase.arm, driveBase.armCollectPositonDown, .4, false);
+        if (PickupPrimary == 0) {
+            driveBase.tankDrive(.5, driveBase.frontDistanceToWall() - 9);
+            driveBase.moveMotor(driveBase.arm, (driveBase.armCollectPositonUp), 0.6, true);
+        }
+        if ((PickupPrimary%2) == 0) {
+            driveBase.moveMotor(driveBase.slide, driveBase.slideCollectPosition, .8, true);
+            driveBase.moveMotor(driveBase.arm, driveBase.armCollectPositonDown, .4, false);
+            driveBase.setLED(DraculaBase.LEDColor.WHITE);
+        }
+        else {
+            driveBase.moveMotor(driveBase.slide, driveBase.slideCollectPosition-300, .8, true);
+            driveBase.moveMotor(driveBase.arm, driveBase.armCollectPositonDown-10, .4, false);
+            driveBase.setLED(DraculaBase.LEDColor.YELLOW);
+        }
         sweeperIn();
+
+        PickupPrimary++;
     }
 
     public void prepareToTravel() {
+        PickupPrimary = 0;
         sweeperOff();
         driveBase.moveMotor(driveBase.arm, (driveBase.armCollectPositonUp ), 0.6, false);
         driveBase.moveMotor(driveBase.slide, driveBase.slideIn, .8, true);
     }
 
     public void travel() {
-//         From PickUp To Travel
         sweeperIn();
         sleep( 50 );
         sweeperOff();
