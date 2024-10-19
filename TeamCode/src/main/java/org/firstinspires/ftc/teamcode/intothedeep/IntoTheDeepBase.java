@@ -9,54 +9,79 @@ import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.LinearOpMode9808;
 
 public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBase {
-
+    /**
+     * Target basket to score in
+     */
     public enum Basket {
         TOP,
         MID,
         BOTTOM
     }
 
-    public enum Collect {
-        Out,
-        Middle,
-        In,
-    }
-
     /**
-     * Sweeper powers
+     * Power setting for sweeping in a sample
      */
     private final double SWEEPER_IN = -1;
+    /**
+     * Power setting for releasing a sample from sweeper
+     */
     private final double SWEEPER_OUT = 1;
+    /**
+     * Power setting to stop sweeper
+     */
     private final double SWEEPER_OFF = 0;
 
     /**
-     * Delays
+     * Delay between starting sweeper out and stopping sweeper
      */
     private final long DELAY_SCORE = 350;
 
     /**
-     * Positions
+     * Postion when slide is extended
      */
-    public int slideNewTargetPosition = 20;
     public int slideOut = -1580;
-    public int slideIncrement = 20;
+    /**
+     * Position when slide is retracted
+     */
     public int slideIn = -20;
+    /**
+     * Position when slide is partially extended to sweep
+     */
     public int slideCollectPosition = -1150;
 
-    public int armIncrement = 20;
+    /**
+     * Position when arm is lowered
+     */
     public int armLowered = -250;
+    /**
+     * Position when arm is ready for travel
+     */
     public int armTravelPosition = -1990;
-    public int armScoringPositon =  -1730;
+    /**
+     * Position when arm is ready to score
+     */
+    public int armScoringPosition =  -1730;
+    /**
+     * Position for arm to clear the submersible bar (parallel to mat)
+     */
+    public int armCollectPositionUp = -460;
+    /**
+     * Position for arm when collecting
+     */
+    public int armCollectPositionDown = -250;
 
-    public int armCollectPositonUp = -460;
-    public int armCollectPositonDown = -250;
+    /**
+     * Counter used for pickup mode toggle
+     */
+    public int pickupPrimary = 0;
 
-    public int armup = 2200;
-    public int armNewTargetPosition = 50;
-
+    /**
+     * Flag for diagnostic mode
+     */
     public boolean diagnosticMode = false;
-    public int PickupPrimary = 0;
-
+    /**
+     * Sweeper motor
+     */
     protected CRServo intake;
 
     protected abstract void initialize();
@@ -115,14 +140,12 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
      * Score an item in the specified basket
      * @param pos Target basket
      */
-
-
     public void score(Basket pos) {
         driveBase.stopMotors();
         switch( pos ) {
             case TOP:
                 //Arm
-                driveBase.moveMotor(driveBase.arm, (armScoringPositon-75), 0.4, false);
+                driveBase.moveMotor(driveBase.arm, (armScoringPosition -75), 0.4, false);
                 //Slide
                 driveBase.moveMotor(driveBase.slide, slideOut, 0.6, false);
                 break;
@@ -138,7 +161,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         driveBase.gyroTurn(.5,140);
         driveBase.waitForMotor(driveBase.frontRight);
 
-        driveBase.moveMotor(driveBase.arm, (armScoringPositon), 0.1, false);
+        driveBase.moveMotor(driveBase.arm, (armScoringPosition), 0.1, false);
         driveBase.tankDrive(.2,2);
 
         //Outtake
@@ -159,29 +182,29 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     }
 
     public void pickup() {
-        if (PickupPrimary == 0) {
+        if (pickupPrimary == 0) {
             driveBase.tankDrive(.5, driveBase.frontDistanceToWall() - 9);
-            driveBase.moveMotor(driveBase.arm, (armCollectPositonUp), 0.6, true);
+            driveBase.moveMotor(driveBase.arm, (armCollectPositionUp), 0.6, true);
         }
-        if ((PickupPrimary%2) == 0) {
+        if ((pickupPrimary %2) == 0) {
             driveBase.moveMotor(driveBase.slide, slideCollectPosition, .8, true);
-            driveBase.moveMotor(driveBase.arm, armCollectPositonDown, .4, false);
+            driveBase.moveMotor(driveBase.arm, armCollectPositionDown, .4, false);
             driveBase.setLED(DraculaBase.LEDColor.WHITE);
         }
         else {
             driveBase.moveMotor(driveBase.slide, slideCollectPosition-300, .8, true);
-            driveBase.moveMotor(driveBase.arm, armCollectPositonDown-10, .4, false);
+            driveBase.moveMotor(driveBase.arm, armCollectPositionDown -10, .4, false);
             driveBase.setLED(DraculaBase.LEDColor.YELLOW);
         }
         sweeperIn();
 
-        PickupPrimary++;
+        pickupPrimary++;
     }
 
     public void prepareToTravel() {
-        PickupPrimary = 0;
+        pickupPrimary = 0;
         sweeperOff();
-        driveBase.moveMotor(driveBase.arm, (armCollectPositonUp ), 0.6, false);
+        driveBase.moveMotor(driveBase.arm, (armCollectPositionUp), 0.6, false);
         driveBase.moveMotor(driveBase.slide, slideIn, .8, true);
     }
 

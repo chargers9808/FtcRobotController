@@ -49,7 +49,7 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
             driveBase.driveSidewaysCorrected(.5, driveBase.leftDistanceToWall()-15, 0);
             driveBase.tankDrive(.5, driveBase.rearDistanceToWall()+30);
             driveBase.driveSideways(.2, 6);
-            driveBase.moveMotor(driveBase.arm, armCollectPositonDown, .4, false);
+            driveBase.moveMotor(driveBase.arm, armCollectPositionDown, .4, false);
             sweeperIn();
             driveBase.tankDrive(.5, 2);
             travel();
@@ -63,7 +63,7 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
             driveBase.driveSidewaysCorrected(.5, driveBase.leftDistanceToWall()-9, 0);
             driveBase.tankDrive(.5, driveBase.rearDistanceToWall()+30);
             driveBase.driveSideways(.2, -6);
-            driveBase.moveMotor(driveBase.arm, armCollectPositonDown, .4, false);
+            driveBase.moveMotor(driveBase.arm, armCollectPositionDown, .4, false);
             sweeperIn();
             driveBase.tankDrive(.5, 2);
             travel();
@@ -79,7 +79,7 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
             driveBase.tankDriveCorrected(.5, driveBase.rearDistanceToWall()+40, 0);
             driveBase.gyroTurn(.5,90);
 
-            driveBase.moveMotor(driveBase.arm, (armCollectPositonDown ), 0.6, true);
+            driveBase.moveMotor(driveBase.arm, (armCollectPositionDown), 0.6, true);
             driveBase.moveMotor(driveBase.slide, slideCollectPosition, .8, true);
             sweeperIn();
             driveBase.tankDrive(.2, 2);
