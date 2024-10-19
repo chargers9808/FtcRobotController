@@ -113,7 +113,7 @@ public class DriverControls {
         if (opmode.gamepad2.left_stick_button) {
             driveBase.imu.resetYaw();
             HeadingHolder.setHeading(0);
-            driveBase.setSolidGoldLED();
+            driveBase.setLED(DraculaBase.LEDColor.GREEN);
         }
     }
 

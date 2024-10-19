@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode.intothedeep.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.DriverControls;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
-import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
-import org.firstinspires.ftc.teamcode.LinearOpMode9808;
+import org.firstinspires.ftc.teamcode.intothedeep.IntoTheDeepBase;
 
 @TeleOp(name = "ITDTeleop", group = "Linear Opmode")
 
@@ -105,17 +104,17 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
 
     private void processArm() {
         if( gamepad2.left_bumper ) {
-            driveBase.incrementMotorSafe(driveBase.arm,-1 * ARM_INCREMENT, .8, driveBase.armTravelPosition, driveBase.armLowered);
+            driveBase.incrementMotorSafe(driveBase.arm,-1 * ARM_INCREMENT, .8, armTravelPosition, armLowered);
         } else if (controller.triggered(gamepad2.left_trigger)) {
-            driveBase.incrementMotorSafe(driveBase.arm, ARM_INCREMENT, .8, driveBase.armTravelPosition, driveBase.armLowered);
+            driveBase.incrementMotorSafe(driveBase.arm, ARM_INCREMENT, .8, armTravelPosition, armLowered);
         }
     }
 
     private void processSlide() {
         if( gamepad2.right_bumper ) {
-            driveBase.incrementMotorSafe(driveBase.slide, SLIDE_INCREMENT, .8, driveBase.slideOut, driveBase.slideIn);
+            driveBase.incrementMotorSafe(driveBase.slide, SLIDE_INCREMENT, .8, slideOut, slideIn);
         } else if (controller.triggered(gamepad2.right_trigger)) {
-            driveBase.incrementMotorSafe(driveBase.slide, -1 * SLIDE_INCREMENT, .8, driveBase.slideOut, driveBase.slideIn);
+            driveBase.incrementMotorSafe(driveBase.slide, -1 * SLIDE_INCREMENT, .8, slideOut, slideIn);
         }
     }
 

@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.auto;
+package org.firstinspires.ftc.teamcode.intothedeep.auto;
 
 import org.firstinspires.ftc.teamcode.HeadingHolder;
-import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
-import org.firstinspires.ftc.teamcode.LinearOpMode9808;
+import org.firstinspires.ftc.teamcode.intothedeep.IntoTheDeepBase;
 
 abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
     //TODO: Defile init operations
@@ -50,7 +49,7 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
             driveBase.driveSidewaysCorrected(.5, driveBase.leftDistanceToWall()-15, 0);
             driveBase.tankDrive(.5, driveBase.rearDistanceToWall()+30);
             driveBase.driveSideways(.2, 6);
-            driveBase.moveMotor(driveBase.arm, driveBase.armCollectPositonDown, .4, false);
+            driveBase.moveMotor(driveBase.arm, armCollectPositonDown, .4, false);
             sweeperIn();
             driveBase.tankDrive(.5, 2);
             travel();
@@ -64,7 +63,7 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
             driveBase.driveSidewaysCorrected(.5, driveBase.leftDistanceToWall()-9, 0);
             driveBase.tankDrive(.5, driveBase.rearDistanceToWall()+30);
             driveBase.driveSideways(.2, -6);
-            driveBase.moveMotor(driveBase.arm, driveBase.armCollectPositonDown, .4, false);
+            driveBase.moveMotor(driveBase.arm, armCollectPositonDown, .4, false);
             sweeperIn();
             driveBase.tankDrive(.5, 2);
             travel();
@@ -80,8 +79,8 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
             driveBase.tankDriveCorrected(.5, driveBase.rearDistanceToWall()+40, 0);
             driveBase.gyroTurn(.5,90);
 
-            driveBase.moveMotor(driveBase.arm, (driveBase.armCollectPositonDown ), 0.6, true);
-            driveBase.moveMotor(driveBase.slide, driveBase.slideCollectPosition, .8, true);
+            driveBase.moveMotor(driveBase.arm, (armCollectPositonDown ), 0.6, true);
+            driveBase.moveMotor(driveBase.slide, slideCollectPosition, .8, true);
             sweeperIn();
             driveBase.tankDrive(.2, 2);
             travel();
