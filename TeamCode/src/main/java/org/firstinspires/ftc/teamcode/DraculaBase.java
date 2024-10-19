@@ -257,6 +257,15 @@ public class DraculaBase {
         stopMotors();  // the turn is complete within the HEADING_THRESHOLD
         // HeadingHolder.setHeading(robotFieldHeading());
     }
+
+    public void gyroTurnWait(double speed, double targetAngle) {
+        gyroTurn(speed, targetAngle);
+        waitForMotor(frontRight);
+        waitForMotor(frontLeft);
+        waitForMotor(backLeft);
+        waitForMotor(backRight);
+    }
+
 //------------------------------------------------------------------------------------------
 
     public void stopMotors() {

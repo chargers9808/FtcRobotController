@@ -31,64 +31,87 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
     protected void run_9808() {
         if( opModeIsActive() ) {
             displayDiagnostics();
+            displayDiagnostics();
             // Call the run code for the specific opmode
 
+            travel();
             //Drive Off Wall
-            driveBase.tankDrive(.5, driveBase.rearDistanceToWall()+12);
 
+            driveBase.tankDrive(.5, 10);
             //Drive Closer to Left Wall
             driveBase.driveSidewaysUntil(.5, 12, false);
 
             //Preset to Score
             score(Basket.TOP); // Loaded
 
-
-
             //Move to Move Sample
-            driveBase.gyroTurn(.5, 0);
-            driveBase.driveSidewaysCorrected(.5, driveBase.leftDistanceToWall()-15, 0);
-            driveBase.tankDrive(.5, driveBase.rearDistanceToWall()+30);
-            driveBase.driveSideways(.2, 6);
-            driveBase.moveMotor(driveBase.arm, armCollectPositionDown, .4, false);
-            sweeperIn();
-            driveBase.tankDrive(.5, 2);
-            travel();
-            driveBase.tankDriveUntil(.5, 12, false);
+            driveBase.moveMotor(driveBase.arm, armCollectPositionUp, .4, false);
+            sleep(50);
+            driveBase.tankDrive(.5, driveBase.frontDistanceToWall()-25);
+            sleep(50);
+            driveBase.gyroTurnWait(.5,90);
+            driveBase.driveSideways(.5, 38 - driveBase.leftDistanceToWall());
+            sleep(50);
+            driveBase.gyroTurnWait(.5,90);
 
+            sweeperIn();
+            driveBase.tankDrive(.1, 4.5);
+            driveBase.moveMotor(driveBase.arm, armCollectPositionMat, .3, false);
+            while (driveBase.arm.isBusy());
+            sleep(500);
+            sweeperOff();
+
+            travel();
+            driveBase.driveSideways(.5, -24);
+            driveBase.tankDrive(.5, 10);
             score(Basket.TOP); // First Pickup
 
-
             //Move to Move Sample
-            driveBase.gyroTurn(.5, 0);
-            driveBase.driveSidewaysCorrected(.5, driveBase.leftDistanceToWall()-9, 0);
-            driveBase.tankDrive(.5, driveBase.rearDistanceToWall()+30);
-            driveBase.driveSideways(.2, -6);
-            driveBase.moveMotor(driveBase.arm, armCollectPositionDown, .4, false);
+            driveBase.moveMotor(driveBase.arm, armCollectPositionUp, .4, false);
+            sleep(50);
+            driveBase.tankDrive(.5, driveBase.frontDistanceToWall()-16);
+            sleep(50);
+            driveBase.gyroTurnWait(.5,90);
+            driveBase.driveSideways(.5, 38 - driveBase.leftDistanceToWall());
+            sleep(50);
+            driveBase.gyroTurnWait(.5,90);
+
             sweeperIn();
-            driveBase.tankDrive(.5, 2);
+            driveBase.tankDrive(.1, 4.5);
+            driveBase.moveMotor(driveBase.arm, armCollectPositionMat, .2, false);
+            while (driveBase.arm.isBusy());
+            sleep(500);
+            sweeperOff();
+
             travel();
-            driveBase.tankDriveUntil(.5, 12, false);
+            driveBase.driveSideways(.5, -24);
+            driveBase.tankDrive(.5, 10);
+            score(Basket.TOP); // Second Pickup    //Time in middle of this.
 
-            score(Basket.TOP); //Second Pickup
 
-
-
-            //Move to Move Sample
-            driveBase.gyroTurn(.5, 0);
-            driveBase.driveSidewaysCorrected(.5, driveBase.leftDistanceToWall()-18, 0);
-            driveBase.tankDriveCorrected(.5, driveBase.rearDistanceToWall()+40, 0);
-            driveBase.gyroTurn(.5,90);
-
-            driveBase.moveMotor(driveBase.arm, (armCollectPositionDown), 0.6, true);
-            driveBase.moveMotor(driveBase.slide, slideCollectPosition, .8, true);
-            sweeperIn();
-            driveBase.tankDrive(.2, 2);
-            travel();
-            driveBase.tankDriveUntil(.5, 12, false);
-
-            score(Basket.TOP); // Third Pickup
-
-            //Park
+//            //Move to Move Sample
+//            driveBase.moveMotor(driveBase.arm, armCollectPositionUp, .4, false);
+//            sleep(50);
+//            driveBase.tankDrive(.5, driveBase.frontDistanceToWall()-8);
+//            sleep(50);
+//            driveBase.gyroTurnWait(.5,90);
+//            driveBase.driveSideways(.5, 38 - driveBase.leftDistanceToWall());
+//            sleep(50);
+//            driveBase.gyroTurnWait(.5,90);
+//
+//            sweeperIn();
+//            driveBase.tankDrive(.5, driveBase.frontDistanceToWall()-5);
+//            driveBase.moveMotor(driveBase.arm, armCollectPositionMat, .2, false);
+//            while (driveBase.arm.isBusy());
+//            sleep(500);
+//            sweeperOff();
+//
+//            travel();
+//            driveBase.driveSideways(.5, -24);
+//            driveBase.tankDrive(.5, 10);
+//            score(Basket.TOP); // Third Pickup
+//
+//            //Park
             finish();
         }
     }

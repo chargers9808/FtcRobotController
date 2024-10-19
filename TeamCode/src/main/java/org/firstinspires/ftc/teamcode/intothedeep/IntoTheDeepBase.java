@@ -34,12 +34,12 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     /**
      * Delay between starting sweeper out and stopping sweeper
      */
-    private final long DELAY_SCORE = 350;
+    protected final long DELAY_SCORE = 500;
 
     /**
      * Postion when slide is extended
      */
-    public int slideOut = -1580;
+    public int slideOut = -1550;
     /**
      * Position when slide is retracted
      */
@@ -69,6 +69,12 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
      * Position for arm when collecting
      */
     public int armCollectPositionDown = -250;
+
+    /**
+     * Position for arm when collecting in Auto
+     */
+    public int armCollectPositionMat = -75;
+
 
     /**
      * Counter used for pickup mode toggle
@@ -145,7 +151,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         switch( pos ) {
             case TOP:
                 //Arm
-                driveBase.moveMotor(driveBase.arm, (armScoringPosition -75), 0.4, false);
+                driveBase.moveMotor(driveBase.arm, (armScoringPosition -80), 0.4, false);
                 //Slide
                 driveBase.moveMotor(driveBase.slide, slideOut, 0.6, false);
                 break;
@@ -215,7 +221,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         if (driveBase.arm.getCurrentPosition() > -20){
         driveBase.moveMotor(driveBase.arm, armLowered, 0.4, false);
         }
-        driveBase.moveMotor(driveBase.slide, slideIn, 0.8, true);
+        driveBase.moveMotor(driveBase.slide, slideIn, 0.8, false);
         driveBase.moveMotor(driveBase.arm, armTravelPosition, 0.8, false);
         driveBase.slide.setPower(0);
 
