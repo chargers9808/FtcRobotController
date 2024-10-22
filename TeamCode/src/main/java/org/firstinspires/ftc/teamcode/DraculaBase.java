@@ -41,9 +41,6 @@ public class DraculaBase {
     GoBildaPinpointDriver odometryComputer;
     //endregion
 
-    // --------------  Vision and TensorFLow
-    public double cameraOffsetFromCenterline = 4;// how far is the camera from the robot center line?
-
     // --------------  drive system and controls
     static final double COUNTS_PER_REV_gobilda435 = 384.5;    // Gobilda 435 rpm motors
     //static final double WHEEL_CIRCUMFERENCE = (96. / 25.4) * Math.PI;//  circumference in inches
@@ -64,13 +61,8 @@ public class DraculaBase {
     double rfrontpower = 0.0;
     double lrearpower = 0.0;
     double rrearpower = 0.0;
-
     // --------------  IMU related... orientation
     public double HEADING_THRESHOLD = 1.3;//set at 1.2 normally
-
-// --------------  Servos, arm and lift parameters
-
-// --------------  Java, Logic, object oriented...
 
     OpMode callingOpMode;
     HardwareMap hardwareMap = null;
@@ -663,7 +655,6 @@ public class DraculaBase {
         while (motor.isBusy());
     }
 
-
     /**
      * Drive Sideways until distance sensor reads distance
      * @param speed speed of motor
@@ -689,7 +680,7 @@ public class DraculaBase {
     }
 
     /**
-     *
+     * Drive Forward until distance sensor reads distance
      * @param speed speed of motor
      * @param distance target distance
      * @param frontSensor Are we using the Front Sensor?

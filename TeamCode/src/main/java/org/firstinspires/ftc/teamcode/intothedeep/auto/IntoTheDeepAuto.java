@@ -34,59 +34,21 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
             displayDiagnostics();
             // Call the run code for the specific opmode
 
-            travel();
-            //Drive Off Wall
+//          Prepare To Move
+            sweeperIn();
+            driveBase.moveMotor(driveBase.arm, armTravelPosition, 0.8, false);
+            sweeperOff();
 
-            driveBase.tankDrive(.5, 10);
-            //Drive Closer to Left Wall
-            driveBase.driveSidewaysUntil(.5, 12, false);
-
-            //Preset to Score
+//          Drive Off Wall
+            driveBase.tankDrive(.5, 5);
+            driveBase.driveSidewaysUntil(.5, 9, false);
             score(Basket.TOP); // Loaded
 
-            //Move to Move Sample
-            driveBase.moveMotor(driveBase.arm, armCollectPositionUp, .4, false);
-            sleep(50);
-            driveBase.tankDrive(.5, driveBase.frontDistanceToWall()-25);
-            sleep(50);
-            driveBase.gyroTurnWait(.5,90);
-            driveBase.driveSideways(.5, 38 - driveBase.leftDistanceToWall());
-            sleep(50);
-            driveBase.gyroTurnWait(.5,90);
+//          First Sample
+            autoSamples(25.0);
 
-            sweeperIn();
-            driveBase.tankDrive(.1, 4.5);
-            driveBase.moveMotor(driveBase.arm, armCollectPositionMat, .3, false);
-            while (driveBase.arm.isBusy());
-            sleep(500);
-            sweeperOff();
-
-            travel();
-            driveBase.driveSideways(.5, -24);
-            driveBase.tankDrive(.5, 10);
-            score(Basket.TOP); // First Pickup
-
-            //Move to Move Sample
-            driveBase.moveMotor(driveBase.arm, armCollectPositionUp, .4, false);
-            sleep(50);
-            driveBase.tankDrive(.5, driveBase.frontDistanceToWall()-16);
-            sleep(50);
-            driveBase.gyroTurnWait(.5,90);
-            driveBase.driveSideways(.5, 38 - driveBase.leftDistanceToWall());
-            sleep(50);
-            driveBase.gyroTurnWait(.5,90);
-
-            sweeperIn();
-            driveBase.tankDrive(.1, 4.5);
-            driveBase.moveMotor(driveBase.arm, armCollectPositionMat, .2, false);
-            while (driveBase.arm.isBusy());
-            sleep(500);
-            sweeperOff();
-
-            travel();
-            driveBase.driveSideways(.5, -24);
-            driveBase.tankDrive(.5, 10);
-            score(Basket.TOP); // Second Pickup    //Time in middle of this.
+//          Second Sample
+            autoSamples(16.0);       //Time in middle of this.
 
 
 //            //Move to Move Sample

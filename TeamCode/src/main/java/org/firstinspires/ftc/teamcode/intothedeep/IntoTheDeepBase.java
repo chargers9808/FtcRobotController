@@ -18,6 +18,12 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         BOTTOM
     }
 
+    public  enum sampleDistance {
+        FIRST,
+        SECOND,
+        THIRD,
+    }
+
     /**
      * Power setting for sweeping in a sample
      */
@@ -159,13 +165,20 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
             case BOTTOM:
                 // TODO: Implement preset for lower baskets
         }
+
+        // Determine if we should point towards the wall, or away
+        double delta180 = Math.abs(180 - driveBase.getFieldHeading());
+        double delta0 = Math.abs(0 - driveBase.getFieldHeading());
+        double targetAngle = 180;
+        if (delta0 < delta180) {
+            targetAngle = 0;
+        }
+
         // Move the bot
-        driveBase.gyroTurn(.5,180);
-        driveBase.waitForMotor(driveBase.frontRight);
-        driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-5);// determine the correct distance for this
-        driveBase.driveSideways(.5,driveBase.rightDistanceToWall()-9);// determine the correct distance for this
-        driveBase.gyroTurn(.5,140);
-        driveBase.waitForMotor(driveBase.frontRight);
+        driveBase.gyroTurnWait(.5, targetAngle);
+        driveBase.tankDriveUntil(.5, 5, targetAngle == 180);// determine the correct distance for this
+        driveBase.driveSidewaysUntil(.5, 9, targetAngle == 180);// determine the correct distance for this
+        driveBase.gyroTurnWait(.5,140);
 
         driveBase.moveMotor(driveBase.arm, (armScoringPosition), 0.1, false);
         driveBase.tankDrive(.2,2);
@@ -225,6 +238,29 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         driveBase.moveMotor(driveBase.arm, armTravelPosition, 0.8, false);
         driveBase.slide.setPower(0);
 
+    }
+
+    public void autoSamples(Double sampleDistance) {
+        driveBase.moveMotor(driveBase.arm, armCollectPositionUp, .4, false);
+        sleep(50);
+        driveBase.tankDrive(.5, driveBase.frontDistanceToWall() - (sampleDistance));
+        sleep(50);
+        driveBase.gyroTurnWait(.5,90);
+        driveBase.driveSideways(.5, 38 - driveBase.leftDistanceToWall());
+        sleep(50);
+        driveBase.gyroTurnWait(.5,90);
+
+        sweeperIn();
+        driveBase.tankDrive(.1, 4.5);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionMat, .3, false);
+        while (driveBase.arm.isBusy());
+        sleep(250);
+        sweeperOff();
+
+        travel();
+        driveBase.driveSideways(.5, -24);
+        driveBase.tankDrive(.5, 10);
+        score(Basket.TOP); // First Pickup
     }
 
     public void displayDiagnostics() {
