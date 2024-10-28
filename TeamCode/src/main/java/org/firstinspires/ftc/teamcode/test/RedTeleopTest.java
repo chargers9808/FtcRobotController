@@ -93,7 +93,7 @@ public class RedTeleopTest extends LinearOpMode {
         vision.initDoubleVision(hardwareMap, this);
 
         driveBase.setRedHeartbeatLED();
-        driveBase.arm.setPower(.8);
+        //driveBase.arm.setPower(.8);
         driveBase.slide.setPower(.8);
 
         driveBase.droneRelease.setPosition(driveBase.droneReleaseClosed);
@@ -226,11 +226,11 @@ public class RedTeleopTest extends LinearOpMode {
             if (gamepad1.dpad_up && gamepad1.right_bumper)
             {   driveBase.tilt.setPosition(driveBase.tiltToPick);
                 driveBase.grip.setPosition(driveBase.gripClosed);
-                driveBase.arm.setTargetPosition(driveBase.armPickingPosition); }
+                //driveBase.arm.setTargetPosition(driveBase.armPickingPosition); }
             if (gamepad1.dpad_down && gamepad1.right_bumper)
                 { 
                     driveBase.grip.setPosition(driveBase.gripClosed);
-                    driveBase.arm.setTargetPosition(driveBase.armPickingPosition);
+                  //  driveBase.arm.setTargetPosition(driveBase.armPickingPosition);
                     driveBase.tilt.setPosition(driveBase.tiltToPick);
                     driveBase.gyroTurn(.5,90);
                     driveBase.runtime.reset();
@@ -334,14 +334,14 @@ public class RedTeleopTest extends LinearOpMode {
                 {driveBase.armNewTargetPosition -= driveBase.armIncrement;}
 //                if(driveBase.armNewTargetPosition<driveBase.armLowered){driveBase.armNewTargetPosition=driveBase.armLowered;}
 //                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                while(driveBase.arm.isBusy()){}
+               // while(driveBase.arm.isBusy()){}
                 sleep(150);
 
             } else if (gamepad2.left_bumper || gamepad1.left_bumper) {
                 driveBase.armNewTargetPosition += driveBase.armIncrement;
                 if(driveBase.armNewTargetPosition > driveBase.armup ){driveBase.armNewTargetPosition =driveBase.armup;}
-                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                while(driveBase.arm.isBusy()){}
+              //  driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+               // while(driveBase.arm.isBusy()){}
                 sleep(150);
             }
             if ((gamepad2.right_trigger > .1) || (gamepad1.right_trigger > .1))   {
@@ -356,7 +356,7 @@ public class RedTeleopTest extends LinearOpMode {
                 telemetry.addData("Right Front    : ", driveBase.frontRight.getCurrentPosition());
                 telemetry.addData("Left Rear      : ", driveBase.backLeft.getCurrentPosition());
                 telemetry.addData("Right Rear     : ", driveBase.backRight.getCurrentPosition());
-                telemetry.addData("arm motor      : ", driveBase.arm.getCurrentPosition());
+              //  telemetry.addData("arm motor      : ", driveBase.arm.getCurrentPosition());
                 telemetry.addData("slide motor     : ", driveBase.slide.getCurrentPosition());
                 telemetry.addData("tiltServo      : ",(driveBase.tiltPosition));
                 telemetry.addData("gripServo      : ",(driveBase.gripPosition));
@@ -375,8 +375,6 @@ public class RedTeleopTest extends LinearOpMode {
 
         }   //          end of "While Opmode is active"
     }       //          end of  End of the TeleOp Loop ================================================
-    public void getIntoPositionToCollectPixels()
-    {
 // first get arm and gripper into position for collecting.  The robot must be facing the wing
 // and be 3-4 feet back in front of it.
         

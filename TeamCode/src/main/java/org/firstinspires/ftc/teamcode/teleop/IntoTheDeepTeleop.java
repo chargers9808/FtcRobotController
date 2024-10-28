@@ -51,8 +51,8 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
     }
 
     protected void pre_initialize() {
-        driveBase.arm.setPower( DEFAULT_ARM_POWER );
-        driveBase.slide.setPower( NO_POWER );
+        //driveBase.arm.setPower( DEFAULT_ARM_POWER );
+        //driveBase.slide.setPower( NO_POWER );
         controller.init(this);
     }
 
@@ -103,19 +103,26 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         }
     }
 
+    private void testRotateAndMove() {
+
+    }
+
     private void processArm() {
-        if( gamepad2.left_bumper ) {
-            driveBase.incrementMotorSafe(driveBase.arm,-1 * ARM_INCREMENT, .8, driveBase.armTravelPosition, driveBase.armLowered);
-        } else if (controller.triggered(gamepad2.left_trigger)) {
-            driveBase.incrementMotorSafe(driveBase.arm, ARM_INCREMENT, .8, driveBase.armTravelPosition, driveBase.armLowered);
-        }
+//        if( gamepad2.left_bumper ) {
+//            driveBase.incrementMotorSafe(driveBase.arm,-1 * ARM_INCREMENT, .8, driveBase.armTravelPosition, driveBase.armLowered);
+//        } else if (controller.triggered(gamepad2.left_trigger)) {
+//            driveBase.incrementMotorSafe(driveBase.arm, ARM_INCREMENT, .8, driveBase.armTravelPosition, driveBase.armLowered);
+//        }
     }
 
     private void processSlide() {
         if( gamepad2.right_bumper ) {
-            driveBase.incrementMotorSafe(driveBase.slide, SLIDE_INCREMENT, .8, driveBase.slideOut, driveBase.slideIn);
+            driveBase.incrementMotorSafe(driveBase.slide, 30, 0.5, 0 , 90);
+            sleep(30); // 2814 max
         } else if (controller.triggered(gamepad2.right_trigger)) {
-            driveBase.incrementMotorSafe(driveBase.slide, -1 * SLIDE_INCREMENT, .8, driveBase.slideOut, driveBase.slideIn);
+            driveBase.incrementMotorSafe(driveBase.slide, -30, 0.5, 0 , 90);
+            sleep(30); // 2814 max
+            //bvlldriveBase.incrementMotorSafe(driveBase.slide, -1 * SLIDE_INCREMENT, .8, driveBase.slideOut, driveBase.slideIn);
         }
     }
 

@@ -42,8 +42,8 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
 
     public void hardwareSetup( DraculaBase driveBase) {
         driveBase.init(hardwareMap, this);
-        intake = this.hardwareMap.crservo.get("intake");
-        sweeperOff();
+        //intake = this.hardwareMap.crservo.get("intake");
+        //sweeperOff();
         HeadingHolder.setHeading(0.0);
         driveBase.imu.resetYaw();
     }
@@ -73,15 +73,15 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     }
 
     public void sweeperIn(){
-        intake.setPower( SWEEPER_IN );
+        //intake.setPower( SWEEPER_IN );
     }
 
     public void sweeperOut(){
-        intake.setPower( SWEEPER_OUT );
+        //intake.setPower( SWEEPER_OUT );
     }
 
     public void sweeperOff(){
-        intake.setPower( SWEEPER_OFF );
+        //intake.setPower( SWEEPER_OFF );
     }
 
     /**
@@ -93,9 +93,9 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         switch( pos ) {
             case TOP:
                 //Arm
-                driveBase.moveMotor(driveBase.arm, (driveBase.armScoringPositon-75), 0.4, false);
-                //Slide
-                driveBase.moveMotor(driveBase.slide, driveBase.slideOut, 0.6, false);
+//                driveBase.moveMotor(driveBase.arm, (driveBase.armScoringPositon-75), 0.4, false);
+//                //Slide
+//                driveBase.moveMotor(driveBase.slide, driveBase.slideOut, 0.6, false);
                 break;
             case MID:
             case BOTTOM:
@@ -109,7 +109,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         driveBase.gyroTurn(.5,140);
         driveBase.waitForMotor(driveBase.frontRight);
 
-        driveBase.moveMotor(driveBase.arm, (driveBase.armScoringPositon), 0.1, false);
+        //driveBase.moveMotor(driveBase.arm, (driveBase.armScoringPositon), 0.1, false);
         driveBase.tankDrive(.2,2);
 
         //Outtake
@@ -123,23 +123,24 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         driveBase.tankDrive( 0.5, -5);
 
         // Retract the slide
-        driveBase.moveMotor(driveBase.slide, driveBase.slideIn, 0.8, false);
-        // Retract the arm
-        driveBase.moveMotor(driveBase.arm, driveBase.armLowered-50, 0.8, false);
-        driveBase.moveMotor(driveBase.arm, driveBase.armLowered, 0.2, false);
+//        driveBase.moveMotor(driveBase.slide, driveBase.slideIn, 0.8, false);
+//        // Retract the arm
+//        driveBase.moveMotor(driveBase.arm, driveBase.armLowered-50, 0.8, false);
+//        driveBase.moveMotor(driveBase.arm, driveBase.armLowered, 0.2, false);
     }
 
     public void pickup() {
         driveBase.tankDrive(.5, driveBase.frontDistanceToWall()-9);
-        driveBase.moveMotor(driveBase.arm, (driveBase.armCollectPositonUp ), 0.6, true);
-        driveBase.moveMotor(driveBase.slide, driveBase.slideCollectPosition, .8, true);
-        driveBase.moveMotor(driveBase.arm, driveBase.armCollectPositonDown, .4, false);
+
+//        driveBase.moveMotor(driveBase.arm, (driveBase.armCollectPositonUp ), 0.6, true);
+//        driveBase.moveMotor(driveBase.slide, driveBase.slideCollectPosition, .8, true);
+//        driveBase.moveMotor(driveBase.arm, driveBase.armCollectPositonDown, .4, false);
         sweeperIn();
     }
 
     public void prepareToTravel() {
         sweeperOff();
-        driveBase.moveMotor(driveBase.arm, (driveBase.armCollectPositonUp ), 0.6, false);
+        //driveBase.moveMotor(driveBase.arm, (driveBase.armCollectPositonUp ), 0.6, false);
         driveBase.moveMotor(driveBase.slide, driveBase.slideIn, .8, true);
     }
 
@@ -148,12 +149,12 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         sweeperIn();
         sleep( 50 );
         sweeperOff();
-        if (driveBase.arm.getCurrentPosition() > -20){
-        driveBase.moveMotor(driveBase.arm, driveBase.armLowered, 0.4, false);
-        }
-        driveBase.moveMotor(driveBase.slide, driveBase.slideIn, 0.8, true);
-        driveBase.moveMotor(driveBase.arm, driveBase.armTravelPosition, 0.8, false);
-        driveBase.slide.setPower(0);
+//        if (driveBase.arm.getCurrentPosition() > -20){
+//        driveBase.moveMotor(driveBase.arm, driveBase.armLowered, 0.4, false);
+//        }
+//        driveBase.moveMotor(driveBase.slide, driveBase.slideIn, 0.8, true);
+//        driveBase.moveMotor(driveBase.arm, driveBase.armTravelPosition, 0.8, false);
+        //driveBase.slide.setPower(0);
 
     }
 
@@ -167,8 +168,8 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
             telemetry.addData("Right Rear     : ", driveBase.backRight.getCurrentPosition());
             telemetry.addLine();
             //Function Motors
-            telemetry.addData("arm motor      : ", driveBase.arm.getCurrentPosition());
-            telemetry.addData("slide motor    : ", driveBase.slide.getCurrentPosition());
+            //telemetry.addData("arm motor      : ", driveBase.arm.getCurrentPosition());
+            //telemetry.addData("slide motor    : ", driveBase.slide.getCurrentPosition());
             telemetry.addLine();
             //Function Servos
 
@@ -177,6 +178,8 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
             telemetry.addData("left distance  : ", driveBase.leftDistanceToWall());
             telemetry.addData("front distance : ", driveBase.frontDistanceToWall());
             telemetry.addData("rear distance  : ", driveBase.rearDistanceToWall());
+            telemetry.addData("slide position : ", driveBase.slide.getCurrentPosition());
+            telemetry.addData("lift position : ", driveBase.lift.getCurrentPosition());
             telemetry.addLine();
             //Gyro heading
             telemetry.addData("heading        :   ", driveBase.getFieldHeading());

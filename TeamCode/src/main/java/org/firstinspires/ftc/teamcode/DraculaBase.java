@@ -33,7 +33,7 @@ public class DraculaBase {
         WHITE
     }
     //region hardware devices
-    public DcMotor frontLeft, frontRight, backLeft, backRight, arm, slide;
+    public DcMotor frontLeft, frontRight, backLeft, backRight, slide, intake, lift, arm;
     public Servo grip, tilt, liftRelease, droneRelease, holder, led;
     public DistanceSensor revRangeLeft, revRangeRight, revRangeFront, revRangeRear;
     public RevBlinkinLedDriver blinkinLedDriver;
@@ -140,27 +140,26 @@ public class DraculaBase {
         callingOpMode = _callingOpMode;
 
         initAllMotors();
-        setAllServos();
+//        setAllServos();
         setAllDistanceSensors();
 
         imu = getHardwareMap().get(IMU.class, "imu");
 
         RevHubOrientationOnRobot orientationOnRobot =
                 new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                        RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                         RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
                 );
 
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
-        blinkinLedDriver = callingOpMode.hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
-        pattern = RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE;
-        blinkinLedDriver.setPattern(pattern);
-
+//        blinkinLedDriver = callingOpMode.hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+//        pattern = RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE;
+//        blinkinLedDriver.setPattern(pattern);
         //gyroTurn(0.1, 260);
     }
 
-    private HardwareMap getHardwareMap() {
+    public HardwareMap getHardwareMap() {
         return hardwareMap;
     }
 
@@ -181,7 +180,7 @@ public class DraculaBase {
 //        tilt = getServo("tilt");
 //        liftRelease = getServo("liftrelease");
 //        droneRelease = getServo("dronerelease");
-        led = getHardwareMap().servo.get("led");
+        //led = getHardwareMap().servo.get("led");
     }
     private Servo getCrServo(String deviceName) {
         return getHardwareMap().servo.get(deviceName);
@@ -197,18 +196,43 @@ public class DraculaBase {
         odometryComputer.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odometryComputer.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odometryComputer.resetPosAndIMU();
-
     }
 
 
     private void initAllMotors(){
         frontLeft = initMotor(getDcMotor("fl"), DcMotor.Direction.REVERSE, 0.0);
         frontRight = initMotor(getDcMotor("fr"), DcMotor.Direction.FORWARD, 0.0);
-        backLeft = initMotor(getDcMotor("bl"), DcMotor.Direction.REVERSE, 0.0);
-        backRight = initMotor(getDcMotor("br"), DcMotor.Direction.FORWARD, 0.0);
+        backLeft = initMotor(getDcMotor("rl"), DcMotor.Direction.REVERSE, 0.0);
+        backRight = initMotor(getDcMotor("rr"), DcMotor.Direction.FORWARD, 0.0);
+        arm = initMotor(getDcMotor("rr"), DcMotor.Direction.FORWARD, 0.0);
 
-        arm = initMotor(getDcMotor("arm"), DcMotorSimple.Direction.FORWARD, 0.6, 0);
-        slide = initMotor(getDcMotor("slide"), DcMotorSimple.Direction.FORWARD, 0.8, 0);
+        intake = getDcMotor("intake");
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
+        intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake.setPower(0.25);
+
+        lift = getDcMotor("lift");
+        lift.setDirection(DcMotorSimple.Direction.REVERSE);
+        lift.setTargetPosition(0);
+        lift.setPower(0);
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        slide = getDcMotor("slide");
+        slide.setDirection(DcMotorSimple.Direction.REVERSE);
+//        slide.setTargetPosition(0);
+//        slide.setPower(0);
+        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //slide =;
+
+//
+//        arm = initMotor(getDcMotor("arm"), DcMotorSimple.Direction.FORWARD, 0.6, 0);
+//        slide = initMotor(getDcMotor("slide"), DcMotorSimple.Direction.FORWARD, 0.8, 0);
     }
 
     private DcMotor initMotor(DcMotor dcMotor, DcMotorSimple.Direction direction, double power) {
@@ -254,6 +278,177 @@ public class DraculaBase {
         backLeft.setPower(lrearpower);
         backRight.setPower(rrearpower);
     }
+
+    public void gyrpTurnAndDrive(double speed, double targetAngle) {
+        double error;
+        error = targetAngle - getFieldHeading();   // how far we need to turn
+
+// ================== adjust for crossing the zenith angle, also turn thru the shortest angle
+        if (error > 180.) {
+            error -= 360.;
+        } else if (error <= -180.) {
+            error += 360.;
+        }
+// ==================
+
+// loop until the absolute value of the "error" (the target angle - the robot heading) < HEADING THRESHOLD
+
+        while (((LinearOpMode) callingOpMode).opModeIsActive() && Math.abs(error) > HEADING_THRESHOLD) {
+            error = targetAngle - getFieldHeading();// how far we need to turn
+
+            if (error > 180.) {
+                error -= 360.;
+            } else if (error <= -180.) {
+                error += 360.;
+            }
+            // ==================
+
+            if (error < 0) {
+                r = -speed;
+            } else {
+                r = +speed;
+            }         // rotate CW or CCW depending on how the motors are set up
+
+            if (Math.abs(error) < 50.) {
+                r = r * Math.abs(error) / 50.;
+            }  // scale down the rotation speed proportionate to error
+
+            if (Math.abs(r) <= .07) {
+                r = .07 * Math.abs(r) / r;
+            }           // set a minimum r (turning speed), preserving the sign of r
+
+            x = 0.;             // make sure we are stopped while rotating
+            y = 0.;
+            applyMecPower2(x,y,r);    // set the motor speed using r
+        }
+        r = 0;
+        stopMotors();  // the turn is complete within the HEADING_THRESHOLD
+        // HeadingHolder.setHeading(robotFieldHeading());
+
+        int newLeftFrontTarget;
+        int newRightRearTarget;
+        int newRightFrontTarget;
+        int newLeftRearTarget;
+        int moveCounts;
+        double scale = 47.5 / 45.;
+
+
+//        if (((LinearOpMode) callingOpMode).opModeIsActive()) {    // Ensure that the opmode is still active
+//
+//            // Determine new target position, and pass to motor controller
+//            if (distance < 0) {
+//                scale = 1.0;
+//            }
+//            moveCounts = (int) (distance * COUNTS_PER_INCH_435 * scale);
+//            speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+//
+//            newLeftFrontTarget = frontLeft.getCurrentPosition() + moveCounts;
+//            newRightFrontTarget = frontRight.getCurrentPosition() + moveCounts;
+//            newRightRearTarget = backRight.getCurrentPosition() + moveCounts;
+//            newLeftRearTarget = backLeft.getCurrentPosition() + moveCounts;
+//
+//            // Set Targets
+//            frontLeft.setTargetPosition(newLeftFrontTarget);
+//            frontRight.setTargetPosition(newRightFrontTarget);
+//            backLeft.setTargetPosition(newLeftRearTarget);
+//            backRight.setTargetPosition(newRightRearTarget);
+//
+//
+//// Turn On RUN_TO_POSITION
+//            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//            // start motion.
+//            // keep looping while we are still active, and the left front motor is are running.
+//
+//// ==================
+//            frontLeft.setPower(speed);
+//            frontRight.setPower(speed);
+//            backLeft.setPower(speed);
+//            backRight.setPower(speed);
+//
+//            while (((LinearOpMode) callingOpMode).opModeIsActive() && frontLeft.isBusy()) {
+//            }
+//            stopMotors();
+//
+//            // Turn off RUN_TO_POSITION
+//            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void positionTo(double maxSpeed, double targetPosX, double targetPosY, double targetHeading, double posThreashold, double headingThreashold) {
+        double distanceX = targetPosX - odometryComputer.getXOffset();
+        double distanceY = targetPosY - odometryComputer.getYOffset();
+        double headingError = targetHeading - odometryComputer.getHeading();
+
+        double speedX;
+        double speedY;
+        double speedR;
+
+        speedX = Math.signum(distanceX);
+        speedY = Math.signum(distanceY);
+        speedR = headingError > 180.0 ? Math.signum(headingError - 360.0) : Math.signum(headingError + 360.0);
+
+        double frontLeftWheelMotorPower = speedX + speedR + speedY;
+        double frontRightWheelMotorPower = speedX - speedR - speedY;
+        double backLeftWheelMotorPower = speedX + speedR - speedY;
+        double backRightWheelMotorPower = speedX - speedR + speedY;
+
+        double max = 1.0;
+
+        for (double motorPower : new double[] { frontLeftWheelMotorPower, frontRightWheelMotorPower, backLeftWheelMotorPower, backRightWheelMotorPower }) {
+            max = Math.max(max, Math.abs(motorPower));
+        }
+
+        frontLeftWheelMotorPower /= max;
+        frontRightWheelMotorPower /= max;
+        backLeftWheelMotorPower /= max;
+        backRightWheelMotorPower /= max;
+
+        frontLeft.setPower(frontLeftWheelMotorPower);
+        frontRight.setPower(frontRightWheelMotorPower);
+        backLeft.setPower(backLeftWheelMotorPower);
+        backRight.setPower(backRightWheelMotorPower);
+
+
+        while (((LinearOpMode) callingOpMode).opModeIsActive() &&
+                Math.abs(headingError) > HEADING_THRESHOLD &&
+                Math.abs(distanceX) > targetPosX + posThreashold &&
+                Math.abs(distanceY) > targetPosY + posThreashold
+        ) {
+
+            distanceX = targetPosX - odometryComputer.getXOffset();
+            distanceY = targetPosY - odometryComputer.getYOffset();
+            headingError = targetHeading - odometryComputer.getHeading();
+
+            speedX = Math.signum(distanceX);
+            speedY = Math.signum(distanceY);
+            speedR = headingError > 180.0 ? Math.signum(headingError - 360.0) : Math.signum(headingError + 360.0);
+
+            frontLeftWheelMotorPower = speedX + speedR + speedY;
+            frontRightWheelMotorPower = speedX - speedR - speedY;
+            backLeftWheelMotorPower = speedX + speedR - speedY;
+            backRightWheelMotorPower = speedX - speedR + speedY;
+
+            max = 1.0;
+            for (double motorPower : new double[]{frontLeftWheelMotorPower, frontRightWheelMotorPower, backLeftWheelMotorPower, backRightWheelMotorPower}) {
+                max = Math.max(max, Math.abs(motorPower));
+            }
+
+            frontLeftWheelMotorPower /= max;
+            frontRightWheelMotorPower /= max;
+            backLeftWheelMotorPower /= max;
+            backRightWheelMotorPower /= max;
+
+            setWheelMotorPower(frontLeftWheelMotorPower, frontRightWheelMotorPower, backLeftWheelMotorPower, backRightWheelMotorPower);
+        }
+        stopMotors();
+    }
+
 
     public void gyroTurn(double speed, double targetAngle) {
 
@@ -365,44 +560,44 @@ public class DraculaBase {
     }
 
     public void pickUpPixel() {
-        arm.setPower(armPower - .2);
-        tilt.setPosition(tiltToPick);
-        ((LinearOpMode) callingOpMode).sleep(300);
-        arm.setTargetPosition(armLowered);
-        while (arm.isBusy()) {
-        }
-        grip.setPosition(gripOpened);
-        ((LinearOpMode) callingOpMode).sleep(300);
-        arm.setTargetPosition(armLowered + 50);
-        ((LinearOpMode) callingOpMode).sleep(300);
-        tankDrive(.3, -3);
-        arm.setTargetPosition(armLowered + 100);
-
-        tilt.setPosition(tiltToCarry);
-        ((LinearOpMode) callingOpMode).sleep(300);
-        arm.setTargetPosition(armLowered);
-        arm.setPower(armPower);
+//        arm.setPower(armPower - .2);
+//        tilt.setPosition(tiltToPick);
+//        ((LinearOpMode) callingOpMode).sleep(300);
+//        arm.setTargetPosition(armLowered);
+//        while (arm.isBusy()) {
+//        }
+//        grip.setPosition(gripOpened);
+//        ((LinearOpMode) callingOpMode).sleep(300);
+//        arm.setTargetPosition(armLowered + 50);
+//        ((LinearOpMode) callingOpMode).sleep(300);
+//        tankDrive(.3, -3);
+//        arm.setTargetPosition(armLowered + 100);
+//
+//        tilt.setPosition(tiltToCarry);
+//        ((LinearOpMode) callingOpMode).sleep(300);
+//        arm.setTargetPosition(armLowered);
+//        arm.setPower(armPower);
     }
 
     public void armToLow() {
-        arm.setTargetPosition(armJustAboveFirstLine);
-        while (arm.isBusy()) {
-        }
-        tilt.setPosition(tiltToRelease);
+//        arm.setTargetPosition(armJustAboveFirstLine);
+//        while (arm.isBusy()) {
+//        }
+//        tilt.setPosition(tiltToRelease);
     }
 
     public void armToMid() {
-        arm.setTargetPosition(armJustAboveSecondLine);
-        while (arm.isBusy()) {
-        }
-        tilt.setPosition(tiltToRelease);
+//        arm.setTargetPosition(armJustAboveSecondLine);
+//        while (arm.isBusy()) {
+//        }
+//        tilt.setPosition(tiltToRelease);
     }
 
     public void armToTop() {
-        arm.setTargetPosition(armJustAboveThirdLine);
-        while (arm.isBusy()) {
-        }
-        tilt.setPosition(tiltToRelease);
+//        arm.setTargetPosition(armJustAboveThirdLine);
+//        while (arm.isBusy()) {
+//        }
+//        tilt.setPosition(tiltToRelease);
     }
 
     /**
@@ -413,7 +608,7 @@ public class DraculaBase {
 
     //region LED
     public void setLED(RevBlinkinLedDriver.BlinkinPattern pattern) {
-        blinkinLedDriver.setPattern(pattern);
+        //blinkinLedDriver.setPattern(pattern);
     }
 
     /**
@@ -454,31 +649,31 @@ public class DraculaBase {
             case WHITE:
                 value = 1.0;
         }
-        led.setPosition( value );
+        //led.setPosition( value );
     }
 
     public void setSolidGreenLED() {
-        pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
-        blinkinLedDriver.setPattern(pattern);
+//        pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+//        blinkinLedDriver.setPattern(pattern);
 
     }
 
     public void setVioletLED() {
 
-        pattern = RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-        blinkinLedDriver.setPattern(pattern);
+//        pattern = RevBlinkinLedDriver.BlinkinPattern.VIOLET;
+//        blinkinLedDriver.setPattern(pattern);
 
     }
 
     public void setSolidBlueLED() {
-        pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-        blinkinLedDriver.setPattern(pattern);
+//        pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+//        blinkinLedDriver.setPattern(pattern);
 
     }
 
     public void setSolidRedLED() {
-        pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
-        blinkinLedDriver.setPattern(pattern);
+//        pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+//        blinkinLedDriver.setPattern(pattern);
 
     }
 
@@ -933,7 +1128,7 @@ public class DraculaBase {
         motor.setPower( power );
         int target = motor.getCurrentPosition() + increment;
         // Bound the target between the min and max values
-        target = Math.max( Math.min(target,max), min );
+        //target = Math.max( Math.min(target,max), min );
         motor.setTargetPosition(target);
         return target;
     }
