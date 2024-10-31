@@ -88,7 +88,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
 
             if (gamepad1.x) {
                 score();
-                //moveSlide();
+                //moveSlide();\//\
             }
 
             if(gamepad1.y){
