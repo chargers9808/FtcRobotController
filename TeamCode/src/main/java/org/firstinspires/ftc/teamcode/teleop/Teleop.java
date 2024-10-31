@@ -280,28 +280,28 @@ public class Teleop extends LinearOpMode {
 //            ---------------- presets ---------------------
             if (gamepad1.y) //preset to Scoring Position
             {
-                //Arm and slide move to scoring position
-                driveBase.armNewTargetPosition = driveBase.armScoringPositon;
-//                driveBase.arm.setPower(.4);
-//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //Slide
-                driveBase.slideNewTargetPosition = driveBase.slideOut;
-                driveBase.slide.setPower(.6);
-                driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
-//                while (driveBase.arm.isBusy()); // Not Pushed: Test Friday.
-//                //Move
-                driveBase.gyroTurn(.5,180);
-                while (driveBase.frontRight.isBusy());
-                driveBase.DriveSideways(.5,driveBase.rightDistanceToWall()-9);// determine the correct distance for this
-                driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-7);// determine the correct distance for this
-                while (driveBase.frontRight.isBusy());
-                driveBase.gyroTurn(.5,135);
-                driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-6);
-                //Outtake
-                while (driveBase.frontRight.isBusy());
-                intake.setPower(1);
-                sleep(350);
-                intake.setPower(0);
+//                //Arm and slide move to scoring position
+//                driveBase.armNewTargetPosition = driveBase.armScoringPositon;
+////                driveBase.arm.setPower(.4);
+////                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+//                //Slide
+//                driveBase.slideNewTargetPosition = driveBase.slideOut;
+//                driveBase.slide.setPower(.6);
+//                driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
+////                while (driveBase.arm.isBusy()); // Not Pushed: Test Friday.
+////                //Move
+//                driveBase.gyroTurn(.5,180);
+//                while (driveBase.frontRight.isBusy());
+//                driveBase.DriveSideways(.5,driveBase.rightDistanceToWall()-9);// determine the correct distance for this
+//                driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-7);// determine the correct distance for this
+//                while (driveBase.frontRight.isBusy());
+//                driveBase.gyroTurn(.5,135);
+//                driveBase.tankDrive(.5,driveBase.frontDistanceToWall()-6);
+//                //Outtake
+//                while (driveBase.frontRight.isBusy());
+//                intake.setPower(1);
+//                sleep(350);
+//                intake.setPower(0);
                 //retract slide and lower arm
 //                driveBase.slideNewTargetPosition = driveBase.slideIn;
 //                driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
@@ -313,17 +313,17 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.x) //preset to Travel Position
             {
                 //Intake
-                intake.setPower(-1);
-                sleep(150);
-                intake.setPower(0);
-                //Arm
-                driveBase.armNewTargetPosition = driveBase.armTravelPosition;
-//                driveBase.arm.setPower(.8);
-//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
-                //Slide
-                driveBase.slideNewTargetPosition = driveBase.slideIn;
-                driveBase.slide.setPower(.8);
-                driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
+//                intake.setPower(-1);
+//                sleep(150);
+//                intake.setPower(0);
+//                //Arm
+//                driveBase.armNewTargetPosition = driveBase.armTravelPosition;
+////                driveBase.arm.setPower(.8);
+////                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+//                //Slide
+//                driveBase.slideNewTargetPosition = driveBase.slideIn;
+//                driveBase.slide.setPower(.8);
+//                driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
             }
 
 //            ---------------- arm movement ---------------------

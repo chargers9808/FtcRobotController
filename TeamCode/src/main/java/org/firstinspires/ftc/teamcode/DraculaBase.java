@@ -34,7 +34,7 @@ public class DraculaBase {
     }
     //region hardware devices
     public DcMotor frontLeft, frontRight, backLeft, backRight, slide, intake, lift, arm;
-    public Servo grip, tilt, liftRelease, droneRelease, holder, led;
+    public Servo grip, tilt, liftRelease, droneRelease, holder, led, bucket, flipper;
     public DistanceSensor revRangeLeft, revRangeRight, revRangeFront, revRangeRear;
     public RevBlinkinLedDriver blinkinLedDriver;
     public RevBlinkinLedDriver.BlinkinPattern pattern;
@@ -103,6 +103,13 @@ public class DraculaBase {
     public int slideIncrement = 20;
     public int slideIn = -20;
 
+    public double flipperOut = 0.533;
+    public double flipperOut2 = 0.600;
+    public double flipperIn1 = 0.3;
+    public double flipperIn = 0;
+    public double flipperIncrement = 0.001;
+    public double flipperPosition = 0.5;
+
 
     public int slideCollectPosition = -1150;
 
@@ -140,8 +147,9 @@ public class DraculaBase {
         callingOpMode = _callingOpMode;
 
         initAllMotors();
-//        setAllServos();
+        setAllServos();
         setAllDistanceSensors();
+        initRobotSpecificHardware();
 
         imu = getHardwareMap().get(IMU.class, "imu");
 
@@ -175,7 +183,8 @@ public class DraculaBase {
     }
 
     private void setAllServos(){
-//        grip = getCrServo("intake");
+        bucket = getHardwareMap().servo.get("bucket");
+        flipper = getHardwareMap().servo.get("flipper");
 //        holder = getServo("holder");
 //        tilt = getServo("tilt");
 //        liftRelease = getServo("liftrelease");
@@ -186,53 +195,24 @@ public class DraculaBase {
         return getHardwareMap().servo.get(deviceName);
     }
 
-    private DcMotor getDcMotor(String deviceName) {
+    DcMotor getDcMotor(String deviceName) {
         return getHardwareMap().dcMotor.get(deviceName);
     }
 
-    private void intiOdometryComputer(){
-        odometryComputer = getHardwareMap().get(GoBildaPinpointDriver.class,"odo");
-        odometryComputer.setOffsets(-84.0, -168.0);
-        odometryComputer.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odometryComputer.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        odometryComputer.resetPosAndIMU();
-    }
-
+    void initRobotSpecificHardware() {}
 
     private void initAllMotors(){
+        initWheelMotors();
+        initRobotSpecificMotors();
+    }
+
+    void initRobotSpecificMotors() {}
+
+    void initWheelMotors() {
         frontLeft = initMotor(getDcMotor("fl"), DcMotor.Direction.REVERSE, 0.0);
         frontRight = initMotor(getDcMotor("fr"), DcMotor.Direction.FORWARD, 0.0);
         backLeft = initMotor(getDcMotor("rl"), DcMotor.Direction.REVERSE, 0.0);
         backRight = initMotor(getDcMotor("rr"), DcMotor.Direction.FORWARD, 0.0);
-        arm = initMotor(getDcMotor("rr"), DcMotor.Direction.FORWARD, 0.0);
-
-        intake = getDcMotor("intake");
-        intake.setDirection(DcMotorSimple.Direction.FORWARD);
-        intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intake.setPower(0.25);
-
-        lift = getDcMotor("lift");
-        lift.setDirection(DcMotorSimple.Direction.REVERSE);
-        lift.setTargetPosition(0);
-        lift.setPower(0);
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        slide = getDcMotor("slide");
-        slide.setDirection(DcMotorSimple.Direction.REVERSE);
-//        slide.setTargetPosition(0);
-//        slide.setPower(0);
-        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //slide =;
-
-//
-//        arm = initMotor(getDcMotor("arm"), DcMotorSimple.Direction.FORWARD, 0.6, 0);
-//        slide = initMotor(getDcMotor("slide"), DcMotorSimple.Direction.FORWARD, 0.8, 0);
     }
 
     private DcMotor initMotor(DcMotor dcMotor, DcMotorSimple.Direction direction, double power) {
@@ -380,70 +360,23 @@ public class DraculaBase {
 //            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void positionToFieldCentric(double targetPosX, double targetPosY, double targetHeading, double posThreshold, double headingThreshold) {
-        double heading = odometryComputer.getHeading();
-        double distanceX = targetPosX - odometryComputer.getXOffset();
-        double distanceY = targetPosY - odometryComputer.getYOffset();
-        double headingError = targetHeading - heading;
 
-        double speedX;
-        double speedY;
-        double speedR;
 
-        double cosTheta;
-        double sinTheta;
-
-        double fieldX;
-        double fieldY;
-
-        double frontLeftWheelMotorPower;
-        double frontRightWheelMotorPower;
-        double backLeftWheelMotorPower;
-        double backRightWheelMotorPower;
-
-        while (((LinearOpMode) callingOpMode).opModeIsActive() &&
-                Math.abs(headingError) > headingThreshold &&
-                Math.abs(distanceX) > targetPosX + posThreshold &&
-                Math.abs(distanceY) > targetPosY + posThreshold
-        ) {
-            heading = odometryComputer.getHeading();
-            distanceX = targetPosX - odometryComputer.getXOffset();
-            distanceY = targetPosY - odometryComputer.getYOffset();
-            headingError = targetHeading - heading;
-
-            speedX = Math.signum(distanceX);
-            speedY = Math.signum(distanceY);
-            speedR = headingError > 180.0 ? Math.signum(headingError - 360.0) : Math.signum(headingError + 360.0);
-
-            if (Math.abs(headingError) < 50.) {
-                speedR *= Math.abs(headingError) / 50.;
-            }
-
-            cosTheta = Math.cos(heading);
-            sinTheta = Math.sin(heading);
-
-            fieldX = speedX * cosTheta - speedY * sinTheta;
-            fieldY = speedX * sinTheta + speedY * cosTheta;
-
-            frontLeftWheelMotorPower = fieldY + speedR + fieldX;
-            frontRightWheelMotorPower = fieldY - speedR - fieldX;
-            backLeftWheelMotorPower = fieldY + speedR - fieldX;
-            backRightWheelMotorPower = fieldY - speedR + fieldX;
-
-            max = 1.0;
-            max = Math.max(max, Math.abs(frontLeftWheelMotorPower));
-            max = Math.max(max, Math.abs(frontRightWheelMotorPower));
-            max = Math.max(max, Math.abs(backLeftWheelMotorPower));
-            max = Math.max(max, Math.abs(backRightWheelMotorPower));
-
-            frontLeftWheelMotorPower /= max;
-            frontRightWheelMotorPower /= max;
-            backLeftWheelMotorPower /= max;
-            backRightWheelMotorPower /= max;
-
-            setWheelMotorPower(frontLeftWheelMotorPower, frontRightWheelMotorPower, backLeftWheelMotorPower, backRightWheelMotorPower);
+    public void driveSidewaysUntil(double speed, double distance, boolean rightSensor ){
+        DistanceSensor sensor;
+        double mult = 1;
+        if ( rightSensor ) {
+            sensor = revRangeRight;
+        } else {
+            sensor = revRangeLeft;
+            mult *= -1;
         }
-        stopMotors();
+        double currentDistance = sensor.getDistance(DistanceUnit.INCH);
+        while (currentDistance == DistanceSensor.distanceOutOfRange) {
+            DriveSidewaysCorrected(speed, 6 * mult, getFieldHeading());
+            currentDistance = sensor.getDistance(DistanceUnit.INCH);
+        }
+        DriveSideways(speed, (sensor.getDistance(DistanceUnit.INCH)-distance)*mult);
     }
 
 
@@ -541,7 +474,7 @@ public class DraculaBase {
         setWheelMotorPower(lfrontpower, rfrontpower, lrearpower, rrearpower);
     }
 
-    private void setWheelMotorPower(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
+   void setWheelMotorPower(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
         frontLeft.setPower(frontRightPower);
         frontRight.setPower(frontLeftPower);
         backLeft.setPower(backLeftPower);

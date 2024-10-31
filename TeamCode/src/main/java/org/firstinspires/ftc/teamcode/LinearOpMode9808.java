@@ -20,7 +20,7 @@ public abstract class LinearOpMode9808 extends LinearOpMode {
     abstract protected void run_9808();
     abstract protected Alliance getAlliance();
     // 9808 HW interface layer
-    protected DraculaBase driveBase = new DraculaBase();
+    protected HardwareBase27545 driveBase = new HardwareBase27545();
     protected String getColorString() {return getAlliance().getColorString();}
     protected RevBlinkinLedDriver.BlinkinPattern getStaticColor() {return getAlliance().getStaticColor();}
     protected RevBlinkinLedDriver.BlinkinPattern getHeartbeatColor() {return getAlliance().getHeartbeatColor();}
