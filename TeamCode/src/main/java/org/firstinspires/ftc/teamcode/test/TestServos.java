@@ -23,7 +23,7 @@ public class TestServos extends LinearOpMode {
 
 // -------------------------now waiting at the end of the init() -----
         while (!isStarted()) {
-            telemetry.addLine("extend/retract arm - left trigger/bumper");
+            // telemetry.addLine("extend/retract arm - left trigger/bumper");
             telemetry.addLine("----------------------------------------");
 
             telemetry.addLine("lift release - dpad_left/right");
@@ -39,8 +39,8 @@ public class TestServos extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
 
             if (gamepad1.dpad_left ){
-                 //driveBase.holderPosition+=driveBase.holderIncrement;
-          
+                //driveBase.holderPosition+=driveBase.holderIncrement;
+
                 // driveBase.liftReleasePosition+=driveBase.liftReleaseIncrement;
                 driveBase.holderPosition=driveBase.holderOpen;
 
@@ -48,20 +48,17 @@ public class TestServos extends LinearOpMode {
                 // driveBase.liftReleasePosition-=driveBase.liftReleaseIncrement;
                 driveBase.holderPosition=driveBase.holderClosed;
                 //driveBase.holderPosition-=driveBase.holderIncrement;
-            
+
             }
 
             if (gamepad1.right_trigger>.1 ){
-                //driveBase.flipperPosition+=driveBase.flipperIncrement;
-                driveBase.flipper.setPosition(driveBase.flipperOut);
-                sleep(1250);
-                driveBase.flipper.setPosition(driveBase.flipperOut2);
-                //sleep(50);
+                driveBase.bucketPosition+=driveBase.bucketIncrement;
+                driveBase.bucket.setPosition(driveBase.bucketPosition);
+                sleep(50);
 
             } else if ((gamepad1.right_bumper)) {
-
-                //driveBase.flipperPosition-=driveBase.flipperIncrement;
-                driveBase.flipper.setPosition(driveBase.flipperIn); //0.667
+                driveBase.bucketPosition-=driveBase.bucketIncrement;
+                driveBase.bucket.setPosition(driveBase.bucketPosition);
                 sleep(50);
 
             }
@@ -83,7 +80,7 @@ public class TestServos extends LinearOpMode {
                 driveBase.droneReleasePosition = driveBase.droneReleaseClosed;
                 //driveBase.droneReleasePosition+=driveBase.droneReleaseIncrement;
             }
-
+/*
             if ((gamepad2.left_trigger > .1) || (gamepad1.left_trigger > .1))   {
                 {driveBase.armNewTargetPosition -= driveBase.armIncrement;}
                 if(driveBase.armNewTargetPosition<driveBase.armLowered){driveBase.armNewTargetPosition=driveBase.armLowered;}
@@ -98,13 +95,14 @@ public class TestServos extends LinearOpMode {
                 while(driveBase.arm.isBusy()){}
                 sleep(150);
             }
+            */
 
 //            telemetry.addData("droneRelease (x/y): ", driveBase.droneReleasePosition);
 //            //telemetry.addData("liftRelease servo (dpad_left/dpad_right): ", driveBase.liftReleasePosition);
 //            telemetry.addData("Arm position (Left Trigger/Bumper): ", driveBase.armNewTargetPosition);
 //            telemetry.addData("tilt (right T/B): ", driveBase.tiltPosition);
 //            telemetry.addData("grip (a/b): ", driveBase.gripPosition);
-            telemetry.addData("flipper position ", driveBase.flipperPosition);
+            telemetry.addData("bucket position ", driveBase.bucketPosition);
 
             telemetry.update();
 //

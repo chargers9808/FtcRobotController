@@ -110,6 +110,12 @@ public class DraculaBase {
     public double flipperIncrement = 0.001;
     public double flipperPosition = 0.5;
 
+    public double bucketUp = 0.533;
+    public double bucketDown = 0.600;
+
+    public double bucketIncrement = 0.001;
+    public double bucketPosition = 0.5;
+
 
     public int slideCollectPosition = -1150;
 
@@ -474,7 +480,7 @@ public class DraculaBase {
         setWheelMotorPower(lfrontpower, rfrontpower, lrearpower, rrearpower);
     }
 
-   void setWheelMotorPower(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
+    void setWheelMotorPower(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
         frontLeft.setPower(frontRightPower);
         frontRight.setPower(frontLeftPower);
         backLeft.setPower(backLeftPower);
@@ -910,7 +916,7 @@ public class DraculaBase {
     public double rightDistanceToWall() {
         return revRangeRight.getDistance(DistanceUnit.INCH); // check for distanceOutOfRange
     }
-//    public double frontDistance() {
+    //    public double frontDistance() {
 //        double frontrange = 500;
 //        double tempRangeL = frontLeftDistance();
 //        double tempRangeR = rearDistance();
