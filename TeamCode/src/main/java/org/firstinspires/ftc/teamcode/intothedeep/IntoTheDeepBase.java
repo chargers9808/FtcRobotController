@@ -18,12 +18,6 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         BOTTOM
     }
 
-    public  enum sampleDistance {
-        FIRST,
-        SECOND,
-        THIRD,
-    }
-
     /**
      * Power setting for sweeping in a sample
      */
@@ -40,7 +34,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     /**
      * Delay between starting sweeper out and stopping sweeper
      */
-    protected final long DELAY_SCORE = 500;
+    protected final long DELAY_SCORE = 350;
 
     /**
      * Postion when slide is extended
@@ -79,7 +73,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     /**
      * Position for arm when collecting in Auto
      */
-    public int armCollectPositionMat = -75;
+    public int armCollectPositionMat = -85;
 
 
     /**
@@ -108,7 +102,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         driveBase.init(hardwareMap, this);
         intake = this.hardwareMap.crservo.get("intake");
         sweeperOff();
-        HeadingHolder.setHeading(0.0);
+        HeadingHolder.setHeading(HeadingHolder.getHeading());
         driveBase.imu.resetYaw();
     }
 
@@ -167,18 +161,28 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         }
 
         // Determine if we should point towards the wall, or away
-        double delta180 = Math.abs(180 - driveBase.getFieldHeading());
-        double delta0 = Math.abs(0 - driveBase.getFieldHeading());
-        double targetAngle = 180;
-        if (delta0 < delta180) {
-            targetAngle = 0;
+        double targetAngle = 0;
+        double currentHeading = driveBase.getFieldHeading();
+        if (currentHeading > 90 && currentHeading < 270 ) {
+            targetAngle = 180;
         }
+        if( currentHeading >= 70 && currentHeading <= 110) {
+            targetAngle = 90;
+        }
+        telemetry.addData("heading", driveBase.getFieldHeading());
+        telemetry.addData("target", targetAngle);
+        telemetry.update();
 
         // Move the bot
         driveBase.gyroTurnWait(.5, targetAngle);
-        driveBase.tankDriveUntil(.5, 5, targetAngle == 180);// determine the correct distance for this
-        driveBase.driveSidewaysUntil(.5, 9, targetAngle == 180);// determine the correct distance for this
-        driveBase.gyroTurnWait(.5,140);
+        if( targetAngle != 90 ) {
+            driveBase.tankDriveUntil(.5, 5, targetAngle == 180, false);// determine the correct distance for this
+            driveBase.driveSidewaysUntil(.5, 9, targetAngle == 180);// determine the correct distance for this
+        } else {
+            driveBase.tankDriveUntil( .5, 5, true, false);
+            driveBase.driveSidewaysUntil(.5, 5, false);
+        }
+        driveBase.gyroTurnWait(.5,135);
 
         driveBase.moveMotor(driveBase.arm, (armScoringPosition), 0.1, false);
         driveBase.tankDrive(.2,2);
@@ -191,7 +195,6 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         // Back up from baskets
         driveBase.tankDrive( 0.5, -2);
         driveBase.gyroTurn(.5,90);
-        driveBase.tankDrive( 0.5, -5);
 
         // Retract the slide
         driveBase.moveMotor(driveBase.slide, slideIn, 0.8, false);
@@ -202,7 +205,10 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
 
     public void pickup() {
         if (pickupPrimary == 0) {
-            driveBase.tankDrive(.5, driveBase.frontDistanceToWall() - 9);
+            double frontDistance = driveBase.frontDistanceToWall();
+            if (frontDistance < 300) {
+                driveBase.tankDrive(.5, frontDistance - 9);
+            }
             driveBase.moveMotor(driveBase.arm, (armCollectPositionUp), 0.6, true);
         }
         if ((pickupPrimary %2) == 0) {
@@ -222,7 +228,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
 
     public void prepareToTravel() {
         pickupPrimary = 0;
-        sweeperOff();
+        //sweeperOff();
         driveBase.moveMotor(driveBase.arm, (armCollectPositionUp), 0.6, false);
         driveBase.moveMotor(driveBase.slide, slideIn, .8, true);
     }
@@ -240,26 +246,28 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
 
     }
 
-    public void autoSamples(Double sampleDistance) {
+    public void autoSamples(Double sampleDistance, Double forwardDrive) {
+        driveBase.driveSidewaysUntil(.5,  11, false);
+        
         driveBase.moveMotor(driveBase.arm, armCollectPositionUp, .4, false);
-        sleep(50);
         driveBase.tankDrive(.5, driveBase.frontDistanceToWall() - (sampleDistance));
-        sleep(50);
+        sleep(100);
         driveBase.gyroTurnWait(.5,90);
         driveBase.driveSideways(.5, 38 - driveBase.leftDistanceToWall());
-        sleep(50);
+        sleep(100);
         driveBase.gyroTurnWait(.5,90);
 
+
         sweeperIn();
-        driveBase.tankDrive(.1, 4.5);
-        driveBase.moveMotor(driveBase.arm, armCollectPositionMat, .3, false);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionMat, .5, false);
         while (driveBase.arm.isBusy());
-        sleep(250);
-        sweeperOff();
+        driveBase.tankDrive(.1, forwardDrive);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionMat+50, .1, false);
+        sleep(150);
 
         travel();
-        driveBase.driveSideways(.5, -24);
-        driveBase.tankDrive(.5, 10);
+        driveBase.driveSidewaysUntil(.5,  8, false);
+        driveBase.tankDriveUntil(.5, 8, true, false);
         score(Basket.TOP); // First Pickup
     }
 

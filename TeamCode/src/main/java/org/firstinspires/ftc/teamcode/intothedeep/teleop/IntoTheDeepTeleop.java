@@ -31,21 +31,26 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
 
     private final double DEFAULT_ARM_POWER = 0.1;
     private final double NO_POWER = 0.0;
-    private final int ARM_INCREMENT = 20;
-    private final int SLIDE_INCREMENT = 20;
+    private final int ARM_INCREMENT = 75;
+    private final int SLIDE_INCREMENT = 75;
+    private final double ARM_POWER = 0.8;
+    private final double SLIDE_POWER = 0.8;
 
     protected double lastSavedAngle = HeadingHolder.getHeading();
     protected DriverControls controller = new DriverControls();
 
     @Override
     protected void initialize() {
+
         // Set diagnostic mode if GP1.a is pressed
         if( gamepad1.a) {
             diagnosticMode = true;
         }
 
         // Reset the Gyro if GP2.LS is pressed
-        controller.resetGyro(driveBase);
+        if (gamepad2.left_stick_button) {
+            controller.resetGyro(driveBase);
+        }
         updateTelemetry();
     }
 
@@ -53,6 +58,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         driveBase.arm.setPower( DEFAULT_ARM_POWER );
         driveBase.slide.setPower( NO_POWER );
         controller.init(this);
+
     }
 
     private void updateTelemetry() {
@@ -79,6 +85,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
             controller.calculateDriveControls();
             controller.calculateDPadCreep();
             controller.updateDriveMode();
+            controller.creepSpeed();
             processSweeper();
 
             // Preset to score
@@ -86,11 +93,13 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
                 score(Basket.TOP);
             }
 
-            if (gamepad1.x)
+            if (gamepad1.x){
                 pickup();
+            }
 
-            if (gamepad1.a)
+            if (gamepad1.a) {
                 prepareToTravel();
+            }
 
             if( gamepad1.b) {
                 travel();
@@ -103,18 +112,18 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
     }
 
     private void processArm() {
-        if( gamepad2.left_bumper ) {
-            driveBase.incrementMotorSafe(driveBase.arm,-1 * ARM_INCREMENT, .8, armTravelPosition, armLowered);
-        } else if (controller.triggered(gamepad2.left_trigger)) {
-            driveBase.incrementMotorSafe(driveBase.arm, ARM_INCREMENT, .8, armTravelPosition, armLowered);
+        if( gamepad1.left_bumper ) {
+            driveBase.incrementMotorSafe(driveBase.arm,-1 * ARM_INCREMENT, ARM_POWER, armTravelPosition, armLowered);
+        } else if (controller.triggered(gamepad1.left_trigger)) {
+            driveBase.incrementMotorSafe(driveBase.arm, ARM_INCREMENT, ARM_POWER, armTravelPosition, armLowered);
         }
     }
 
     private void processSlide() {
-        if( gamepad2.right_bumper ) {
-            driveBase.incrementMotorSafe(driveBase.slide, SLIDE_INCREMENT, .8, slideOut, slideIn);
-        } else if (controller.triggered(gamepad2.right_trigger)) {
-            driveBase.incrementMotorSafe(driveBase.slide, -1 * SLIDE_INCREMENT, .8, slideOut, slideIn);
+        if( gamepad1.right_bumper ) {
+            driveBase.incrementMotorSafe(driveBase.slide, SLIDE_INCREMENT, SLIDE_POWER, slideOut, slideIn);
+        } else if (controller.triggered(gamepad1.right_trigger)) {
+            driveBase.incrementMotorSafe(driveBase.slide, -1 * SLIDE_INCREMENT, SLIDE_POWER, slideOut, slideIn);
         }
     }
 

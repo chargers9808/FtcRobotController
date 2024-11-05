@@ -332,8 +332,8 @@ public class DraculaBase {
 
         //  this gets all the imu parameters... the "heading" is the "firstAngle + initialFieldHeading"
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        //theta = orientation.getYaw(AngleUnit.DEGREES) + HeadingHolder.getHeading();  // initialized with the saved heading
-        theta = orientation.getYaw(AngleUnit.DEGREES);  // initialized with the saved heading
+        theta = orientation.getYaw(AngleUnit.DEGREES) + HeadingHolder.getHeading();  // initialized with the saved heading
+//        theta = orientation.getYaw(AngleUnit.DEGREES);  // initialized with the saved heading
 
         if (theta < 0) {
             theta = theta + 360.;
@@ -684,8 +684,9 @@ public class DraculaBase {
      * @param speed speed of motor
      * @param distance target distance
      * @param frontSensor Are we using the Front Sensor?
+     * @param loopOnInvalid Continue to run to the distance if rae is out of range
      */
-    public void tankDriveUntil(double speed, double distance, boolean frontSensor) {
+    public void tankDriveUntil(double speed, double distance, boolean frontSensor, boolean loopOnInvalid) {
         DistanceSensor sensor;
         double mult = 1;
         if (frontSensor) {
@@ -695,11 +696,15 @@ public class DraculaBase {
             mult *= -1;
         }
         double currentDistance = sensor.getDistance(DistanceUnit.INCH);
-        while (currentDistance == DistanceSensor.distanceOutOfRange) {
-            tankDrive(speed, 6 * mult);
-            currentDistance = sensor.getDistance(DistanceUnit.INCH);
+        if( loopOnInvalid ) {
+            while (currentDistance > (.8*DistanceSensor.distanceOutOfRange)) {
+                tankDrive(speed, 6 * mult);
+                currentDistance = sensor.getDistance(DistanceUnit.INCH);
+            }
         }
-        tankDrive(speed, (sensor.getDistance(DistanceUnit.INCH) - distance) * mult);
+        if( currentDistance < (.8*DistanceSensor.distanceOutOfRange) ) {
+            tankDrive(speed, (sensor.getDistance(DistanceUnit.INCH) - distance) * mult);
+        }
     }
 
 }
