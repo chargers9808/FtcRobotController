@@ -142,8 +142,11 @@ public class DriverControls {
     }
 
     public void creepSpeed() {
-        if (opmode.gamepad1.right_stick_button) {
+        if (opmode.gamepad1.right_stick_button || opmode.gamepad1.x) {
             rotationSpeed = SPEED_ROTATE_FACTOR_SLOW;
+        }
+        else if (opmode.gamepad1.b){
+            rotationSpeed = SPEED_ROTATE_FACTOR_FAST;
         }
         else {
             rotationSpeed = SPEED_ROTATE_FACTOR_FAST;

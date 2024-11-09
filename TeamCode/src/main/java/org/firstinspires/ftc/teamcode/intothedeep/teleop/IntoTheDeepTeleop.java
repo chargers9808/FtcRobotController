@@ -98,7 +98,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
             }
 
             if (gamepad1.a) {
-                prepareToTravel();
+             sweeperOut();
             }
 
             if( gamepad1.b) {

@@ -85,6 +85,10 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
      * Flag for diagnostic mode
      */
     public boolean diagnosticMode = false;
+
+
+    public boolean beforeTravel = false;
+
     /**
      * Sweeper motor
      */
@@ -177,15 +181,18 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         driveBase.gyroTurnWait(.5, targetAngle);
         if( targetAngle != 90 ) {
             driveBase.tankDriveUntil(.5, 5, targetAngle == 180, false);// determine the correct distance for this
-            driveBase.driveSidewaysUntil(.5, 9, targetAngle == 180);// determine the correct distance for this
+            sleep(50);
+            //dis 9
+            driveBase.driveSidewaysUntil(.5, 8, targetAngle == 180);// determine the correct distance for this
         } else {
-            driveBase.tankDriveUntil( .5, 5, true, false);
+            driveBase.tankDriveUntil( .5, 9, true, false);
+            sleep(50);
             driveBase.driveSidewaysUntil(.5, 5, false);
         }
         driveBase.gyroTurnWait(.5,135);
 
         driveBase.moveMotor(driveBase.arm, (armScoringPosition), 0.1, false);
-        driveBase.tankDrive(.2,2);
+        driveBase.tankDrive(.2,1.5);
 
         //Outtake
         sweeperOut();
@@ -223,6 +230,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         }
         sweeperIn();
 
+        beforeTravel = true;
         pickupPrimary++;
     }
 
@@ -234,9 +242,12 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     }
 
     public void travel() {
+        if (beforeTravel == true) {
+            prepareToTravel();
+            driveBase.tankDrive(.5, -8);
+        }
         sweeperIn();
-        sleep( 50 );
-        sweeperOff();
+
         if (driveBase.arm.getCurrentPosition() > -20){
         driveBase.moveMotor(driveBase.arm, armLowered, 0.4, false);
         }
@@ -244,26 +255,30 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         driveBase.moveMotor(driveBase.arm, armTravelPosition, 0.8, false);
         driveBase.slide.setPower(0);
 
+        sweeperOff();
+
+        beforeTravel = false;
     }
 
-    public void autoSamples(Double sampleDistance, Double forwardDrive) {
+    public void autoSamples(Double sampleDistance, Double forwardDrive, Double sidewaysDrive) {
         driveBase.driveSidewaysUntil(.5,  11, false);
         
         driveBase.moveMotor(driveBase.arm, armCollectPositionUp, .4, false);
+        sleep(50);
         driveBase.tankDrive(.5, driveBase.frontDistanceToWall() - (sampleDistance));
-        sleep(100);
+        sleep(50);
         driveBase.gyroTurnWait(.5,90);
-        driveBase.driveSideways(.5, 38 - driveBase.leftDistanceToWall());
-        sleep(100);
+        driveBase.driveSideways(.5, sidewaysDrive - driveBase.leftDistanceToWall());
+        sleep(50);
         driveBase.gyroTurnWait(.5,90);
 
 
         sweeperIn();
-        driveBase.moveMotor(driveBase.arm, armCollectPositionMat, .5, false);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionMat-50, .5, false);
         while (driveBase.arm.isBusy());
         driveBase.tankDrive(.1, forwardDrive);
-        driveBase.moveMotor(driveBase.arm, armCollectPositionMat+50, .1, false);
-        sleep(150);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionMat, .1, false);
+        sleep(400);
 
         travel();
         driveBase.driveSidewaysUntil(.5,  8, false);
