@@ -45,13 +45,10 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
             score(Basket.TOP); // Loaded
 
 //          First Sample
-            //sD 23
-            double fixAmount = 0.5;
-            autoSamples(22.0, 7.5 + fixAmount, 37.5);
+            autoSamples(22.0, 7.5, 37.5);
 
 //          Second Sample
-            //sD 14
-            autoSamples(15.0, 7.0 + fixAmount, 37.5);       //Time in middle of this.
+            autoSamples(15.0, 7.0, 37.5);
 
             driveBase.tankDrive(.5, -3);
 //          Park
