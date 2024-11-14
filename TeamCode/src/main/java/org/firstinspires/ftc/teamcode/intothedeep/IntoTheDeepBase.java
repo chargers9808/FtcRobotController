@@ -34,12 +34,12 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     /**
      * Delay between starting sweeper out and stopping sweeper
      */
-    protected final long DELAY_SCORE = 350;
+    protected final long DELAY_SCORE = 500;
 
     /**
      * Postion when slide is extended
      */
-    public int slideOut = -1550;
+    public int slideOut = -1575; //-1550;
     /**
      * Position when slide is retracted
      */
@@ -60,7 +60,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     /**
      * Position when arm is ready to score
      */
-    public int armScoringPosition =  -1730;
+    public int armScoringPosition =  -1730; //-1730 4:19 11/23/24
     /**
      * Position for arm to clear the submersible bar (parallel to mat)
      */
@@ -73,7 +73,8 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     /**
      * Position for arm when collecting in Auto
      */
-    public int armCollectPositionMat = -85;
+    public int armCollectPositionCollect = -100;
+    public int armCollectPositionMat = -60;
 
 
     /**
@@ -180,18 +181,20 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         // Move the bot
         driveBase.gyroTurnWait(.5, targetAngle);
         if( targetAngle != 90 ) {
-            driveBase.tankDriveUntil(.5, 5, targetAngle == 180, false);// determine the correct distance for this
+            driveBase.tankDriveUntil(.5, 6, targetAngle == 180, false);// determine the correct distance for this
             sleep(50);
-            driveBase.driveSidewaysUntil(.5, 8, targetAngle == 180);// determine the correct distance for this
+            //dis 8; 4:32 11/13
+            driveBase.driveSidewaysUntil(.5, 10, targetAngle == 180);// determine the correct distance for this
         } else {
-            driveBase.tankDriveUntil( .5, 8, true, false);
+            driveBase.tankDriveUntil( .5, 8.5, true, false);
             sleep(50);
-            driveBase.driveSidewaysUntil(.5, 6, false);
+            //dis 8; 4:34 11/13
+            driveBase.driveSidewaysUntil(.5, 8.5, false);
         }
-        driveBase.gyroTurnWait(.5,135);
+        driveBase.gyroTurnWait(.5,140);
 
         driveBase.moveMotor(driveBase.arm, (armScoringPosition), 0.1, false);
-        driveBase.tankDrive(.2,1.5);
+        driveBase.tankDrive(.2,2);
 
         //Outtake
         sweeperOut();
@@ -238,6 +241,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         //sweeperOff();
         driveBase.moveMotor(driveBase.arm, (armCollectPositionUp), 0.6, false);
         driveBase.moveMotor(driveBase.slide, slideIn, .8, false);
+        sleep(150);
     }
 
     public void travel() {
@@ -273,14 +277,16 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
 
 
         sweeperIn();
-        driveBase.moveMotor(driveBase.arm, armCollectPositionMat, .5, false);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionCollect, .5, false);
         while (driveBase.arm.isBusy());
-        driveBase.tankDrive(.1, forwardDrive);
-//        driveBase.moveMotor(driveBase.arm, armCollectPositionMat+25, .1, false);
+        driveBase.tankDrive(.1, forwardDrive/2);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionMat, .1, false);
+        driveBase.tankDrive(.1, forwardDrive/2);
         sleep(400);
 
         travel();
-        driveBase.driveSidewaysUntil(.5,  8, false);
+        driveBase.driveSidewaysUntil(.5,  10, false);
+        driveBase.driveSidewaysUntil(.2,  8, false);
         driveBase.tankDriveUntil(.5, 8, true, false);
         score(Basket.TOP); // First Pickup
     }

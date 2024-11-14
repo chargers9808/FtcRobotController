@@ -13,4 +13,5 @@ import org.firstinspires.ftc.teamcode.intothedeep.auto.Position;
 public class ObservationBlue extends IntoTheDeepBlueAuto {
     private final Position position = new Position(Position.Location.OBSERVATION);
     protected Position getPosition() { return position; }
+    protected void run_auto() {}
 }

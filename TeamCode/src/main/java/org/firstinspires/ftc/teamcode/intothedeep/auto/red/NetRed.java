@@ -13,4 +13,5 @@ import org.firstinspires.ftc.teamcode.intothedeep.auto.Position;
 public class NetRed extends IntoTheDeepRedAuto {
     private final Position position = new Position(Position.Location.NET);
     protected Position getPosition() { return position; }
+    protected void run_auto() {}
 }

@@ -4,15 +4,10 @@ import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.intothedeep.IntoTheDeepBase;
 
 abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
-    //TODO: Defile init operations
-    /*
-    ============================================================================================
-    Init Controls:
-        A:                      enableDiagnosticMode()
 
-
-    ============================================================================================
-     */
+    protected double sample1Offset = 22.0;
+    protected double sample2Offset = 15.0;
+    protected double forwardDistance = 7.0;
     abstract protected Position getPosition();
     @Override
     protected void pre_initialize() {
@@ -22,8 +17,18 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
     @Override
     protected void initialize() {
         driveBase.setLED( getPosition().getStaticColor() );
+
+        if( gamepad1.x) {
+            driveBase.imu.resetYaw();
+            HeadingHolder.setHeading(0);
+            telemetry.addData("Gyro Reset", "Complete");
+
+            telemetry.update();
+        }
         HeadingHolder.setHeading(0.0);
     }
+
+    abstract protected void run_auto();
 
     /**
      * Run AUTO opmode
@@ -33,25 +38,7 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
         if( opModeIsActive() ) {
             displayDiagnostics();
             // Call the run code for the specific opmode
-
-//          Prepare To Move
-            sweeperIn();
-            driveBase.moveMotor(driveBase.arm, armTravelPosition, 0.8, false);
-            sweeperOff();
-
-//          Drive Off Wall
-            driveBase.tankDrive(.5, 5);
-            driveBase.driveSidewaysUntil(.5, 9, false);
-            score(Basket.TOP); // Loaded
-
-//          First Sample
-            autoSamples(22.0, 7.5, 37.5);
-
-//          Second Sample
-            autoSamples(15.0, 7.0, 37.5);
-
-            driveBase.tankDrive(.5, -3);
-//          Park
+            run_auto();
         }
         finish();
     }
