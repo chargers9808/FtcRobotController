@@ -109,6 +109,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
             processSlide();
             controller.move(driveBase);
         }
+        HeadingHolder.setHeading(driveBase.getFieldHeading());
     }
 
     private void processArm() {

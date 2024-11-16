@@ -18,13 +18,11 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
     protected void initialize() {
         driveBase.setLED( getPosition().getStaticColor() );
 
-        if( gamepad1.x) {
-            driveBase.imu.resetYaw();
-            HeadingHolder.setHeading(0);
-            telemetry.addData("Gyro Reset", "Complete");
+        driveBase.imu.resetYaw();
+        HeadingHolder.setHeading(0);
+        telemetry.addData("Gyro Reset", "Complete");
 
-            telemetry.update();
-        }
+        telemetry.update();
         HeadingHolder.setHeading(0.0);
     }
 
