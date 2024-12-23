@@ -6,7 +6,8 @@ import org.firstinspires.ftc.teamcode.intothedeep.IntoTheDeepBase;
 abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
 
     protected double sample1Offset = 22.0;
-    protected double sample2Offset = 15.0;
+    //15
+    protected double sample2Offset = 14.0;
     protected double forwardDistance = 7.0;
     abstract protected Position getPosition();
     @Override

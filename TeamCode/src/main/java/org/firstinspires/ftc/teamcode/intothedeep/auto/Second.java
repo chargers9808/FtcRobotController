@@ -23,6 +23,12 @@ public class Second extends IntoTheDeepBlueAuto {
         score(Basket.TOP); // Loaded
 
 //      Second Sample
-        autoSamples(sample2Offset, forwardDistance, 37.5);
+        autoSamples(sample2Offset, forwardDistance, 39.0);
+
+        driveBase.tankDriveUntil(.5, sample1Offset-2, true, false);
+        driveBase.gyroTurn(.5,0);
+        driveBase.tankDrive(.5, 38);
+        driveBase.gyroTurn(.5, 270);
+        driveBase.tankDrive(.5, 8);
     }
 }

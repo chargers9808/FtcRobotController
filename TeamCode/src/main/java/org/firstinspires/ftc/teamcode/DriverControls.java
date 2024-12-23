@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-
 public class DriverControls {
     /**
      * Stick dead zone
@@ -158,18 +157,18 @@ public class DriverControls {
      *
      * INPUT: GP1.LS
      */
-    public void updateSpeedFactor() {
-        if((opmode.gamepad1.left_stick_button) && !togglingSpeed) {
-            if( speedFactor == SPEED_FACTOR_FAST ) {
-                speedFactor = SPEED_FACTOR_SLOW;
-            } else {
-                speedFactor = SPEED_FACTOR_FAST;
-            }
-            togglingSpeed = true;
-        } else if( !opmode.gamepad1.left_stick_button) {
-            togglingSpeed = false;
-        }
-    }
+//    public void updateSpeedFactor() {
+//        if((opmode.gamepad1.left_stick_button) && !togglingSpeed) {
+//            if( speedFactor == SPEED_FACTOR_FAST ) {
+//                speedFactor = SPEED_FACTOR_SLOW;
+//            } else {
+//                speedFactor = SPEED_FACTOR_FAST;
+//            }
+//            togglingSpeed = true;
+//        } else if( !opmode.gamepad1.left_stick_button) {
+//            togglingSpeed = false;
+//        }
+//    }
 
     public boolean triggered(float trigger) {
         return trigger >= TRIGGER_THRESHOLD;

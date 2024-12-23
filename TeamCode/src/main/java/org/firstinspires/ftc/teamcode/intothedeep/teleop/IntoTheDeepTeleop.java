@@ -48,9 +48,6 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         }
 
         // Reset the Gyro if GP2.LS is pressed
-        if (gamepad2.left_stick_button) {
-            controller.resetGyro(driveBase);
-        }
         updateTelemetry();
     }
 
@@ -81,7 +78,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         setStaticLED();
         while (opModeIsActive()) {
             displayDiagnostics();
-            controller.updateSpeedFactor();
+//            controller.updateSpeedFactor();
             controller.calculateDriveControls();
             controller.calculateDPadCreep();
             controller.updateDriveMode();
@@ -103,6 +100,11 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
 
             if( gamepad1.b) {
                 travel();
+            }
+
+            if (gamepad1.left_stick_button) {
+                HeadingHolder.setHeading(0);
+                driveBase.imu.resetYaw();
             }
 
             processArm();
