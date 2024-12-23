@@ -17,6 +17,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.gobilda.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
+
 public class DraculaBase {
     public enum LEDColor {
         OFF,
@@ -31,6 +33,13 @@ public class DraculaBase {
         VIOLET,
         WHITE
     }
+
+    public enum SensorDir {
+        FRONT,
+        RIGHT,
+        LEFT,
+        REAR
+    }
     //region hardware devices
     public DcMotor frontLeft, frontRight, backLeft, backRight, arm, slide;
     public Servo grip, tilt, liftRelease, droneRelease, holder, led;
@@ -38,7 +47,7 @@ public class DraculaBase {
     public RevBlinkinLedDriver blinkinLedDriver;
     public RevBlinkinLedDriver.BlinkinPattern pattern;
     public IMU imu;
-    GoBildaPinpointDriver odometryComputer;
+    public GoBildaPinpointDriver odometryComputer;
     //endregion
 
     // --------------  drive system and controls
@@ -50,6 +59,9 @@ public class DraculaBase {
 
     static final double COUNTS_PER_INCH_435 = COUNTS_PER_REV_gobilda435 / WHEEL_CIRCUMFERENCE;// counts/inch travelled
 
+    static final double DEFAULT_ODO_DIST_THRESHOLD = 1.0;
+    static final double DEFAULT_ODO_HEADING_THRESHOLD = 1.0;
+
     // Set to indicate which LED driver to use
     public static final boolean useBlinkinDriver = false;
 
@@ -57,10 +69,7 @@ public class DraculaBase {
     double x = 0.0;
     double r = 0.0;
     double max = 1.0;
-    double lfrontpower = 0.0;
-    double rfrontpower = 0.0;
-    double lrearpower = 0.0;
-    double rrearpower = 0.0;
+
     // --------------  IMU related... orientation
     public double HEADING_THRESHOLD = 1.3;//set at 1.2 normally
 
@@ -68,6 +77,8 @@ public class DraculaBase {
     HardwareMap hardwareMap = null;
     public ElapsedTime runtime = new ElapsedTime();
     protected static final double P_DRIVE_COEFF = 0.05;
+
+    public boolean hasOdometry = false;
 
     public void init(HardwareMap hardwareMap, OpMode _callingOpMode) {
         // Save reference to Hardware map
@@ -91,8 +102,6 @@ public class DraculaBase {
         blinkinLedDriver = callingOpMode.hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         pattern = RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE;
         blinkinLedDriver.setPattern(pattern);
-
-        //gyroTurn(0.1, 260);
     }
 
     private HardwareMap getHardwareMap() {
@@ -126,13 +135,13 @@ public class DraculaBase {
         return getHardwareMap().dcMotor.get(deviceName);
     }
 
-    private void intiOdometryComputer(){
+    public void initOdometryComputer(double xOffset, double yOffset){
         odometryComputer = getHardwareMap().get(GoBildaPinpointDriver.class,"odo");
-        odometryComputer.setOffsets(-84.0, -168.0);
+        odometryComputer.setOffsets(xOffset, yOffset);
         odometryComputer.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odometryComputer.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odometryComputer.resetPosAndIMU();
-
+        hasOdometry = true;
     }
 
 
@@ -164,11 +173,10 @@ public class DraculaBase {
     }
 
     public void applyMecPower2(double x, double y, double r) {
-
-        lfrontpower = +y + x - r;
-        rfrontpower = y - x + r;
-        lrearpower = y - x - r;
-        rrearpower = +y + x + r;
+        double lfrontpower = +y + x - r;
+        double rfrontpower = y - x + r;
+        double lrearpower = y - x - r;
+        double rrearpower = +y + x + r;
 
 // Normalize the values so none can exceed +/- 1.0.... set "max" to any power found to be > 1.0
         double max = 1.0;
@@ -188,6 +196,36 @@ public class DraculaBase {
         frontRight.setPower(rfrontpower);
         backLeft.setPower(lrearpower);
         backRight.setPower(rrearpower);
+    }
+
+    public double calculateTurn( double speed, double targetAngle) {
+        return calculateTurn( speed, targetAngle, getFieldHeading());
+    }
+
+    public double calculateTurn( double speed, double targetAngle, double currentAngle) {
+        double delta = targetAngle - currentAngle;// how far we need to turn
+
+        if (delta > 180.) {
+            delta -= 360.;
+        } else if (delta <= -180.) {
+            delta += 360.;
+        }
+        // ==================
+
+        if (delta < 0) {
+            r = -speed;
+        } else {
+            r = +speed;
+        }         // rotate CW or CCW depending on how the motors are set up
+
+        if (Math.abs(delta) < 40.) {
+            r = r * Math.abs(delta) / 40.;
+        }  // scale down the rotation speed proportionate to error
+
+        if (Math.abs(r) <= .1) {
+            r = .1 * Math.abs(r) / r;
+        }           // set a minimum r (turning speed), preserving the sign of r
+        return r;
     }
 
     public void gyroTurn(double speed, double targetAngle) {
@@ -597,6 +635,19 @@ public class DraculaBase {
         }
     }
 
+    public double distanceToWall( SensorDir sensor ) {
+        switch( sensor ) {
+            case FRONT:
+                return frontDistanceToWall();
+            case REAR:
+                return rearDistanceToWall();
+            case LEFT:
+                return leftDistanceToWall();
+            case RIGHT:
+                return rightDistanceToWall();
+        }
+        return 0.0;
+    }
 
     public double leftDistanceToWall() {
         return revRangeLeft.getDistance(DistanceUnit.INCH);
@@ -707,4 +758,68 @@ public class DraculaBase {
         }
     }
 
+    public void driveTo( double speed, double targetX, double targetY, double targetHeading ) {
+        driveTo( speed, x, y, targetHeading, DEFAULT_ODO_DIST_THRESHOLD, DEFAULT_ODO_HEADING_THRESHOLD);
+    }
+
+    public void driveTo( double speed, double targetX, double targetY, double targetHeading, double distThreshold, double headingThreshold) {
+        final double dist_slow_thresh = 0.02;
+        final double min_speed = 0.1;
+
+        double distanceToTarget, directionToTarget, headingOffset;
+
+        double vel, velX, velY;
+
+        double vStrafeRobot, vForwardRobot, rotation;
+
+        double currentX, currentY, currentHeading, currentHeadingUnnormlized;
+
+        Pose2DGobilda pos;
+
+        do {
+            odometryComputer.bulkUpdate();
+            pos = odometryComputer.getPosition();
+
+
+            currentX=pos.getX(DistanceUnit.INCH);
+            currentY=pos.getY(DistanceUnit.INCH);
+
+            // Calculate the offset from the current heading to the target heading
+            currentHeadingUnnormlized = pos.getHeading(AngleUnit.DEGREES);
+            currentHeading = currentHeadingUnnormlized;
+            if (currentHeadingUnnormlized < 0) {
+                currentHeading = currentHeadingUnnormlized + 360.;
+            }
+            if (currentHeadingUnnormlized > 360) {
+                currentHeading = currentHeadingUnnormlized - 360.;
+            } // correct for the "wrap around" of this angle
+            headingOffset = targetHeading - currentHeading;
+
+            // Calculate current direct distance to the target location
+            distanceToTarget=Math.hypot(Math.abs(targetX - currentX),
+                    Math.abs(targetY - currentY));
+
+            // Calculate radian angle to target location
+            directionToTarget=Math.atan2(targetY-currentY,targetX-currentX);
+
+            // Set velocity to the requested speed, until close to the target,
+            // then slow the bot, but never slower than 0.1 speed
+            vel=Math.max( Math.min(speed,distanceToTarget*dist_slow_thresh), min_speed );
+
+            velX= vel*Math.cos(directionToTarget);
+            velY= vel*Math.sin(directionToTarget);
+
+            // now let's do the coordinate transformation to the robot
+            // coordinate system.. which is rotated relative to the field by the
+            // current heading
+            vStrafeRobot=velX*Math.sin(pos.getHeading(AngleUnit.RADIANS))-velY*Math.cos(pos.getHeading(AngleUnit.RADIANS));
+            vForwardRobot=velX*Math.cos(pos.getHeading(AngleUnit.RADIANS))+velY*Math.sin(pos.getHeading(AngleUnit.RADIANS));
+
+            rotation = calculateTurn(speed,targetHeading, currentHeadingUnnormlized);
+
+            applyMecPower2(vStrafeRobot, vForwardRobot, rotation);
+        } while((Math.abs(distanceToTarget) > distThreshold) || (Math.abs(headingOffset) > headingThreshold));
+
+        applyMecPower2(0,0,0);
+    }
 }

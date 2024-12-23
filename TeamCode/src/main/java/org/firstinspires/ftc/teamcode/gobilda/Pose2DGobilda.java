@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.gobilda;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-public class Pose2D {
+public class Pose2DGobilda {
 
     private final double x;
     private final double y;
@@ -11,7 +11,7 @@ public class Pose2D {
     private final double heading;
     private final AngleUnit headingUnit;
 
-    public Pose2D(DistanceUnit distanceUnit,double x, double y, AngleUnit headingUnit, double heading) {
+    public Pose2DGobilda(DistanceUnit distanceUnit, double x, double y, AngleUnit headingUnit, double heading) {
         this.x = x;
         this.y = y;
         this.distanceUnit = distanceUnit;

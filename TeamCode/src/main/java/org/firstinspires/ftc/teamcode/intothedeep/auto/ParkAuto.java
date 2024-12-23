@@ -2,13 +2,11 @@ package org.firstinspires.ftc.teamcode.intothedeep.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.intothedeep.auto.blue.IntoTheDeepBlueAuto;
-
 /**
- * Net side code for Red Alliance
+ * Observation Side Auto
  */
 @Autonomous(name = "Park 9808", group = "Auto")
-public class ParkAuto extends IntoTheDeepBlueAuto {
+public class ParkAuto extends IntoTheDeepAuto {
     private final Position position = new Position(Position.Location.UNKNOWN);
     protected Position getPosition() { return position; }
 

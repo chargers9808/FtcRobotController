@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.intothedeep.teleop;
+package org.firstinspires.ftc.teamcode.intothedeep;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.DriverControls;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
-import org.firstinspires.ftc.teamcode.intothedeep.IntoTheDeepBase;
 
 @TeleOp(name = "ITDTeleop", group = "Linear Opmode")
 

@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.intothedeep;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.*;
 import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.GameBase;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.LinearOpMode9808;
+import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
 
 public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBase {
     /**
@@ -109,6 +111,8 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         sweeperOff();
         HeadingHolder.setHeading(HeadingHolder.getHeading());
         driveBase.imu.resetYaw();
+
+        driveBase.initOdometryComputer( -84.0, -168.0 );
     }
 
     /**
@@ -145,6 +149,67 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
 
     public void sweeperOff(){
         intake.setPower( SWEEPER_OFF );
+    }
+
+    public double getSensorOffset( DraculaBase.SensorDir sensor ) {
+        switch ( sensor ) {
+            case RIGHT:
+            case LEFT:
+                return 9.0;
+            case FRONT:
+                return 9.0;
+            case REAR:
+                return 9.0;
+        }
+        return 0.0;
+    }
+
+    protected void updateOdometryObservation() {
+        double currX, currY;
+        double currentHeading = driveBase.getFieldHeading();
+        DraculaBase.SensorDir sensorX, sensorY;
+        if( currentHeading <= 315 && currentHeading >= 225) {
+            currentHeading = 270.0;
+            sensorY = DraculaBase.SensorDir.FRONT;
+            sensorX = DraculaBase.SensorDir.RIGHT;
+        } else if ( currentHeading >= 135 && currentHeading <= 225 ) {
+            currentHeading = 180.0;
+            sensorY = DraculaBase.SensorDir.LEFT;
+            sensorX = DraculaBase.SensorDir.FRONT;
+        } else {
+            currentHeading = 0.0;
+            sensorY = DraculaBase.SensorDir.RIGHT;
+            sensorX = DraculaBase.SensorDir.REAR;
+        }
+        driveBase.gyroTurn(.8, currentHeading);
+        currY = 144 - ( driveBase.distanceToWall(sensorY) + getSensorOffset(sensorY) );
+        currX = driveBase.distanceToWall(sensorX) + getSensorOffset(sensorX);
+        Pose2DGobilda pos = new Pose2DGobilda(DistanceUnit.INCH, currX, currY, AngleUnit.DEGREES, currentHeading);
+        driveBase.odometryComputer.setPosition( pos );
+    }
+
+    protected void updateOdometryNet() {
+        double currX, currY;
+        double currentHeading = driveBase.getFieldHeading();
+        DraculaBase.SensorDir sensorX, sensorY;
+        if( currentHeading <= 135 && currentHeading >= 45) {
+            currentHeading = 90.0;
+            sensorY = DraculaBase.SensorDir.FRONT;
+            sensorX = DraculaBase.SensorDir.LEFT;
+        } else if ( currentHeading >= 135 && currentHeading <= 225 ) {
+            currentHeading = 180.0;
+            sensorY = DraculaBase.SensorDir.RIGHT;
+            sensorX = DraculaBase.SensorDir.FRONT;
+        } else {
+            currentHeading = 0.0;
+            sensorY = DraculaBase.SensorDir.LEFT;
+            sensorX = DraculaBase.SensorDir.REAR;
+        }
+        driveBase.gyroTurn(.8, currentHeading);
+        currY = driveBase.distanceToWall(sensorY) + getSensorOffset(sensorY);
+        currX = driveBase.distanceToWall(sensorX) + getSensorOffset(sensorX);
+        Pose2DGobilda pos = new Pose2DGobilda(DistanceUnit.INCH, currX, currY, AngleUnit.DEGREES, currentHeading);
+        driveBase.odometryComputer.setPosition( pos );
     }
 
     /**
@@ -312,7 +377,14 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
             telemetry.addData("rear distance  : ", driveBase.rearDistanceToWall());
             telemetry.addLine();
             //Gyro heading
-            telemetry.addData("heading        : ", driveBase.getFieldHeading());
+            if( driveBase.hasOdometry ) {
+                Pose2DGobilda pos = driveBase.odometryComputer.getPosition();
+                telemetry.addLine("X              : " + pos.getX(DistanceUnit.INCH));
+                telemetry.addLine("Y              : " + pos.getY(DistanceUnit.INCH));
+                telemetry.addLine("Heading        : " + pos.getHeading(AngleUnit.DEGREES));
+            } else {
+                telemetry.addData("Heading        : ", driveBase.getFieldHeading());
+            }
             telemetry.update();
         }
         telemetry.addData("run-time       : ", (driveBase.runtime.seconds()));
