@@ -1,19 +1,14 @@
-package org.firstinspires.ftc.teamcode.auto;
+package org.firstinspires.ftc.teamcode.intothedeep.auto;
 
 import org.firstinspires.ftc.teamcode.HeadingHolder;
-import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
-import org.firstinspires.ftc.teamcode.LinearOpMode9808;
+import org.firstinspires.ftc.teamcode.intothedeep.IntoTheDeepBase;
 
 abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
-    //TODO: Defile init operations
-    /*
-    ============================================================================================
-    Init Controls:
-        A:                      enableDiagnosticMode()
 
-
-    ============================================================================================
-     */
+    protected double sample1Offset = 22.0;
+    //15
+    protected double sample2Offset = 14.0;
+    protected double forwardDistance = 7.0;
     abstract protected Position getPosition();
     @Override
     protected void pre_initialize() {
@@ -23,7 +18,16 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
     @Override
     protected void initialize() {
         driveBase.setLED( getPosition().getStaticColor() );
+
+        driveBase.imu.resetYaw();
+        HeadingHolder.setHeading(0);
+        telemetry.addData("Gyro Reset", "Complete");
+
+        telemetry.update();
+        HeadingHolder.setHeading(0.0);
     }
+
+    abstract protected void run_auto();
 
     /**
      * Run AUTO opmode
@@ -33,8 +37,9 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
         if( opModeIsActive() ) {
             displayDiagnostics();
             // Call the run code for the specific opmode
-            finish();
+            run_auto();
         }
+        finish();
     }
 
     /**

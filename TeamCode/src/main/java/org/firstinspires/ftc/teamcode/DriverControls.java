@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-
 public class DriverControls {
     /**
      * Stick dead zone
@@ -11,13 +10,21 @@ public class DriverControls {
      */
     public final double CREEP_DIST = 0.1;
     /**
-     * Fast speed
+     * Drive speed fast
      */
     public final double SPEED_FACTOR_FAST = 1.3;
     /**
-     * Slow speed
+     * Drive speed slow
      */
     public final double SPEED_FACTOR_SLOW = 2.2;
+    /**
+     * Rotation speed slow
+     */
+    public final double SPEED_ROTATE_FACTOR_SLOW = 3.0;
+    /**
+     * Rotation speed fast
+     */
+    public final double SPEED_ROTATE_FACTOR_FAST = 1.0;
 
     /**
      * Trigger threshold
@@ -25,7 +32,8 @@ public class DriverControls {
     public final double TRIGGER_THRESHOLD = 0.1;
 
     protected LinearOpMode9808 opmode;
-    public double speedFactor;
+    private double speedFactor;
+    private double rotationSpeed;
     public boolean fieldCentric;
     private double x = 0.0;
     private double y = 0.0;
@@ -42,6 +50,7 @@ public class DriverControls {
         this.togglingSpeed = false;
         this.togglingMode = false;
         this.speedFactor = SPEED_FACTOR_FAST;
+        this.rotationSpeed = SPEED_ROTATE_FACTOR_FAST;
         this.fieldCentric = true;
     }
 
@@ -55,7 +64,7 @@ public class DriverControls {
         double yCommand = (-opmode.gamepad1.left_stick_y - opmode.gamepad2.left_stick_y) / speedFactor; // forward and backward with respect to robot
         // (note: The joystick goes negative when pushed up, so we negate it)
         double xCommand = (opmode.gamepad1.left_stick_x + opmode.gamepad2.left_stick_x) / speedFactor;  // left and right with respect to robot
-        r = (-opmode.gamepad1.right_stick_x - opmode.gamepad2.right_stick_x) / 3*speedFactor;        // spin cw or ccw
+        r = (-opmode.gamepad1.right_stick_x - opmode.gamepad2.right_stick_x) / rotationSpeed;        // spin cw or ccw
         // create a steering "deadzone" near zero joystick deflection
         if (Math.abs(yCommand) < DEAD_ZONE) {
             yCommand = 0.;
@@ -113,7 +122,7 @@ public class DriverControls {
         if (opmode.gamepad2.left_stick_button) {
             driveBase.imu.resetYaw();
             HeadingHolder.setHeading(0);
-            driveBase.setSolidGoldLED();
+            driveBase.setLED(DraculaBase.LEDColor.GREEN);
         }
     }
 
@@ -123,11 +132,23 @@ public class DriverControls {
      * INPUT: GP1.RS
      */
     public void updateDriveMode() {
-        if((opmode.gamepad1.right_stick_button) && !togglingMode) {
+        if((opmode.gamepad1.back) && !togglingMode) {
             fieldCentric = !fieldCentric;
             togglingMode = true;
-        } else if( !opmode.gamepad1.right_stick_button) {
+        } else if( !opmode.gamepad1.back) {
             togglingMode = false;
+        }
+    }
+
+    public void creepSpeed() {
+        if (opmode.gamepad1.right_stick_button || opmode.gamepad1.x) {
+            rotationSpeed = SPEED_ROTATE_FACTOR_SLOW;
+        }
+        else if (opmode.gamepad1.b){
+            rotationSpeed = SPEED_ROTATE_FACTOR_FAST;
+        }
+        else {
+            rotationSpeed = SPEED_ROTATE_FACTOR_FAST;
         }
     }
 
@@ -136,18 +157,18 @@ public class DriverControls {
      *
      * INPUT: GP1.LS
      */
-    public void updateSpeedFactor() {
-        if((opmode.gamepad1.left_stick_button) && !togglingSpeed) {
-            if( speedFactor == SPEED_FACTOR_FAST ) {
-                speedFactor = SPEED_FACTOR_SLOW;
-            } else {
-                speedFactor = SPEED_FACTOR_FAST;
-            }
-            togglingSpeed = true;
-        } else if( !opmode.gamepad1.left_stick_button) {
-            togglingSpeed = false;
-        }
-    }
+//    public void updateSpeedFactor() {
+//        if((opmode.gamepad1.left_stick_button) && !togglingSpeed) {
+//            if( speedFactor == SPEED_FACTOR_FAST ) {
+//                speedFactor = SPEED_FACTOR_SLOW;
+//            } else {
+//                speedFactor = SPEED_FACTOR_FAST;
+//            }
+//            togglingSpeed = true;
+//        } else if( !opmode.gamepad1.left_stick_button) {
+//            togglingSpeed = false;
+//        }
+//    }
 
     public boolean triggered(float trigger) {
         return trigger >= TRIGGER_THRESHOLD;

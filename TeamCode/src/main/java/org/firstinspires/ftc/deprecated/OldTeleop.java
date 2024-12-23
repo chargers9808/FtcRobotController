@@ -1,12 +1,12 @@
 
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.deprecated;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
-import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
+import org.firstinspires.ftc.teamcode.intothedeep.IntoTheDeepBase;
 @TeleOp(name = "Old Refatored Teleop", group = "Linear Opmode")
 @Disabled
 public class OldTeleop extends IntoTheDeepBase {
@@ -271,7 +271,7 @@ public class OldTeleop extends IntoTheDeepBase {
             driveBase.tilt.setPosition(driveBase.tiltToPick);
 
             if (driveBase.rightDistanceToWall() < 48) {
-                driveBase.DriveSideways(.5, driveBase.rightDistanceToWall() - 16.5);
+                driveBase.driveSideways(.5, driveBase.rightDistanceToWall() - 16.5);
                 driveBase.gyroTurn(.6, 0);
                 driveBase.tankDrive(.4, driveBase.frontDistanceToWall() - 8);
             }
@@ -286,7 +286,7 @@ public class OldTeleop extends IntoTheDeepBase {
             driveBase.tilt.setPosition(driveBase.tiltToPick);
 
             if (driveBase.leftDistanceToWall() < 48) {
-                driveBase.DriveSideways(.5, -(driveBase.leftDistanceToWall() - 17));
+                driveBase.driveSideways(.5, -(driveBase.leftDistanceToWall() - 17));
                 driveBase.tankDrive(.5, driveBase.frontDistanceToWall() - 8);
             }
         }
