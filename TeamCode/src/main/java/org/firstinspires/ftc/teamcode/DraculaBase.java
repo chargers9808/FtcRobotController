@@ -380,61 +380,64 @@ public class DraculaBase {
 //            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void positionToFieldCentric(double targetPosX, double targetPosY, double targetHeading, double posThreshold, double headingThreshold) {
-        double heading = odometryComputer.getHeading();
+    public void positionTo(double maxSpeed, double targetPosX, double targetPosY, double targetHeading, double posThreashold, double headingThreashold) {
         double distanceX = targetPosX - odometryComputer.getXOffset();
         double distanceY = targetPosY - odometryComputer.getYOffset();
-        double headingError = targetHeading - heading;
+        double headingError = targetHeading - odometryComputer.getHeading();
 
         double speedX;
         double speedY;
         double speedR;
 
-        double cosTheta;
-        double sinTheta;
+        speedX = Math.signum(distanceX);
+        speedY = Math.signum(distanceY);
+        speedR = headingError > 180.0 ? Math.signum(headingError - 360.0) : Math.signum(headingError + 360.0);
 
-        double fieldX;
-        double fieldY;
+        double frontLeftWheelMotorPower = speedX + speedR + speedY;
+        double frontRightWheelMotorPower = speedX - speedR - speedY;
+        double backLeftWheelMotorPower = speedX + speedR - speedY;
+        double backRightWheelMotorPower = speedX - speedR + speedY;
 
-        double frontLeftWheelMotorPower;
-        double frontRightWheelMotorPower;
-        double backLeftWheelMotorPower;
-        double backRightWheelMotorPower;
+        double max = 1.0;
+
+        for (double motorPower : new double[] { frontLeftWheelMotorPower, frontRightWheelMotorPower, backLeftWheelMotorPower, backRightWheelMotorPower }) {
+            max = Math.max(max, Math.abs(motorPower));
+        }
+
+        frontLeftWheelMotorPower /= max;
+        frontRightWheelMotorPower /= max;
+        backLeftWheelMotorPower /= max;
+        backRightWheelMotorPower /= max;
+
+        frontLeft.setPower(frontLeftWheelMotorPower);
+        frontRight.setPower(frontRightWheelMotorPower);
+        backLeft.setPower(backLeftWheelMotorPower);
+        backRight.setPower(backRightWheelMotorPower);
+
 
         while (((LinearOpMode) callingOpMode).opModeIsActive() &&
-                Math.abs(headingError) > headingThreshold &&
-                Math.abs(distanceX) > targetPosX + posThreshold &&
-                Math.abs(distanceY) > targetPosY + posThreshold
+                Math.abs(headingError) > HEADING_THRESHOLD &&
+                Math.abs(distanceX) > targetPosX + posThreashold &&
+                Math.abs(distanceY) > targetPosY + posThreashold
         ) {
-            heading = odometryComputer.getHeading();
+
             distanceX = targetPosX - odometryComputer.getXOffset();
             distanceY = targetPosY - odometryComputer.getYOffset();
-            headingError = targetHeading - heading;
+            headingError = targetHeading - odometryComputer.getHeading();
 
             speedX = Math.signum(distanceX);
             speedY = Math.signum(distanceY);
             speedR = headingError > 180.0 ? Math.signum(headingError - 360.0) : Math.signum(headingError + 360.0);
 
-            if (Math.abs(headingError) < 50.) {
-                speedR *= Math.abs(headingError) / 50.;
-            }
-
-            cosTheta = Math.cos(heading);
-            sinTheta = Math.sin(heading);
-
-            fieldX = speedX * cosTheta - speedY * sinTheta;
-            fieldY = speedX * sinTheta + speedY * cosTheta;
-
-            frontLeftWheelMotorPower = fieldY + speedR + fieldX;
-            frontRightWheelMotorPower = fieldY - speedR - fieldX;
-            backLeftWheelMotorPower = fieldY + speedR - fieldX;
-            backRightWheelMotorPower = fieldY - speedR + fieldX;
+            frontLeftWheelMotorPower = speedX + speedR + speedY;
+            frontRightWheelMotorPower = speedX - speedR - speedY;
+            backLeftWheelMotorPower = speedX + speedR - speedY;
+            backRightWheelMotorPower = speedX - speedR + speedY;
 
             max = 1.0;
-            max = Math.max(max, Math.abs(frontLeftWheelMotorPower));
-            max = Math.max(max, Math.abs(frontRightWheelMotorPower));
-            max = Math.max(max, Math.abs(backLeftWheelMotorPower));
-            max = Math.max(max, Math.abs(backRightWheelMotorPower));
+            for (double motorPower : new double[]{frontLeftWheelMotorPower, frontRightWheelMotorPower, backLeftWheelMotorPower, backRightWheelMotorPower}) {
+                max = Math.max(max, Math.abs(motorPower));
+            }
 
             frontLeftWheelMotorPower /= max;
             frontRightWheelMotorPower /= max;
