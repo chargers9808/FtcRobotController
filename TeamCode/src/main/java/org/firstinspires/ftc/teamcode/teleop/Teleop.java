@@ -86,8 +86,8 @@ public class Teleop extends LinearOpMode {
 
 
         driveBase.setSolidRedLED();
-//        driveBase.arm.setPower(0.1);
-//        driveBase.slide.setPower(0.0);
+        driveBase.arm.setPower(0.1);
+        driveBase.slide.setPower(0.0);
 
         //now waiting at the end of the init() -----
         initiation();
@@ -226,13 +226,13 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.dpad_up && gamepad1.right_bumper)
             {   driveBase.tilt.setPosition(driveBase.tiltToPick);
                 driveBase.grip.setPosition(driveBase.gripClosed);
-                //driveBase.arm.setTargetPosition(driveBase.armPickingPosition); }
+                driveBase.arm.setTargetPosition(driveBase.armPickingPosition); }
             if (gamepad1.dpad_down && gamepad1.right_bumper)
             {  }// reserved for future control
             if (gamepad1.dpad_left && gamepad1.right_bumper)
             { driveBase.gyroTurn(.6,90);
                 driveBase.grip.setPosition(driveBase.gripClosed);
-                //driveBase.arm.setTargetPosition(driveBase.armPickingPosition);
+                driveBase.arm.setTargetPosition(driveBase.armPickingPosition);
                 driveBase.tilt.setPosition(driveBase.tiltToPick);
 
                 if (driveBase.rightDistanceToWall() < 48)
@@ -247,7 +247,7 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.dpad_right && gamepad1.right_bumper)
             { driveBase.gyroTurn(.6,0);
                 driveBase.grip.setPosition(driveBase.gripClosed);
-                //driveBase.arm.setTargetPosition(driveBase.armPickingPosition);
+                driveBase.arm.setTargetPosition(driveBase.armPickingPosition);
                 driveBase.tilt.setPosition(driveBase.tiltToPick);
 
                 if (driveBase.leftDistanceToWall() < 48) {
@@ -282,14 +282,14 @@ public class Teleop extends LinearOpMode {
             {
                 //Arm and slide move to scoring position
                 driveBase.armNewTargetPosition = driveBase.armScoringPositon;
-//                driveBase.arm.setPower(.4);
-//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+                driveBase.arm.setPower(.4);
+                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
                 //Slide
                 driveBase.slideNewTargetPosition = driveBase.slideOut;
                 driveBase.slide.setPower(.6);
                 driveBase.slide.setTargetPosition(driveBase.slideNewTargetPosition);
-//                while (driveBase.arm.isBusy()); // Not Pushed: Test Friday.
-//                //Move
+                while (driveBase.arm.isBusy()); // Not Pushed: Test Friday.
+                //Move
                 driveBase.gyroTurn(.5,180);
                 while (driveBase.frontRight.isBusy());
                 driveBase.DriveSideways(.5,driveBase.rightDistanceToWall()-9);// determine the correct distance for this
@@ -318,8 +318,8 @@ public class Teleop extends LinearOpMode {
                 intake.setPower(0);
                 //Arm
                 driveBase.armNewTargetPosition = driveBase.armTravelPosition;
-//                driveBase.arm.setPower(.8);
-//                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+                driveBase.arm.setPower(.8);
+                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
                 //Slide
                 driveBase.slideNewTargetPosition = driveBase.slideIn;
                 driveBase.slide.setPower(.8);
@@ -330,22 +330,22 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.left_bumper) // Manual Raise
             {
                 {driveBase.armNewTargetPosition -= driveBase.armIncrement;}
-                //driveBase.arm.setPower(.8);
+                driveBase.arm.setPower(.8);
 //                if (driveBase.armNewTargetPosition < driveBase.armTravelPosition)
 //                {
 //                    driveBase.armNewTargetPosition = driveBase.armTravelPosition;
 //                }
-                //driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
             }
             else if (gamepad1.left_trigger > .1) // Manual Lower
             {
                 driveBase.armNewTargetPosition += (driveBase.armIncrement);
-              //  driveBase.arm.setPower(.4);
+                driveBase.arm.setPower(.4);
 //                if (driveBase.armNewTargetPosition > driveBase.armLowered)
 //                {
 //                    driveBase.armNewTargetPosition = driveBase.armLowered;
 //                }
-            //    driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
+                driveBase.arm.setTargetPosition(driveBase.armNewTargetPosition);
                 sleep(50);
             }
 
@@ -401,7 +401,7 @@ public class Teleop extends LinearOpMode {
 
             driveBase.applyMecPower2(x,y,r);
 
-        }}
+        }
     }
 }
 
