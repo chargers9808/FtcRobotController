@@ -130,9 +130,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     }
 
     public void pickup() {
-        driveBase.slide.setPower(0.4);
-        driveBase.slide.setTargetPosition(800);
-        //driveBase.tankDrive(.5, driveBase.frontDistanceToWall()-9);
+        driveBase.tankDrive(.5, driveBase.frontDistanceToWall()-9);
 
 //        driveBase.moveMotor(driveBase.arm, (driveBase.armCollectPositonUp ), 0.6, true);
 //        driveBase.moveMotor(driveBase.slide, driveBase.slideCollectPosition, .8, true);

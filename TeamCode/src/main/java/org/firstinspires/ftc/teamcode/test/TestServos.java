@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import org.firstinspires.ftc.teamcode.DraculaBase;
 
 @TeleOp(name = "TestServos", group = "Linear Opmode")
+@Disabled
 public class TestServos extends LinearOpMode {
 
 //  Declare OpMode members.
@@ -52,17 +53,10 @@ public class TestServos extends LinearOpMode {
             }
 
             if (gamepad1.right_trigger>.1 ){
-                //driveBase.flipperPosition+=driveBase.flipperIncrement;
-                driveBase.flipper.setPosition(driveBase.flipperOut);
-                sleep(1250);
-                driveBase.flipper.setPosition(driveBase.flipperOut2);
-                //sleep(50);
+                driveBase.tiltPosition+=driveBase.tiltIncrement;
 
             } else if ((gamepad1.right_bumper)) {
-
-                //driveBase.flipperPosition-=driveBase.flipperIncrement;
-                driveBase.flipper.setPosition(driveBase.flipperIn); //0.667
-                sleep(50);
+                driveBase.tiltPosition-=driveBase.tiltIncrement;
 
             }
 
@@ -99,20 +93,20 @@ public class TestServos extends LinearOpMode {
                 sleep(150);
             }
 
-//            telemetry.addData("droneRelease (x/y): ", driveBase.droneReleasePosition);
-//            //telemetry.addData("liftRelease servo (dpad_left/dpad_right): ", driveBase.liftReleasePosition);
-//            telemetry.addData("Arm position (Left Trigger/Bumper): ", driveBase.armNewTargetPosition);
-//            telemetry.addData("tilt (right T/B): ", driveBase.tiltPosition);
-//            telemetry.addData("grip (a/b): ", driveBase.gripPosition);
-            telemetry.addData("flipper position ", driveBase.flipperPosition);
+            telemetry.addData("droneRelease (x/y): ", driveBase.droneReleasePosition);
+            //telemetry.addData("liftRelease servo (dpad_left/dpad_right): ", driveBase.liftReleasePosition);
+            telemetry.addData("Arm position (Left Trigger/Bumper): ", driveBase.armNewTargetPosition);
+            telemetry.addData("tilt (right T/B): ", driveBase.tiltPosition);
+            telemetry.addData("grip (a/b): ", driveBase.gripPosition);
+            telemetry.addData("holder servo (dpad_left/dpad_right): ", driveBase.holderPosition);
 
             telemetry.update();
-//
-//            driveBase.droneRelease.setPosition(driveBase.droneReleasePosition);
-//            driveBase.liftRelease.setPosition(driveBase.liftReleasePosition);
-//            driveBase.tilt.setPosition(driveBase.tiltPosition);
-//            driveBase.grip.setPosition(driveBase.gripPosition);
-//            driveBase.holder.setPosition(driveBase.holderPosition);
+
+            driveBase.droneRelease.setPosition(driveBase.droneReleasePosition);
+            driveBase.liftRelease.setPosition(driveBase.liftReleasePosition);
+            driveBase.tilt.setPosition(driveBase.tiltPosition);
+            driveBase.grip.setPosition(driveBase.gripPosition);
+            driveBase.holder.setPosition(driveBase.holderPosition);
 
         }
     }

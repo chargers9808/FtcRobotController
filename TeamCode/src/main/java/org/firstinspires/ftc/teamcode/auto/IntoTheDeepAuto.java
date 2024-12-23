@@ -33,7 +33,6 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
         if( opModeIsActive() ) {
             displayDiagnostics();
             // Call the run code for the specific opmode
-
             finish();
         }
     }

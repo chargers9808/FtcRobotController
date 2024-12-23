@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.DriverControls;
 import org.firstinspires.ftc.teamcode.HeadingHolder;
 import org.firstinspires.ftc.teamcode.IntoTheDeepBase;
+import org.firstinspires.ftc.teamcode.LinearOpMode9808;
 
 @TeleOp(name = "ITDTeleop", group = "Linear Opmode")
 
@@ -82,33 +83,19 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
             processSweeper();
 
             // Preset to score
-//            if( gamepad1.y) {
-//                score(Basket.TOP);
-//            }
-
-            if (gamepad1.x) {
-                score();
-                //moveSlide();
+            if( gamepad1.y) {
+                score(Basket.TOP);
             }
 
-            if(gamepad1.y){
-                retractSlide();
-            }
+            if (gamepad1.x)
+                pickup();
 
-            if(gamepad1.a){
-                extendIntake();
-            }
+            if (gamepad1.b)
+                prepareToTravel();
 
-            if(gamepad1.b){
-                retractIntake();
+            if( gamepad1.a) {
+                travel();
             }
-
-//            if (gamepad1.b)
-//                prepareToTravel();
-//
-//            if( gamepad1.a) {
-//                travel();
-//            }
 
             processArm();
             processSlide();
@@ -128,54 +115,11 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
 //        }
     }
 
-    private void extendIntake(){
-        driveBase.slide.setTargetPosition(977);
-        driveBase.slide.setPower(0.8);
-
-        driveBase.flipper.setPosition(driveBase.flipperOut);
-        sleep(1250);
-        driveBase.flipper.setPosition(driveBase.flipperOut2);
-
-
-        driveBase.intake.setPower(0.3);
-    }
-
-    private void retractIntake(){
-
-        driveBase.intake.setPower(0);
-        driveBase.flipper.setPosition(driveBase.flipperIn1);
-
-        driveBase.slide.setTargetPosition(0);
-        driveBase.slide.setPower(0.8);
-
-        sleep(500);
-
-        driveBase.flipper.setPosition(driveBase.flipperIn);
-    }
-
-    private void score(){
-        driveBase.intake.setPower(-0.3);
-        sleep(1000);
-        driveBase.intake.setPower(0.0);
-
-        // lift
-    }
-
-    private void retractSlide(){
-        driveBase.slide.setTargetPosition(0);
-        driveBase.slide.setPower(0.8);
-    }
-
-    private void moveSlide() {
-        driveBase.slide.setTargetPosition(977);
-        driveBase.slide.setPower(0.8);
-    }
-
-    private void processSlide() { //  977
-        if( gamepad1.right_bumper ) {
+    private void processSlide() {
+        if( gamepad2.right_bumper ) {
             driveBase.incrementMotorSafe(driveBase.slide, 30, 0.5, 0 , 90);
             sleep(30); // 2814 max
-        } else if (controller.triggered(gamepad1.right_trigger)) {
+        } else if (controller.triggered(gamepad2.right_trigger)) {
             driveBase.incrementMotorSafe(driveBase.slide, -30, 0.5, 0 , 90);
             sleep(30); // 2814 max
             //bvlldriveBase.incrementMotorSafe(driveBase.slide, -1 * SLIDE_INCREMENT, .8, driveBase.slideOut, driveBase.slideIn);
@@ -183,11 +127,11 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
     }
 
     private void processSweeper() {
-//        if (gamepad2.a) {
-//            sweeperIn();
-//        } else if (gamepad2.b) {
-//            sweeperOut();
-//        }
+        if (gamepad2.a) {
+            sweeperIn();
+        } else if (gamepad2.b) {
+            sweeperOut();
+        }
 //        else {
 //            sweeperOff();
 //        }
