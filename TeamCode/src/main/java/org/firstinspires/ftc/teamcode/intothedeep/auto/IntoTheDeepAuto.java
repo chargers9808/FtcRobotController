@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.intothedeep.auto;
 
-import org.firstinspires.ftc.teamcode.HeadingHolder;
+import org.firstinspires.ftc.teamcode.DraculaBase;
+import org.firstinspires.ftc.teamcode.DataHolder;
 import org.firstinspires.ftc.teamcode.intothedeep.IntoTheDeepBase;
 
 abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
@@ -9,6 +10,11 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
     //15
     protected double sample2Offset = 14.0;
     protected double forwardDistance = 7.0;
+
+    protected final int AUTO_ARM_SCORE_POS = -1700;
+    protected final double SCORE_FRONT_DIST = 5.15;
+    protected final double SCORE_LEFT_DIST = 8.34;
+
     abstract protected Position getPosition();
     @Override
     protected void pre_initialize() {
@@ -17,14 +23,35 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
 
     @Override
     protected void initialize() {
-        driveBase.setLED( getPosition().getStaticColor() );
-
         driveBase.imu.resetYaw();
-        HeadingHolder.setHeading(0);
-        telemetry.addData("Gyro Reset", "Complete");
+        DataHolder.setAll(0.0,0,0);
 
-        telemetry.update();
-        HeadingHolder.setHeading(0.0);
+        closeGripper();
+        sleep(100);
+        driveBase.setLED( DraculaBase.LEDColor.GREEN );
+    }
+
+    @Override
+    protected void closeGripper() {
+        super.closeGripper();
+        sleep(150);
+    }
+
+    protected void scoreAuto() {
+        scoreAuto( 140.0 );
+    }
+
+    protected void scoreAuto( double dropAngle ) {
+        // NOTE:
+        // Expects to start this at the position
+        // x = SCORE_LEFT_DIST
+        // y = SCORE_FRONT_DIST
+        setGripRotation(Grip_Position.GRIP_90DEG);
+        driveBase.gyroTurn(0.5, dropAngle);
+        driveBase.moveMotor(driveBase.slide, slideOut, 0.5, false);
+        sleep(200);
+        driveBase.moveMotor(driveBase.arm, AUTO_ARM_SCORE_POS, 0.4, true); //power:.2
+        scoreSample();
     }
 
     abstract protected void run_auto();
@@ -46,7 +73,11 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
      * Finalize AUTO phase in prep for Teleop
      */
     private void finish() {
-        HeadingHolder.setHeading(driveBase.getFieldHeading());
+        DataHolder.setAll(
+                driveBase.getFieldHeading(),
+                driveBase.arm.getCurrentPosition(),
+                driveBase.slide.getCurrentPosition()
+        );
         setLEDHeartbeat();
         telemetry.addData("Path", "Complete");
 

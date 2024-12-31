@@ -121,7 +121,7 @@ public class DriverControls {
     public void resetGyro(DraculaBase driveBase) {
         if (opmode.gamepad2.left_stick_button) {
             driveBase.imu.resetYaw();
-            HeadingHolder.setHeading(0);
+            DataHolder.setHeading(0);
             driveBase.setLED(DraculaBase.LEDColor.GREEN);
         }
     }
@@ -147,9 +147,7 @@ public class DriverControls {
         else if (opmode.gamepad1.b){
             rotationSpeed = SPEED_ROTATE_FACTOR_FAST;
         }
-        else {
-            rotationSpeed = SPEED_ROTATE_FACTOR_FAST;
-        }
+
     }
 
     /**

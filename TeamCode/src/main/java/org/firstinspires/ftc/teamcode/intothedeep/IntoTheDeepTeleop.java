@@ -3,12 +3,11 @@ package org.firstinspires.ftc.teamcode.intothedeep;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.DriverControls;
-import org.firstinspires.ftc.teamcode.HeadingHolder;
+import org.firstinspires.ftc.teamcode.DataHolder;
 
 @TeleOp(name = "ITDTeleop", group = "Linear Opmode")
 
 public class IntoTheDeepTeleop extends IntoTheDeepBase {
-    //TODO: Defile controller operations
     /*
     ============================================================================================
     Driving Controls:
@@ -35,8 +34,13 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
     private final double ARM_POWER = 0.8;
     private final double SLIDE_POWER = 0.8;
 
-    protected double lastSavedAngle = HeadingHolder.getHeading();
+    protected double lastSavedAngle = DataHolder.getHeading();
     protected DriverControls controller = new DriverControls();
+    private int gripRotation = 0;
+
+    private final double BUTTON_TIMEOUT = .25;
+    private double lastPressedTimeA;
+    private double lastPressedTimeStart;
 
     @Override
     protected void initialize() {
@@ -48,6 +52,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
 
         // Reset the Gyro if GP2.LS is pressed
         updateTelemetry();
+        gripRotation = 0;
     }
 
     protected void pre_initialize() {
@@ -55,6 +60,10 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         driveBase.slide.setPower( NO_POWER );
         controller.init(this);
 
+    }
+
+    private boolean buttonPressed( boolean button, double lastPressed) {
+        return button && (getRuntime() >= (lastPressed + BUTTON_TIMEOUT));
     }
 
     private void updateTelemetry() {
@@ -70,19 +79,26 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         telemetry.addLine("Diagnostic Mode (press A to toggle): " + diagnosticMode);
         telemetry.addData("Gyro initialized to:   ", lastSavedAngle);
         telemetry.addData("heading:   ", driveBase.getFieldHeading());
+        telemetry.addData("Grip Rotation Position :", driveBase.gripRotation.getPosition());
+    }
+
+    @Override
+    protected void opModeDiagnostics() {
+        telemetry.addData("Gripper storage: ", gripRotation);
     }
 
     @Override
     protected void run_9808() {
         setStaticLED();
+        setGripRotation(gripRotation );
+        lastPressedTimeA = getRuntime() - 1000;
+        lastPressedTimeStart = getRuntime() - 1000;
         while (opModeIsActive()) {
             displayDiagnostics();
-//            controller.updateSpeedFactor();
             controller.calculateDriveControls();
             controller.calculateDPadCreep();
             controller.updateDriveMode();
             controller.creepSpeed();
-            processSweeper();
 
             // Preset to score
             if( gamepad1.y) {
@@ -93,8 +109,16 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
                 pickup();
             }
 
-            if (gamepad1.a) {
-             sweeperOut();
+            if ( buttonPressed( gamepad1.a, lastPressedTimeA)) {
+                gripRotation += 1;
+                gripRotation %= GRIP_ROTATIONS.length;
+                setGripRotation(gripRotation );
+                lastPressedTimeA = getRuntime();
+            }
+
+            if( buttonPressed( gamepad1.start, lastPressedTimeStart)) {
+                toggleGripper();
+                lastPressedTimeStart = getRuntime();
             }
 
             if( gamepad1.b) {
@@ -102,7 +126,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
             }
 
             if (gamepad1.left_stick_button) {
-                HeadingHolder.setHeading(0);
+                DataHolder.setHeading(0);
                 driveBase.imu.resetYaw();
             }
 
@@ -110,7 +134,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
             processSlide();
             controller.move(driveBase);
         }
-        HeadingHolder.setHeading(driveBase.getFieldHeading());
+        DataHolder.setHeading(driveBase.getFieldHeading());
     }
 
     private void processArm() {
@@ -127,16 +151,5 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         } else if (controller.triggered(gamepad1.right_trigger)) {
             driveBase.incrementMotorSafe(driveBase.slide, -1 * SLIDE_INCREMENT, SLIDE_POWER, slideOut, slideIn);
         }
-    }
-
-    private void processSweeper() {
-        if (gamepad2.a) {
-            sweeperIn();
-        } else if (gamepad2.b) {
-            sweeperOut();
-        }
-//        else {
-//            sweeperOff();
-//        }
     }
 }

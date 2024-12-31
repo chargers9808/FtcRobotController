@@ -22,16 +22,16 @@ import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
 public class DraculaBase {
     public enum LEDColor {
         OFF,
-        RED,
-        ORANGE,
-        YELLOW,
-        SAGE,
-        GREEN,
-        AZURE,
-        BLUE,
-        INDIGO,
-        VIOLET,
-        WHITE
+        RED,    // DOES NOT WORK
+        ORANGE, // WORKS
+        YELLOW, // WORKS
+        SAGE,   // WORKS
+        GREEN,  // WORKS
+        AZURE,  // WORKS
+        BLUE,   // WORKS
+        INDIGO, // DOES NOT WORK
+        VIOLET, // WORKS
+        WHITE   // WORKS
     }
 
     public enum SensorDir {
@@ -42,7 +42,7 @@ public class DraculaBase {
     }
     //region hardware devices
     public DcMotor frontLeft, frontRight, backLeft, backRight, arm, slide;
-    public Servo grip, tilt, liftRelease, droneRelease, holder, led;
+    public Servo grip, gripRotation, led;
     public DistanceSensor revRangeLeft, revRangeRight, revRangeFront, revRangeRear;
     public RevBlinkinLedDriver blinkinLedDriver;
     public RevBlinkinLedDriver.BlinkinPattern pattern;
@@ -120,11 +120,8 @@ public class DraculaBase {
     }
 
     private void setAllServos(){
-//        grip = getCrServo("intake");
-//        holder = getServo("holder");
-//        tilt = getServo("tilt");
-//        liftRelease = getServo("liftrelease");
-//        droneRelease = getServo("dronerelease");
+        grip = getHardwareMap().servo.get("clawServo");
+        gripRotation = getHardwareMap().servo.get("rotationServo");
         led = getHardwareMap().servo.get("led");
     }
     private Servo getCrServo(String deviceName) {
@@ -135,10 +132,10 @@ public class DraculaBase {
         return getHardwareMap().dcMotor.get(deviceName);
     }
 
-    public void initOdometryComputer(double xOffset, double yOffset){
+    public void initOdometryComputer(double xOffset, double yOffset, GoBildaPinpointDriver.GoBildaOdometryPods podType){
         odometryComputer = getHardwareMap().get(GoBildaPinpointDriver.class,"odo");
         odometryComputer.setOffsets(xOffset, yOffset);
-        odometryComputer.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odometryComputer.setEncoderResolution(podType);
         odometryComputer.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odometryComputer.resetPosAndIMU();
         hasOdometry = true;
@@ -370,7 +367,7 @@ public class DraculaBase {
 
         //  this gets all the imu parameters... the "heading" is the "firstAngle + initialFieldHeading"
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        theta = orientation.getYaw(AngleUnit.DEGREES) + HeadingHolder.getHeading();  // initialized with the saved heading
+        theta = orientation.getYaw(AngleUnit.DEGREES) + DataHolder.getHeading();  // initialized with the saved heading
 //        theta = orientation.getYaw(AngleUnit.DEGREES);  // initialized with the saved heading
 
         if (theta < 0) {
@@ -758,12 +755,16 @@ public class DraculaBase {
         }
     }
 
+    public void driveTo( double speed, Pose2DGobilda pos) {
+        driveTo( speed, pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
+    }
+
     public void driveTo( double speed, double targetX, double targetY, double targetHeading ) {
-        driveTo( speed, x, y, targetHeading, DEFAULT_ODO_DIST_THRESHOLD, DEFAULT_ODO_HEADING_THRESHOLD);
+        driveTo( speed, targetX, targetY, targetHeading, DEFAULT_ODO_DIST_THRESHOLD, DEFAULT_ODO_HEADING_THRESHOLD);
     }
 
     public void driveTo( double speed, double targetX, double targetY, double targetHeading, double distThreshold, double headingThreshold) {
-        final double dist_slow_thresh = 0.02;
+        final double dist_slow_thresh = 0.054;
         final double min_speed = 0.1;
 
         double distanceToTarget, directionToTarget, headingOffset;
@@ -772,28 +773,22 @@ public class DraculaBase {
 
         double vStrafeRobot, vForwardRobot, rotation;
 
-        double currentX, currentY, currentHeading, currentHeadingUnnormlized;
+        double currentX, currentY, currentHeadingUnnormlized;
 
         Pose2DGobilda pos;
+
+        double startTime = runtime.time();
 
         do {
             odometryComputer.bulkUpdate();
             pos = odometryComputer.getPosition();
-
 
             currentX=pos.getX(DistanceUnit.INCH);
             currentY=pos.getY(DistanceUnit.INCH);
 
             // Calculate the offset from the current heading to the target heading
             currentHeadingUnnormlized = pos.getHeading(AngleUnit.DEGREES);
-            currentHeading = currentHeadingUnnormlized;
-            if (currentHeadingUnnormlized < 0) {
-                currentHeading = currentHeadingUnnormlized + 360.;
-            }
-            if (currentHeadingUnnormlized > 360) {
-                currentHeading = currentHeadingUnnormlized - 360.;
-            } // correct for the "wrap around" of this angle
-            headingOffset = targetHeading - currentHeading;
+            headingOffset = targetHeading - currentHeadingUnnormlized;
 
             // Calculate current direct distance to the target location
             distanceToTarget=Math.hypot(Math.abs(targetX - currentX),
@@ -812,14 +807,29 @@ public class DraculaBase {
             // now let's do the coordinate transformation to the robot
             // coordinate system.. which is rotated relative to the field by the
             // current heading
-            vStrafeRobot=velX*Math.sin(pos.getHeading(AngleUnit.RADIANS))-velY*Math.cos(pos.getHeading(AngleUnit.RADIANS));
-            vForwardRobot=velX*Math.cos(pos.getHeading(AngleUnit.RADIANS))+velY*Math.sin(pos.getHeading(AngleUnit.RADIANS));
+            //vStrafeRobot=velX*Math.sin(pos.getHeading(AngleUnit.RADIANS))-velY*Math.cos(pos.getHeading(AngleUnit.RADIANS));
+            //vForwardRobot=velX*Math.cos(pos.getHeading(AngleUnit.RADIANS))+velY*Math.sin(pos.getHeading(AngleUnit.RADIANS));
+            vStrafeRobot = velY;
+            vForwardRobot = velX;
 
-            rotation = calculateTurn(speed,targetHeading, currentHeadingUnnormlized);
+            rotation = 0.0;
+            //if( Math.abs(headingOffset) >= headingThreshold ) {
+            //    rotation = calculateTurn(speed, targetHeading, currentHeadingUnnormlized);;
+            //}
+
+            callingOpMode.telemetry.addLine("Target: " + targetX + " " + targetY);
+            callingOpMode.telemetry.addLine("X              : " + pos.getX(DistanceUnit.INCH));
+            callingOpMode.telemetry.addLine("Y              : " + pos.getY(DistanceUnit.INCH));
+            callingOpMode.telemetry.addLine("Heading        : " + pos.getHeading(AngleUnit.DEGREES));
+            callingOpMode.telemetry.addLine("Dir to Target  : " + Math.toDegrees(directionToTarget));
+            callingOpMode.telemetry.addLine("dist: " + Math.abs(distanceToTarget));
+            callingOpMode.telemetry.addLine("head: " + Math.abs(headingOffset));
+            callingOpMode.telemetry.update();
 
             applyMecPower2(vStrafeRobot, vForwardRobot, rotation);
-        } while((Math.abs(distanceToTarget) > distThreshold) || (Math.abs(headingOffset) > headingThreshold));
+        } while(((Math.abs(distanceToTarget) > distThreshold) /*|| (Math.abs(headingOffset) > headingThreshold)*/) && ((LinearOpMode) callingOpMode).opModeIsActive() );
 
         applyMecPower2(0,0,0);
+        gyroTurn(speed, targetHeading);
     }
 }

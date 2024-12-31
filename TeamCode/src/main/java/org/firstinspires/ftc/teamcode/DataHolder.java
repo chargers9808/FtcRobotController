@@ -33,16 +33,23 @@ package org.firstinspires.ftc.teamcode;
 //Class created to store the last known heading of the IMU
 // and arm position at the end of autonomous
 
-public class HeadingHolder {
+public class DataHolder {
 
     //lastHeading, accessed by get and setHeading. Starts at 0.
     private static double lastHeading = 0;
     private static int lastArmPosition = 0;
-    private static double startingAngle=0;
+    private static int lastSlidePosition = 0;
+
+    //private static
+    public static void setAll( double heading, int arm, int slide) {
+        setHeading(heading);
+        setArm(arm);
+        setSlide(slide);
+    }
 
     //Setter method
-    public static void setHeading(double aHeading){
-        lastHeading=aHeading;
+    public static void setHeading(double heading){
+        lastHeading=heading;
     }
 
     //Getter method
@@ -51,19 +58,23 @@ public class HeadingHolder {
     }
 
     //Setter method
-    public static void saveArmPosition(int aPosition){ lastArmPosition=aPosition; }
+    public static void setArm(int position){
+        lastArmPosition=position;
+    }
 
     //Getter method
-    public static int getLastArmPosition(){
+    public static int getArm(){
         return lastArmPosition;
     }
 
     //Setter method
-    public static void saveStartingAngle(double aAngle){ startingAngle=aAngle; }
+    public static void setSlide(int position){
+        lastSlidePosition=position;
+    }
 
     //Getter method
-    public static double getStartingAngle(){
-        return startingAngle;
+    public static int getSlide(){
+        return lastSlidePosition;
     }
 
 }
