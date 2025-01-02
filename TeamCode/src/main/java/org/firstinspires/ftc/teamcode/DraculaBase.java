@@ -700,6 +700,8 @@ public class DraculaBase {
      * @param motor Motor to wait for
      */
     public void waitForMotor(DcMotor motor) {
+        final int MOTOR_WAIT_THRESHOLD = 2;
+        //while( Math.abs(motor.getCurrentPosition() - motor.getTargetPosition()) > MOTOR_WAIT_THRESHOLD);
         while (motor.isBusy());
     }
 
@@ -807,15 +809,13 @@ public class DraculaBase {
             // now let's do the coordinate transformation to the robot
             // coordinate system.. which is rotated relative to the field by the
             // current heading
-            //vStrafeRobot=velX*Math.sin(pos.getHeading(AngleUnit.RADIANS))-velY*Math.cos(pos.getHeading(AngleUnit.RADIANS));
-            //vForwardRobot=velX*Math.cos(pos.getHeading(AngleUnit.RADIANS))+velY*Math.sin(pos.getHeading(AngleUnit.RADIANS));
-            vStrafeRobot = velY;
-            vForwardRobot = velX;
+            vStrafeRobot=velX*Math.sin(pos.getHeading(AngleUnit.RADIANS))-velY*Math.cos(pos.getHeading(AngleUnit.RADIANS));
+            vForwardRobot=velX*Math.cos(pos.getHeading(AngleUnit.RADIANS))+velY*Math.sin(pos.getHeading(AngleUnit.RADIANS));
 
             rotation = 0.0;
-            //if( Math.abs(headingOffset) >= headingThreshold ) {
-            //    rotation = calculateTurn(speed, targetHeading, currentHeadingUnnormlized);;
-            //}
+            if( Math.abs(headingOffset) >= headingThreshold ) {
+                rotation = calculateTurn(speed, targetHeading, currentHeadingUnnormlized);;
+            }
 
             callingOpMode.telemetry.addLine("Target: " + targetX + " " + targetY);
             callingOpMode.telemetry.addLine("X              : " + pos.getX(DistanceUnit.INCH));

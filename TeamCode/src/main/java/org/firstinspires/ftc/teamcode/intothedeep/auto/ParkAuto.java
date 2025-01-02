@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.intothedeep.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * Observation Side Auto
  */
 @Autonomous(name = "Park 9808", group = "Auto")
+@Disabled
 public class ParkAuto extends IntoTheDeepAuto {
     private final Position position = new Position(Position.Location.UNKNOWN);
     protected Position getPosition() { return position; }

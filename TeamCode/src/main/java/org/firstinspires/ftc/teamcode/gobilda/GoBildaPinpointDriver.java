@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.util.TypeConversion;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.R;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -280,9 +281,13 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynch> 
     public void setEncoderDirections(EncoderDirection xEncoder, EncoderDirection yEncoder){
         if (xEncoder == EncoderDirection.REVERSED) {
             writeInt(Register.DEVICE_CONTROL,1<<4);
+        } else {
+            writeInt(Register.DEVICE_CONTROL, 1<<5);
         }
         if (yEncoder == EncoderDirection.REVERSED){
             writeInt(Register.DEVICE_CONTROL,1<<2);
+        } else {
+            writeInt(Register.DEVICE_CONTROL,1<<3);
         }
     }
 

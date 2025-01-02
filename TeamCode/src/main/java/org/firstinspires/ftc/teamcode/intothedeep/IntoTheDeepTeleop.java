@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.intothedeep;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.DriverControls;
 import org.firstinspires.ftc.teamcode.DataHolder;
 
@@ -29,7 +30,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
 
     private final double DEFAULT_ARM_POWER = 0.1;
     private final double NO_POWER = 0.0;
-    private final int ARM_INCREMENT = 75;
+    private final int ARM_INCREMENT = 35;
     private final int SLIDE_INCREMENT = 75;
     private final double ARM_POWER = 0.8;
     private final double SLIDE_POWER = 0.8;
@@ -101,12 +102,24 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
             controller.creepSpeed();
 
             // Preset to score
-            if( gamepad1.y) {
+            if( gamepad1.y ) {
+                driveBase.setLED( DraculaBase.LEDColor.WHITE );
                 score(Basket.TOP);
             }
 
             if (gamepad1.x){
+                driveBase.setLED( DraculaBase.LEDColor.WHITE );
                 pickup();
+            }
+
+            if( gamepad2.y ) {
+                driveBase.setLED( DraculaBase.LEDColor.GREEN );
+                hangSpecimen();
+            }
+
+            if( gamepad2.x ) {
+                driveBase.setLED( DraculaBase.LEDColor.GREEN );
+                pickupSpecimen( true);
             }
 
             if ( buttonPressed( gamepad1.a, lastPressedTimeA)) {

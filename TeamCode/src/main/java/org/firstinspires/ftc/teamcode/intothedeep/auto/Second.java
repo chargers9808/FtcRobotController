@@ -1,11 +1,23 @@
 package org.firstinspires.ftc.teamcode.intothedeep.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous(name = "Pickup One (Second) 9808", group = "Auto")
+@Disabled
 public class Second extends IntoTheDeepAuto {
     private final Position position = new Position(Position.Location.UNKNOWN);
     protected Position getPosition() { return position; }
+
+    protected void sweeperIn() {
+
+    }
+    protected void sweeperOff() {
+
+    }
+    protected void autoSamples(double a, double b, double c) {
+
+    }
 
     protected void run_auto() {
         sweeperIn();

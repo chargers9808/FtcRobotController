@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.intothedeep.auto;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.DataHolder;
 import org.firstinspires.ftc.teamcode.intothedeep.IntoTheDeepBase;
@@ -48,8 +50,7 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
         // y = SCORE_FRONT_DIST
         setGripRotation(Grip_Position.GRIP_90DEG);
         driveBase.gyroTurn(0.5, dropAngle);
-        driveBase.moveMotor(driveBase.slide, slideOut, 0.5, false);
-        sleep(200);
+        sleep(100); //200
         driveBase.moveMotor(driveBase.arm, AUTO_ARM_SCORE_POS, 0.4, true); //power:.2
         scoreSample();
     }
@@ -62,6 +63,7 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
     @Override
     protected void run_9808() {
         if( opModeIsActive() ) {
+            resetRuntime();
             displayDiagnostics();
             // Call the run code for the specific opmode
             run_auto();
@@ -78,7 +80,14 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
                 driveBase.arm.getCurrentPosition(),
                 driveBase.slide.getCurrentPosition()
         );
+        driveBase.moveMotor(driveBase.arm, 0, 1, false);
+        driveBase.moveMotor(driveBase.slide, 0, 1, false);
+        driveBase.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        driveBase.slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        driveBase.arm.setPower(0);
+        driveBase.slide.setPower(0);
         setLEDHeartbeat();
+        telemetry.addData( "Runtime", getRuntime());
         telemetry.addData("Path", "Complete");
 
         telemetry.update();
