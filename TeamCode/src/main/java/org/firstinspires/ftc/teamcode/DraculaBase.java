@@ -78,8 +78,6 @@ public class DraculaBase {
     public ElapsedTime runtime = new ElapsedTime();
     protected static final double P_DRIVE_COEFF = 0.05;
 
-    public boolean hasOdometry = false;
-
     public void init(HardwareMap hardwareMap, OpMode _callingOpMode) {
         // Save reference to Hardware map
         this.hardwareMap = hardwareMap;
@@ -138,7 +136,7 @@ public class DraculaBase {
         odometryComputer.setEncoderResolution(podType);
         odometryComputer.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odometryComputer.resetPosAndIMU();
-        hasOdometry = true;
+        DataHolder.setOdometry(odometryComputer);
     }
 
 

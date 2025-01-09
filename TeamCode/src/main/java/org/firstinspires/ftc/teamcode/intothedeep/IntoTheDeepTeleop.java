@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode.intothedeep;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.DriverControls;
 import org.firstinspires.ftc.teamcode.DataHolder;
+import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
 
 @TeleOp(name = "ITDTeleop", group = "Linear Opmode")
 
@@ -50,6 +53,9 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         if( gamepad1.a) {
             diagnosticMode = true;
         }
+        if( gamepad1.b) {
+            initOdometry();
+        }
 
         // Reset the Gyro if GP2.LS is pressed
         updateTelemetry();
@@ -78,6 +84,11 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         telemetry.addLine("Press Driver 2 Left Stick button at any time to reset the gyro");
 
         telemetry.addLine("Diagnostic Mode (press A to toggle): " + diagnosticMode);
+        if( DataHolder.getOdometryEnabled() ) {
+            telemetry.addLine("Odometry initialized. Press B to re-initialize");
+        } else {
+            telemetry.addLine("Press B to initialize odometry");
+        }
         telemetry.addData("Gyro initialized to:   ", lastSavedAngle);
         telemetry.addData("heading:   ", driveBase.getFieldHeading());
         telemetry.addData("Grip Rotation Position :", driveBase.gripRotation.getPosition());
@@ -103,23 +114,11 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
 
             // Preset to score
             if( gamepad1.y ) {
-                driveBase.setLED( DraculaBase.LEDColor.WHITE );
-                score(Basket.TOP);
+                processScore();
             }
 
             if (gamepad1.x){
-                driveBase.setLED( DraculaBase.LEDColor.WHITE );
-                pickup();
-            }
-
-            if( gamepad2.y ) {
-                driveBase.setLED( DraculaBase.LEDColor.GREEN );
-                hangSpecimen();
-            }
-
-            if( gamepad2.x ) {
-                driveBase.setLED( DraculaBase.LEDColor.GREEN );
-                pickupSpecimen( true);
+                processPickup();
             }
 
             if ( buttonPressed( gamepad1.a, lastPressedTimeA)) {
@@ -159,10 +158,32 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
     }
 
     private void processSlide() {
-        if( gamepad1.right_bumper ) {
+        if(controller.triggered(gamepad1.right_trigger)) {
             driveBase.incrementMotorSafe(driveBase.slide, SLIDE_INCREMENT, SLIDE_POWER, slideOut, slideIn);
-        } else if (controller.triggered(gamepad1.right_trigger)) {
+        } else if (gamepad1.right_bumper) {
             driveBase.incrementMotorSafe(driveBase.slide, -1 * SLIDE_INCREMENT, SLIDE_POWER, slideOut, slideIn);
+        }
+    }
+
+    private void processScore() {
+        final double Y_BOUNDARY = 24;
+        Pose2DGobilda pos = getLocation();
+        driveBase.setLED(DraculaBase.LEDColor.OFF);
+        if( pos.getY(DistanceUnit.INCH) > Y_BOUNDARY) {
+            score(Basket.TOP);
+        } else {
+            hangSpecimen();
+        }
+    }
+
+    private void processPickup() {
+        final double Y_BOUNDARY = -12;
+        Pose2DGobilda pos = getLocation();
+        driveBase.setLED(DraculaBase.LEDColor.OFF);
+        if( pos.getY(DistanceUnit.INCH) > Y_BOUNDARY) {
+            pickup();
+        } else {
+            pickupSpecimen(true);
         }
     }
 }

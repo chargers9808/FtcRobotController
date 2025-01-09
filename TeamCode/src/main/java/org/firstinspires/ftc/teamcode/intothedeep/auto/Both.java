@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.DraculaBase;
 
 @Autonomous(name = "Pickup Two 9808", group = "Auto")
 public class Both extends IntoTheDeepAuto {
-    private final Position position = new Position(Position.Location.UNKNOWN);
+    private final Position position = new Position(Position.Location.NET);
     protected Position getPosition() { return position; }
 
     protected void collectAndScore( double angle, int slidePos, Grip_Position gripPos, double driveDist, double scoreAngle, boolean score) {

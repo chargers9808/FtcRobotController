@@ -33,12 +33,16 @@ package org.firstinspires.ftc.teamcode;
 //Class created to store the last known heading of the IMU
 // and arm position at the end of autonomous
 
+import org.firstinspires.ftc.teamcode.gobilda.GoBildaPinpointDriver;
+
 public class DataHolder {
 
     //lastHeading, accessed by get and setHeading. Starts at 0.
     private static double lastHeading = 0;
     private static int lastArmPosition = 0;
     private static int lastSlidePosition = 0;
+    private static boolean hasOdometry = false;
+    private static GoBildaPinpointDriver odometryComputer;
 
     //private static
     public static void setAll( double heading, int arm, int slide) {
@@ -77,4 +81,16 @@ public class DataHolder {
         return lastSlidePosition;
     }
 
+    public static void setOdometry(GoBildaPinpointDriver odometry) {
+        odometryComputer = odometry;
+        hasOdometry = true;
+    }
+
+    public static boolean getOdometryEnabled() {
+        return hasOdometry;
+    }
+
+    public static GoBildaPinpointDriver getOdometryComputer() {
+        return odometryComputer;
+    }
 }

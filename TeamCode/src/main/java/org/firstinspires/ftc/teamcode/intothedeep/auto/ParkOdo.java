@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.intothedeep.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.FieldTracker;
 import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
 
 /**
@@ -9,7 +12,7 @@ import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
  */
 @Autonomous(name = "Park Odo", group = "Auto")
 public class ParkOdo extends IntoTheDeepAuto {
-    private final Position position = new Position(Position.Location.UNKNOWN);
+    private final Position position = new Position(Position.Location.NET);
     protected Position getPosition() { return position; }
 
     protected void run_auto() {
@@ -19,7 +22,7 @@ public class ParkOdo extends IntoTheDeepAuto {
         driveBase.tankDrive( .8, 4);
         driveBase.odometryComputer.bulkUpdate();
         travel();
-        driveBase.driveTo(.5, 8.0, -36, 90.0);
+        FieldTracker.driveTo(0.1, new Pose2DGobilda(DistanceUnit.INCH, 15, 129, AngleUnit.DEGREES, 90));
         driveBase.moveMotor(driveBase.arm, armLowered, 0.5, true);
     }
 }

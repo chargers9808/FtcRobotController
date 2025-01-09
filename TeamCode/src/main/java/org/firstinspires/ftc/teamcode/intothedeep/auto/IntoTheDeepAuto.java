@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.DataHolder;
+import org.firstinspires.ftc.teamcode.FieldTracker;
 import org.firstinspires.ftc.teamcode.intothedeep.IntoTheDeepBase;
 
 abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
@@ -28,9 +29,14 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
         driveBase.imu.resetYaw();
         DataHolder.setAll(0.0,0,0);
 
+        initOdometry();
+
+        FieldTracker.findPosition( getPosition().getSensor() );
+
         closeGripper();
         sleep(100);
         driveBase.setLED( DraculaBase.LEDColor.GREEN );
+        telemetry.addLine( "Position: " + getPosition().getPositionString());
     }
 
     @Override

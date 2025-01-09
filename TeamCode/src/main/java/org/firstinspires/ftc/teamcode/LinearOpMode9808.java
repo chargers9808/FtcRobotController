@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
+
 public abstract class LinearOpMode9808 extends LinearOpMode {
     /**
      * Code that will be run once prior to the initialization loop
@@ -58,5 +60,9 @@ public abstract class LinearOpMode9808 extends LinearOpMode {
         } else {
             driveBase.setLED(getLEDColor());
         }
+    }
+
+    protected Pose2DGobilda getLocation() {
+        return driveBase.odometryComputer.getPosition();
     }
 }

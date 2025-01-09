@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.intothedeep;
 
+import android.provider.ContactsContract;
+
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.*;
 import org.firstinspires.ftc.teamcode.Alliance;
 import org.firstinspires.ftc.teamcode.DraculaBase;
+import org.firstinspires.ftc.teamcode.FieldTracker;
 import org.firstinspires.ftc.teamcode.GameBase;
 import org.firstinspires.ftc.teamcode.DataHolder;
 import org.firstinspires.ftc.teamcode.LinearOpMode9808;
@@ -31,6 +35,8 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         GRIP_135DEG,
         GRIP_NONE
     }
+
+    protected Pose2DGobilda POS_NET_SCORE = new Pose2DGobilda(DistanceUnit.INCH, 12, 12, AngleUnit.DEGREES, 140);
 
     /**
      * Power setting for sweeping in a sample
@@ -69,7 +75,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     /**
      * Position when slide is retracted
      */
-    public int slideIn = -20;
+    public int slideIn = -220;
     /**
      * Position when slide is partially extended to sweep
      */
@@ -90,7 +96,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     /**
      * Position for arm to clear the submersible bar (parallel to mat)
      */
-    public int armCollectPositionUp = -440;
+    public int armCollectPositionUp = -360; //-440
     /**
      * Position for arm when collecting
      */
@@ -113,13 +119,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
      */
     public boolean diagnosticMode = false;
 
-
     public boolean beforeTravel = false;
-
-    /**
-     * Sweeper motor
-     */
-    protected CRServo intake;
 
     protected abstract void initialize();
     protected abstract void pre_initialize();
@@ -131,14 +131,24 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
 
     public void hardwareSetup( DraculaBase driveBase) {
         driveBase.init(hardwareMap, this);
+        driveBase.slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         DataHolder.setHeading(DataHolder.getHeading());
         driveBase.imu.resetYaw();
-
+        if( DataHolder.getOdometryEnabled() ) {
+            driveBase.odometryComputer = DataHolder.getOdometryComputer();
+        }
+    }
+    protected void initOdometry() {
         driveBase.initOdometryComputer( -44.5, -146.0, GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD );
         driveBase.odometryComputer.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.REVERSED,
                 GoBildaPinpointDriver.EncoderDirection.FORWARD
+        );
+        FieldTracker.initialize(driveBase,
+                9,
+                9, 9,
+                true
         );
     }
 
@@ -207,72 +217,6 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         } else {
             openGripper();
         }
-    }
-
-    public double getSensorOffset( DraculaBase.SensorDir sensor ) {
-        switch ( sensor ) {
-            case RIGHT:
-            case LEFT:
-                return 9.0;
-            case FRONT:
-                return 9.0;
-            case REAR:
-                return 9.0;
-        }
-        return 0.0;
-    }
-
-    protected void updateOdometryObservation() {
-        double currX, currY;
-        double currentHeading = driveBase.getFieldHeading();
-        DraculaBase.SensorDir sensorX, sensorY;
-        if( currentHeading <= 315 && currentHeading >= 225) {
-            currentHeading = 270.0;
-            sensorY = DraculaBase.SensorDir.FRONT;
-            sensorX = DraculaBase.SensorDir.RIGHT;
-        } else if ( currentHeading >= 135 && currentHeading <= 225 ) {
-            currentHeading = 180.0;
-            sensorY = DraculaBase.SensorDir.LEFT;
-            sensorX = DraculaBase.SensorDir.FRONT;
-        } else {
-            currentHeading = 0.0;
-            sensorY = DraculaBase.SensorDir.RIGHT;
-            sensorX = DraculaBase.SensorDir.REAR;
-        }
-        driveBase.gyroTurn(.8, currentHeading);
-        currY = 144 - ( driveBase.distanceToWall(sensorY) + getSensorOffset(sensorY) );
-        currX = driveBase.distanceToWall(sensorX) + getSensorOffset(sensorX);
-        Pose2DGobilda pos = new Pose2DGobilda(DistanceUnit.INCH, currX, currY, AngleUnit.DEGREES, currentHeading);
-        telemetry.addLine("New X          : " + pos.getX(DistanceUnit.INCH));
-        telemetry.addLine("New Y          : " + pos.getY(DistanceUnit.INCH));
-        telemetry.addLine("New Heading    : " + pos.getHeading(AngleUnit.DEGREES));
-        telemetry.update();
-        driveBase.odometryComputer.setPosition( pos );
-        driveBase.odometryComputer.bulkUpdate();
-    }
-
-    protected void updateOdometryNet() {
-        double currX, currY;
-        double currentHeading = driveBase.getFieldHeading();
-        DraculaBase.SensorDir sensorX, sensorY;
-        if( currentHeading <= 135 && currentHeading >= 45) {
-            currentHeading = 90.0;
-            sensorY = DraculaBase.SensorDir.FRONT;
-            sensorX = DraculaBase.SensorDir.LEFT;
-        } else if ( currentHeading >= 135 && currentHeading <= 225 ) {
-            currentHeading = 180.0;
-            sensorY = DraculaBase.SensorDir.RIGHT;
-            sensorX = DraculaBase.SensorDir.FRONT;
-        } else {
-            currentHeading = 0.0;
-            sensorY = DraculaBase.SensorDir.LEFT;
-            sensorX = DraculaBase.SensorDir.REAR;
-        }
-        driveBase.gyroTurn(.8, currentHeading);
-        currY = driveBase.distanceToWall(sensorY) + getSensorOffset(sensorY);
-        currX = driveBase.distanceToWall(sensorX) + getSensorOffset(sensorX);
-        Pose2DGobilda pos = new Pose2DGobilda(DistanceUnit.INCH, currX, currY, AngleUnit.DEGREES, currentHeading);
-        driveBase.odometryComputer.setPosition( pos );
     }
 
     protected void scoreSample() {
@@ -357,24 +301,31 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         sleep(100);
         driveBase.moveMotor( driveBase.arm, -1380, 0.5, true);
         driveBase.moveMotor( driveBase.slide, slideIn, 0.5, false);
-        driveBase.moveMotor( driveBase.arm, -900, 0.4, false );
-        sleep(750);
+        driveBase.moveMotor( driveBase.arm, -975, 0.4, false ); //-900
+        sleep(600);
         openGripper();
     }
 
-    protected void pickupSpecimen(boolean move) {
-        driveBase.gyroTurn(0.5, 270);
-        driveBase.moveMotor( driveBase.slide, -1070, 0.5, false); //-1455
+    protected void pickupSpecimen(boolean human) {
+        if( human ) {
+            driveBase.gyroTurn(0.5, 270);
+            driveBase.moveMotor(driveBase.slide, -1070, 0.5, false); //-1455
+        }
         setGripRotation(Grip_Position.GRIP_0DEG);
         openGripper();
-        if( move) {
+        if( human ) {
             driveBase.tankDriveUntil(0.5, 35.5, true, false);
             sleep(50);
             driveBase.driveSidewaysUntil(0.5, 4, true);
         }
-        driveBase.moveMotor( driveBase.arm, -400, 0.5, true);
-        driveBase.moveMotor( driveBase.arm, -220, 0.2, false);
-        driveBase.moveMotor( driveBase.slide, -1070, 0.5, true);
+        driveBase.moveMotor( driveBase.arm, -300, 0.5, true);
+        if( human ) {
+            driveBase.moveMotor( driveBase.arm, -220, 0.2, false);
+            driveBase.moveMotor(driveBase.slide, -1070, 0.5, true);
+        } else {
+            driveBase.moveMotor(driveBase.arm, 0, 0.2, false);
+            sleep(300);
+        }
 
     }
 
@@ -424,12 +375,16 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         if (diagnosticMode) {
             telemetry.addLine();
             //Gyro heading
-            if( driveBase.hasOdometry ) {
+            if( DataHolder.getOdometryEnabled() ) {
                 driveBase.odometryComputer.bulkUpdate();
                 Pose2DGobilda pos = driveBase.odometryComputer.getPosition();
-                telemetry.addLine("X              : " + pos.getX(DistanceUnit.INCH));
-                telemetry.addLine("Y              : " + pos.getY(DistanceUnit.INCH));
-                telemetry.addLine("PP Heading     : " + pos.getHeading(AngleUnit.DEGREES));
+                telemetry.addData("X", pos.getX(DistanceUnit.INCH));
+                telemetry.addData("Y", pos.getY(DistanceUnit.INCH));
+                telemetry.addData("PP Heading", pos.getHeading(AngleUnit.DEGREES));
+                Pose2DGobilda fieldPos = FieldTracker.botToField(pos);
+                telemetry.addData("X (Field)", fieldPos.getX(DistanceUnit.INCH));
+                telemetry.addData("Y (Field", fieldPos.getY(DistanceUnit.INCH));
+                telemetry.addData("PP Heading", fieldPos.getHeading(AngleUnit.DEGREES));
             }
             telemetry.addData("Gyro Heading   : ", driveBase.getFieldHeading());
             telemetry.addLine();
