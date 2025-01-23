@@ -5,15 +5,6 @@ import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
 
 public class FieldTracker {
     /**
-     * Width of the bot
-     */
-    private static final double BOT_WIDTH = 18.0;
-    /**
-     * Depth of the bot
-     */
-    private static final double BOT_DEPTH = 18.0;
-
-    /**
      * Reference to the DraculaBase
      */
     private static DraculaBase driveBase;
@@ -44,6 +35,16 @@ public class FieldTracker {
     private static int yMultiplier = 1;
 
     /**
+     * Flag for if this module has been initialized
+     */
+    private static boolean initialized = false;
+
+    /**
+     * Flag for if this module is enabled
+     */
+    private static boolean isEnabled = false;
+
+    /**
      * Initialize the field tracker for this bot
      *
      * @param base DraculaBase
@@ -61,16 +62,29 @@ public class FieldTracker {
         if( revY ) {
             yMultiplier *= -1;
         }
+        initialized = true;
     }
 
     /**
-     * Drive to the specified field-centric position
-     *
-     * @param speed Speed to travel
-     * @param pos   Field-centric position to travel to
+     * Check if the FieldTracker has been initialized
+     * @return initialization state
      */
-    public static void driveTo( double speed, Pose2DGobilda pos ) {
-        driveBase.driveTo( speed, fieldToBot(pos) );
+    public static boolean enabled() {
+        return initialized && isEnabled;
+    }
+
+    /**
+     * Disable Field Tracker
+     */
+    public static void disable() {
+        isEnabled = false;
+    }
+
+    /**
+     * Enable Field Tracker
+     */
+    public static void enable() {
+        isEnabled = true;
     }
 
     /**
@@ -86,8 +100,23 @@ public class FieldTracker {
         }
     }
 
+    /**
+     * Accessor for the field-centric location of the bot at initialization
+     *
+     * @return bot reference
+     */
     public static Pose2DGobilda getBotRef() {
         return botRef;
+    }
+
+    /**
+     * Set the bot reference point for starting position
+     *
+     * @param ref Bot position at the start
+     */
+    public static void setBotRef( Pose2DGobilda ref ) {
+        botRef = ref;
+        enable();
     }
 
     /**
@@ -95,7 +124,7 @@ public class FieldTracker {
      */
     public static void findPositionLeft() {
         double currY = driveBase.distanceToWall(DraculaBase.SensorDir.LEFT) + offsetLeft;
-        botRef = new Pose2DGobilda(DistanceUnit.INCH, offsetX, currY, AngleUnit.DEGREES, 0.0);
+        setBotRef( new Pose2DGobilda(DistanceUnit.INCH, offsetX, currY, AngleUnit.DEGREES, 0.0) );
     }
 
     /**
@@ -103,7 +132,7 @@ public class FieldTracker {
      */
     public static void findPositionRight() {
         double currY = 144 - ( driveBase.distanceToWall(DraculaBase.SensorDir.RIGHT) + offsetRight);
-        botRef = new Pose2DGobilda(DistanceUnit.INCH, offsetX, currY, AngleUnit.DEGREES, 0.0);
+        setBotRef( new Pose2DGobilda(DistanceUnit.INCH, offsetX, currY, AngleUnit.DEGREES, 0.0) );
     }
 
     /**
@@ -129,11 +158,19 @@ public class FieldTracker {
      * @return Translated field-centric position
      */
     public static Pose2DGobilda botToField( Pose2DGobilda pos ) {
-        double cvtX = pos.getX(DistanceUnit.INCH) - botRef.getX(DistanceUnit.INCH);
-        double cvtY = (pos.getY(DistanceUnit.INCH) - botRef.getY(DistanceUnit.INCH));
+        double cvtX = pos.getX(DistanceUnit.INCH) + botRef.getX(DistanceUnit.INCH);
+        double cvtY = (pos.getY(DistanceUnit.INCH)*yMultiplier) + botRef.getY(DistanceUnit.INCH);
         return new Pose2DGobilda(
             DistanceUnit.INCH, cvtX, cvtY,
                 AngleUnit.DEGREES, pos.getHeading(AngleUnit.DEGREES)
             );
+    }
+
+    /**
+     * Get the current position of the bot in field-centric position
+     * @return Field-centric bot position
+     */
+    public static Pose2DGobilda getPosition() {
+        return botToField( driveBase.odometryComputer.getPosition() );
     }
 }

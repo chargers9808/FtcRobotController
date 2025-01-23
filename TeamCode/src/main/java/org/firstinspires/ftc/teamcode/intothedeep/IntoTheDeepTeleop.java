@@ -7,7 +7,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.DriverControls;
 import org.firstinspires.ftc.teamcode.DataHolder;
+import org.firstinspires.ftc.teamcode.FieldTracker;
 import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
+import org.firstinspires.ftc.teamcode.intothedeep.auto.Position;
 
 @TeleOp(name = "ITDTeleop", group = "Linear Opmode")
 
@@ -54,7 +56,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
             diagnosticMode = true;
         }
         if( gamepad1.b) {
-            initOdometry();
+            resetOdometry();
         }
 
         // Reset the Gyro if GP2.LS is pressed
@@ -66,7 +68,17 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         driveBase.arm.setPower( DEFAULT_ARM_POWER );
         driveBase.slide.setPower( NO_POWER );
         controller.init(this);
+        diagnosticMode=true;
 
+    }
+
+    protected void resetOdometry() {
+        initOdometry();
+        if( driveBase.distanceToWall(DraculaBase.SensorDir.RIGHT) < 100 ) {
+            FieldTracker.findPosition(DraculaBase.SensorDir.RIGHT);
+        } else if( driveBase.distanceToWall(DraculaBase.SensorDir.LEFT) < 100 ) {
+            FieldTracker.findPosition(DraculaBase.SensorDir.LEFT);
+        }
     }
 
     private boolean buttonPressed( boolean button, double lastPressed) {
@@ -137,6 +149,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
                 travel();
             }
 
+            // TODO: Do we want this still?
             if (gamepad1.left_stick_button) {
                 DataHolder.setHeading(0);
                 driveBase.imu.resetYaw();
@@ -166,24 +179,29 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
     }
 
     private void processScore() {
-        final double Y_BOUNDARY = 24;
+        final double Y_BOUNDARY = 48;
         Pose2DGobilda pos = getLocation();
-        driveBase.setLED(DraculaBase.LEDColor.OFF);
-        if( pos.getY(DistanceUnit.INCH) > Y_BOUNDARY) {
-            score(Basket.TOP);
+        if( pos.getY(DistanceUnit.INCH) < Y_BOUNDARY) {
+            driveBase.setLED(Position.posColor(Position.Location.NET));
+            scoreOdo(Basket.TOP);
         } else {
+            driveBase.setLED(Position.posColor(Position.Location.OBSERVATION));
             hangSpecimen();
         }
+        driveBase.setLED(DraculaBase.LEDColor.OFF);
     }
 
     private void processPickup() {
-        final double Y_BOUNDARY = -12;
+        final double Y_BOUNDARY = 90;
         Pose2DGobilda pos = getLocation();
-        driveBase.setLED(DraculaBase.LEDColor.OFF);
-        if( pos.getY(DistanceUnit.INCH) > Y_BOUNDARY) {
+        boolean pointed180 = ( pos.getHeading(AngleUnit.DEGREES) >= 135 && pos.getHeading(AngleUnit.DEGREES) <= 225 );
+        if( pos.getY(DistanceUnit.INCH) < Y_BOUNDARY || !pointed180 ) {
+            driveBase.setLED(Position.posColor(Position.Location.NET));
             pickup();
         } else {
-            pickupSpecimen(true);
+            driveBase.setLED(Position.posColor(Position.Location.OBSERVATION));
+            pickupSpecimenFromWall();
         }
+        driveBase.setLED(DraculaBase.LEDColor.OFF);
     }
 }

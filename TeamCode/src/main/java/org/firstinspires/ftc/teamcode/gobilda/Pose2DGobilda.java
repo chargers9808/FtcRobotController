@@ -31,4 +31,9 @@ public class Pose2DGobilda {
         return unit.fromUnit(this.headingUnit, heading);
     }
 
+    public double distanceTo(Pose2DGobilda pos) {
+        return Math.hypot(Math.abs(pos.getX(distanceUnit) - x),
+                Math.abs(pos.getY(distanceUnit) - y));
+    }
+
 }

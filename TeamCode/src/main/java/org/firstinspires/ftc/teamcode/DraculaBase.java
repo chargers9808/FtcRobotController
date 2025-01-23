@@ -759,6 +759,10 @@ public class DraculaBase {
         driveTo( speed, pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
     }
 
+    public void driveTo( double speed, Pose2DGobilda pos, double distThreshold, double headingThreshold ) {
+        driveTo( speed, pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES), distThreshold, headingThreshold);
+    }
+
     public void driveTo( double speed, double targetX, double targetY, double targetHeading ) {
         driveTo( speed, targetX, targetY, targetHeading, DEFAULT_ODO_DIST_THRESHOLD, DEFAULT_ODO_HEADING_THRESHOLD);
     }
@@ -776,6 +780,12 @@ public class DraculaBase {
         double currentX, currentY, currentHeadingUnnormlized;
 
         Pose2DGobilda pos;
+
+        if( FieldTracker.enabled() ) {
+            pos = FieldTracker.fieldToBot(new Pose2DGobilda(DistanceUnit.INCH, targetX, targetY, AngleUnit.DEGREES, targetHeading));
+            targetX = pos.getX(DistanceUnit.INCH);
+            targetY = pos.getY(DistanceUnit.INCH);
+        }
 
         double startTime = runtime.time();
 

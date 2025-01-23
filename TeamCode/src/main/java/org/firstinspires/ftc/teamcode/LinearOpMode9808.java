@@ -62,7 +62,14 @@ public abstract class LinearOpMode9808 extends LinearOpMode {
         }
     }
 
+    /**
+     * Get position of the bot
+     * @return
+     */
     protected Pose2DGobilda getLocation() {
+        if( FieldTracker.enabled() ) {
+            return FieldTracker.getPosition();
+        }
         return driveBase.odometryComputer.getPosition();
     }
 }

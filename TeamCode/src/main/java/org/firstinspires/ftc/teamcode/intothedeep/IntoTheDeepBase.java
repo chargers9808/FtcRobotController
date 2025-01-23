@@ -36,7 +36,18 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         GRIP_NONE
     }
 
-    protected Pose2DGobilda POS_NET_SCORE = new Pose2DGobilda(DistanceUnit.INCH, 12, 12, AngleUnit.DEGREES, 140);
+    protected Pose2DGobilda POS_NET_SCORE = new Pose2DGobilda(
+            DistanceUnit.INCH, 14.5, 15.5,
+            AngleUnit.DEGREES, 135); //135
+    protected Pose2DGobilda POS_NET_SCORE_EARLY = new Pose2DGobilda(
+            DistanceUnit.INCH, 18, 18,
+            AngleUnit.DEGREES, 135); //135
+    protected Pose2DGobilda POS_NET_SCORE_END = new Pose2DGobilda(
+            DistanceUnit.INCH, 22, 22,
+            AngleUnit.DEGREES, 90);
+    protected Pose2DGobilda POS_OBS_PICKUP = new Pose2DGobilda(
+            DistanceUnit.INCH, 11, 106, //x10 y106
+            AngleUnit.DEGREES, 270);
 
     /**
      * Power setting for sweeping in a sample
@@ -71,7 +82,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     /**
      * Postion when slide is extended
      */
-    public int slideOut = -1575;
+    public int slideOut = -1550; //-1575
     /**
      * Position when slide is retracted
      */
@@ -97,10 +108,17 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
      * Position for arm to clear the submersible bar (parallel to mat)
      */
     public int armCollectPositionUp = -360; //-440
+    public int armPickupPosition = -330; //-440
     /**
      * Position for arm when collecting
      */
-    public int armCollectPositionDown = -300; //-285
+    public int armCollectPositionDown = -50;
+    public int armCollectPositionDownBoth = -260; //-240
+
+
+    protected int armCollectPositionWallDown = -568; //-620 Lower
+    protected int armCollectPositionWallUp = armCollectPositionWallDown + 75;
+
 
     /**
      * Position for arm when collecting in Auto
@@ -113,6 +131,12 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
      * Counter used for pickup mode toggle
      */
     public int pickupPrimary = 0;
+
+    /**
+     * Counter used for score mode toggle
+     */
+
+    public boolean scoreStart = true;
 
     /**
      * Flag for diagnostic mode
@@ -147,7 +171,8 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         );
         FieldTracker.initialize(driveBase,
                 9,
-                9, 9,
+                9,
+                9,
                 true
         );
     }
@@ -209,6 +234,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     protected void closeGripper() {
         gripperOpen = false;
         driveBase.grip.setPosition( GRIPPER_CLOSED );
+        sleep(150);
     }
 
     protected void toggleGripper() {
@@ -222,11 +248,55 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     protected void scoreSample() {
         //Outtake
         openGripper();
-        sleep(200);
+        sleep(250); //200
         setGripRotation(Grip_Position.GRIP_0DEG);
-        sleep(50);
+        sleep(50); //150
 
         driveBase.moveMotor(driveBase.arm, armTravelPosition, .1, false);
+    }
+
+    protected void scoreOdo(Basket pos) {
+        driveBase.setLED(DraculaBase.LEDColor.ORANGE);
+        if (scoreStart) {
+            driveBase.stopMotors();
+            setGripRotation(Grip_Position.GRIP_90DEG);
+            driveBase.moveMotor(driveBase.arm, (armScoringPosition - 110), 0.1, false);
+            switch (pos) {
+                case TOP:
+                    //Arm -80
+                    driveBase.moveMotor(driveBase.arm, (armScoringPosition), 0.4, false);
+                    //Slide
+                    driveBase.moveMotor(driveBase.slide, slideOut, 0.6, false);
+                    break;
+                case MID:
+                case BOTTOM:
+                    // TODO: Implement preset for lower baskets
+            }
+            driveBase.driveTo(0.5, POS_NET_SCORE_EARLY);
+            driveBase.driveTo(0.5, POS_NET_SCORE);
+            driveBase.moveMotor(driveBase.slide, slideOut, 0.6, true);
+
+            driveBase.setLED(DraculaBase.LEDColor.GREEN);
+            scoreStart = false;
+        }
+        if (scoreStart == false) {
+            driveBase.setLED(DraculaBase.LEDColor.ORANGE);
+            scoreSample();
+
+            driveBase.moveMotor(driveBase.arm, armTravelPosition, .1, false);
+
+            // Back up from baskets
+            driveBase.driveTo(0.5, POS_NET_SCORE_END);
+            driveBase.setLED(DraculaBase.LEDColor.GREEN);
+
+            // Retract the slide
+            driveBase.moveMotor(driveBase.slide, slideIn, 0.8, false);
+            // Retract the arm
+            driveBase.moveMotor(driveBase.arm, armLowered - 50, 0.8, false);
+            driveBase.moveMotor(driveBase.arm, armLowered, 0.2, false);
+
+            scoreStart = true;
+        }
     }
 
     protected void score(Basket pos) {
@@ -297,50 +367,54 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
 
     protected void hangSpecimen() {
         // From travel
-        driveBase.moveMotor( driveBase.slide, -260, 0.5, true);
+        setGripRotation(Grip_Position.GRIP_0DEG);
+        driveBase.moveMotor( driveBase.slide, -175, 0.5, false);
         sleep(100);
         driveBase.moveMotor( driveBase.arm, -1380, 0.5, true);
         driveBase.moveMotor( driveBase.slide, slideIn, 0.5, false);
-        driveBase.moveMotor( driveBase.arm, -975, 0.4, false ); //-900
-        sleep(600);
+
+        driveBase.moveMotor( driveBase.arm, -900, 0.4, false );
+        driveBase.tankDrive(.1, -1);
+        sleep(500); //400
         openGripper();
+
     }
 
-    protected void pickupSpecimen(boolean human) {
-        if( human ) {
-            driveBase.gyroTurn(0.5, 270);
-            driveBase.moveMotor(driveBase.slide, -1070, 0.5, false); //-1455
-        }
+    protected void pickupSpecimenFromFloor() {
         setGripRotation(Grip_Position.GRIP_0DEG);
         openGripper();
-        if( human ) {
-            driveBase.tankDriveUntil(0.5, 35.5, true, false);
-            sleep(50);
-            driveBase.driveSidewaysUntil(0.5, 4, true);
-        }
-        driveBase.moveMotor( driveBase.arm, -300, 0.5, true);
-        if( human ) {
-            driveBase.moveMotor( driveBase.arm, -220, 0.2, false);
-            driveBase.moveMotor(driveBase.slide, -1070, 0.5, true);
-        } else {
-            driveBase.moveMotor(driveBase.arm, 0, 0.2, false);
-            sleep(300);
-        }
+        driveBase.moveMotor(driveBase.arm, armCollectPositionDown-55, .4, true);
+        sleep(200); //300
+        closeGripper();
+    }
 
+    protected void pickupSpecimenFromFloorTeleop() {
+        driveBase.moveMotor(driveBase.slide, -1070, 0.5, false);
+        driveBase.gyroTurn(0.5, 270);
+         //-1455
+        setGripRotation(Grip_Position.GRIP_0DEG);
+        openGripper();
+        driveBase.driveTo( 0.5, POS_OBS_PICKUP);
+        pickupSpecimenFromFloor();
+    }
+
+    protected void pickupSpecimenFromWall() {
+        driveBase.moveMotor( driveBase.slide, slideIn, 0.5, false);
+        driveBase.moveMotor( driveBase.arm, armCollectPositionWallUp, 0.5, false );
+        driveBase.moveMotor( driveBase.arm, armCollectPositionWallDown, 0.5, true );
+        sleep(250);
     }
 
     public void pickup() {
         driveBase.stopMotors();
         if (pickupPrimary == 0) {
-            driveBase.moveMotor(driveBase.arm, (armCollectPositionUp), 0.6, true);
+            driveBase.moveMotor(driveBase.arm, (armPickupPosition), 0.6, true);
         }
         if ((pickupPrimary %2) == 0) {
             driveBase.moveMotor(driveBase.slide, slideCollectPosition, .8, true);
-            driveBase.setLED(DraculaBase.LEDColor.WHITE);
         }
         else {
-            driveBase.moveMotor(driveBase.slide, slideCollectPosition-300, .8, true);
-            driveBase.setLED(DraculaBase.LEDColor.YELLOW);
+            driveBase.moveMotor(driveBase.slide, slideOut, .8, true);
         }
         openGripper();
 
@@ -362,7 +436,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         }
 
         if (driveBase.arm.getCurrentPosition() > -20){
-        driveBase.moveMotor(driveBase.arm, armLowered, 0.4, false);
+            driveBase.moveMotor(driveBase.arm, armLowered, 0.4, false);
         }
         driveBase.moveMotor(driveBase.slide, slideIn, 0.8, false);
         driveBase.moveMotor(driveBase.arm, armTravelPosition, 0.8, false);

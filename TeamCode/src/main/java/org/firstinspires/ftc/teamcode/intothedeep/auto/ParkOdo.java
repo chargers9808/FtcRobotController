@@ -10,19 +10,18 @@ import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
 /**
  * Observation Side Park Auto
  */
-@Autonomous(name = "Park Odo", group = "Auto")
+@Autonomous(name = "Observation Park 9808", group = "Auto")
 public class ParkOdo extends IntoTheDeepAuto {
-    private final Position position = new Position(Position.Location.NET);
+    private final Position position = new Position(Position.Location.OBSERVATION);
     protected Position getPosition() { return position; }
 
     protected void run_auto() {
         Pose2DGobilda pos;
         diagnosticMode = true;
-        pos = driveBase.odometryComputer.getPosition();
-        driveBase.tankDrive( .8, 4);
-        driveBase.odometryComputer.bulkUpdate();
+        displayDiagnostics();
+
         travel();
-        FieldTracker.driveTo(0.1, new Pose2DGobilda(DistanceUnit.INCH, 15, 129, AngleUnit.DEGREES, 90));
+        driveBase.driveTo(0.2, new Pose2DGobilda(DistanceUnit.INCH, 15, 129, AngleUnit.DEGREES, 90));
         driveBase.moveMotor(driveBase.arm, armLowered, 0.5, true);
     }
 }

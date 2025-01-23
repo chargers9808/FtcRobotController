@@ -14,7 +14,7 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
     protected double sample2Offset = 14.0;
     protected double forwardDistance = 7.0;
 
-    protected final int AUTO_ARM_SCORE_POS = -1700;
+    protected final int AUTO_ARM_SCORE_POS = -1600; //-1700
     protected final double SCORE_FRONT_DIST = 5.15;
     protected final double SCORE_LEFT_DIST = 8.34;
 
@@ -30,23 +30,18 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
         DataHolder.setAll(0.0,0,0);
 
         initOdometry();
+        DataHolder.setOdometry(driveBase.odometryComputer);
 
         FieldTracker.findPosition( getPosition().getSensor() );
 
         closeGripper();
         sleep(100);
-        driveBase.setLED( DraculaBase.LEDColor.GREEN );
+        driveBase.setLED( getPosition().getColor() );
         telemetry.addLine( "Position: " + getPosition().getPositionString());
     }
 
-    @Override
-    protected void closeGripper() {
-        super.closeGripper();
-        sleep(150);
-    }
-
     protected void scoreAuto() {
-        scoreAuto( 140.0 );
+        scoreAuto( 135.0 );
     }
 
     protected void scoreAuto( double dropAngle ) {
@@ -57,7 +52,8 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
         setGripRotation(Grip_Position.GRIP_90DEG);
         driveBase.gyroTurn(0.5, dropAngle);
         sleep(100); //200
-        driveBase.moveMotor(driveBase.arm, AUTO_ARM_SCORE_POS, 0.4, true); //power:.2
+        driveBase.moveMotor(driveBase.arm, AUTO_ARM_SCORE_POS, 0.3, true); //power:.2
+        sleep(150);
         scoreSample();
     }
 
