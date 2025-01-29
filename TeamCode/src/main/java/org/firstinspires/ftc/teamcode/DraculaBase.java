@@ -41,7 +41,7 @@ public class DraculaBase {
         REAR
     }
     //region hardware devices
-    public DcMotor frontLeft, frontRight, backLeft, backRight, arm, slide;
+    public DcMotor frontLeft, frontRight, backLeft, backRight, arm, slide, lift;
     public Servo grip, gripRotation, led;
     public DistanceSensor revRangeLeft, revRangeRight, revRangeFront, revRangeRear;
     public RevBlinkinLedDriver blinkinLedDriver;
@@ -148,6 +148,7 @@ public class DraculaBase {
 
         arm = initMotor(getDcMotor("arm"), DcMotorSimple.Direction.FORWARD, 0.6, 0);
         slide = initMotor(getDcMotor("slide"), DcMotorSimple.Direction.FORWARD, 0.8, 0);
+        lift = initMotor(getDcMotor("lift"), DcMotorSimple.Direction.FORWARD, 0.8, 0);
     }
 
     private DcMotor initMotor(DcMotor dcMotor, DcMotorSimple.Direction direction, double power) {

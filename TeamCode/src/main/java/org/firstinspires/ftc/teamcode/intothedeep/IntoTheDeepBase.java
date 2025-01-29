@@ -80,6 +80,16 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     protected boolean gripperOpen = true;
 
     /**
+     * Position when the lift is retracted
+     */
+    protected int liftIn = 600;
+
+    /**
+     * Position when the lift is fully extended
+     */
+    protected int liftOut = 3200;
+
+    /**
      * Postion when slide is extended
      */
     public int slideOut = -1550; //-1575
@@ -466,6 +476,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
             //Function Motors
             telemetry.addData("arm motor      : ", driveBase.arm.getCurrentPosition());
             telemetry.addData("slide motor    : ", driveBase.slide.getCurrentPosition());
+            telemetry.addData("lift motor    : ", driveBase.lift.getCurrentPosition());
             telemetry.addData("Grip Rotation Position :", driveBase.gripRotation.getPosition());
             telemetry.addData( "Gripper Position", driveBase.grip.getPosition());
             telemetry.addData( "Gripper open?: ", gripperOpen);

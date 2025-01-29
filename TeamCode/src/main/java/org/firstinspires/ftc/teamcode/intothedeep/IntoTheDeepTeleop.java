@@ -39,6 +39,10 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
     private final int SLIDE_INCREMENT = 75;
     private final double ARM_POWER = 0.8;
     private final double SLIDE_POWER = 0.8;
+    private final int LIFT_INCREMENT = 250;
+    private final double LIFT_POWER = .8;
+
+    private boolean liftPos = false;
 
     protected double lastSavedAngle = DataHolder.getHeading();
     protected DriverControls controller = new DriverControls();
@@ -157,6 +161,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
 
             processArm();
             processSlide();
+            processLift();
             controller.move(driveBase);
         }
         DataHolder.setHeading(driveBase.getFieldHeading());
@@ -175,6 +180,17 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
             driveBase.incrementMotorSafe(driveBase.slide, SLIDE_INCREMENT, SLIDE_POWER, slideOut, slideIn);
         } else if (gamepad1.right_bumper) {
             driveBase.incrementMotorSafe(driveBase.slide, -1 * SLIDE_INCREMENT, SLIDE_POWER, slideOut, slideIn);
+        }
+    }
+
+    private void processLift() {
+        if(gamepad1.a && gamepad1.b) {
+            if( !liftPos) {
+                driveBase.moveMotor(driveBase.lift, liftOut, LIFT_POWER, true);
+                liftPos = true;
+            } else {
+                driveBase.moveMotor(driveBase.lift, liftIn, LIFT_POWER, true);
+            }
         }
     }
 
