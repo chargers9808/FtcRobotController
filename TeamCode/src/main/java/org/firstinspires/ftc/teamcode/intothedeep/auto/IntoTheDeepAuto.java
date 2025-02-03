@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode.intothedeep.auto;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.DraculaBase;
 import org.firstinspires.ftc.teamcode.DataHolder;
 import org.firstinspires.ftc.teamcode.FieldTracker;
+import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
 import org.firstinspires.ftc.teamcode.intothedeep.IntoTheDeepBase;
 
 abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
@@ -32,12 +35,15 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
         initOdometry();
         DataHolder.setOdometry(driveBase.odometryComputer);
 
-        FieldTracker.findPosition( getPosition().getSensor() );
+//        FieldTracker.findPosition( getPosition().getSensor() );
+        FieldTracker.setBotRef( new Pose2DGobilda( DistanceUnit.INCH, 9, 44, AngleUnit.DEGREES, 0));
 
         closeGripper();
         sleep(100);
         driveBase.setLED( getPosition().getColor() );
         telemetry.addLine( "Position: " + getPosition().getPositionString());
+        telemetry.addData( "Left Distance", driveBase.leftDistanceToWall());
+        telemetry.addData( "Heading", driveBase.odometryComputer.getHeading() );
     }
 
     protected void scoreAuto() {

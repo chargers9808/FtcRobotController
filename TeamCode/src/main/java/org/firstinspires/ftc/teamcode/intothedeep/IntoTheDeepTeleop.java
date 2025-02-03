@@ -51,6 +51,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
     private final double BUTTON_TIMEOUT = .25;
     private double lastPressedTimeA;
     private double lastPressedTimeStart;
+    private double lastPressedTimeLSB;
 
     @Override
     protected void initialize() {
@@ -121,10 +122,18 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         setGripRotation(gripRotation );
         lastPressedTimeA = getRuntime() - 1000;
         lastPressedTimeStart = getRuntime() - 1000;
+        lastPressedTimeLSB = getRuntime() - 1000;
         while (opModeIsActive()) {
             displayDiagnostics();
+            if( controller.updateSpeedFactor() ) {
+                if( controller.getCurrentSpeed() == controller.SPEED_FACTOR_SLOW ) {
+                    driveBase.setLED( DraculaBase.LEDColor.BLUE );
+                } else {
+                    driveBase.setLED( DraculaBase.LEDColor.OFF );
+                }
+            }
             controller.calculateDriveControls();
-            controller.calculateDPadCreep();
+            //controller.calculateDPadCreep();
             controller.updateDriveMode();
             controller.creepSpeed();
 
@@ -184,13 +193,17 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
     }
 
     private void processLift() {
-        if(gamepad1.a && gamepad1.b) {
-            if( !liftPos) {
-                driveBase.moveMotor(driveBase.lift, liftOut, LIFT_POWER, true);
-                liftPos = true;
-            } else {
-                driveBase.moveMotor(driveBase.lift, liftIn, LIFT_POWER, true);
-            }
+        if( gamepad1.dpad_left ) {
+            driveBase.moveMotor(driveBase.lift, liftOut, LIFT_POWER, true);
+        }
+        if( gamepad1.dpad_right ) {
+            driveBase.moveMotor(driveBase.lift, liftIn, LIFT_POWER, true);
+        }
+        if( gamepad1.dpad_up ) {
+            driveBase.incrementMotorSafe(driveBase.lift, LIFT_INCREMENT, LIFT_POWER, liftIn, liftOut);
+        }
+        if( gamepad1.dpad_down ) {
+            driveBase.incrementMotorSafe(driveBase.lift, -1* LIFT_INCREMENT, LIFT_POWER, liftIn, liftOut);
         }
     }
 

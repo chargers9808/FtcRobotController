@@ -13,13 +13,13 @@ public class Both extends IntoTheDeepAuto {
         driveBase.gyroTurn(0.5, angle );
         setGripRotation(gripPos);
 
-        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-50, 0.5, false);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-275, .8, false);
         sleep(50);
         driveBase.tankDrive(0.5, driveDist);
-        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-50, 0.5, true);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-50, .5, true);
         //driveBase.moveMotor(driveBase.slide, slidePos, 0.5, true);
         //sleep(100);
-        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth, 0.2, false);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth, 0.3, false);
 
         sleep(50); //250
         closeGripper();
@@ -55,14 +55,14 @@ public class Both extends IntoTheDeepAuto {
 
         scoreAuto(); // Loaded
 
-        collectAndScore( 5.0, slideOut, Grip_Position.GRIP_0DEG, 2, 140.0, true);
-        collectAndScore( 347, slideOut, Grip_Position.GRIP_0DEG, 2.5, 140.0, true); //3
+        collectAndScore( 3.0, slideOut, Grip_Position.GRIP_0DEG, 2, 140.0, true);
+        collectAndScore( 345, slideOut, Grip_Position.GRIP_0DEG, 3, 140.0, true); //3
 //        collectAndScore( 21.5, slideOut, Grip_Position.GRIP_135DEG, 2, 140.0, true);
 
-        driveBase.gyroTurn(0.5, 20);
+        driveBase.gyroTurn(0.5, 17);
         setGripRotation(2);
 
-        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-50, 0.5, false);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-50, 0.7, false); //pwr .5
         sleep(50);
         driveBase.tankDrive(0.5, 3); //3
         driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-50, 0.5, true);
@@ -85,7 +85,7 @@ public class Both extends IntoTheDeepAuto {
 
         //park();
         driveBase.moveMotor(driveBase.arm, armTravelPosition, 0.6, false);
-        driveBase.moveMotor(driveBase.slide, slideIn, .6, false);
+        driveBase.moveMotor(driveBase.slide, +100, .6, false);
         driveBase.tankDrive(.7, -2);
         driveBase.moveMotor(driveBase.arm, armCollectPositionDown, 0.6, false);
         driveBase.gyroTurn(0.5, 0);

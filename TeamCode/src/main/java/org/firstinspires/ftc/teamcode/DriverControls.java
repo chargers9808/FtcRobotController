@@ -16,7 +16,7 @@ public class DriverControls {
     /**
      * Drive speed slow
      */
-    public final double SPEED_FACTOR_SLOW = 2.2;
+    public final double SPEED_FACTOR_SLOW = SPEED_FACTOR_FAST * 4;
     /**
      * Rotation speed slow
      */
@@ -155,18 +155,23 @@ public class DriverControls {
      *
      * INPUT: GP1.LS
      */
-//    public void updateSpeedFactor() {
-//        if((opmode.gamepad1.left_stick_button) && !togglingSpeed) {
-//            if( speedFactor == SPEED_FACTOR_FAST ) {
-//                speedFactor = SPEED_FACTOR_SLOW;
-//            } else {
-//                speedFactor = SPEED_FACTOR_FAST;
-//            }
-//            togglingSpeed = true;
-//        } else if( !opmode.gamepad1.left_stick_button) {
-//            togglingSpeed = false;
-//        }
-//    }
+    public boolean updateSpeedFactor() {
+        if((opmode.gamepad1.left_stick_button) && !togglingSpeed) {
+            if( speedFactor == SPEED_FACTOR_FAST ) {
+                speedFactor = SPEED_FACTOR_SLOW;
+            } else {
+                speedFactor = SPEED_FACTOR_FAST;
+            }
+            togglingSpeed = true;
+        } else if( !opmode.gamepad1.left_stick_button) {
+            togglingSpeed = false;
+        }
+        return togglingSpeed;
+    }
+
+    public double getCurrentSpeed() {
+        return speedFactor;
+    }
 
     public boolean triggered(float trigger) {
         return trigger >= TRIGGER_THRESHOLD;

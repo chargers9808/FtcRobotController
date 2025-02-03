@@ -40,7 +40,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
             DistanceUnit.INCH, 14.5, 15.5,
             AngleUnit.DEGREES, 135); //135
     protected Pose2DGobilda POS_NET_SCORE_EARLY = new Pose2DGobilda(
-            DistanceUnit.INCH, 18, 18,
+            DistanceUnit.INCH, 16, 17,
             AngleUnit.DEGREES, 135); //135
     protected Pose2DGobilda POS_NET_SCORE_END = new Pose2DGobilda(
             DistanceUnit.INCH, 22, 22,
@@ -117,8 +117,8 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     /**
      * Position for arm to clear the submersible bar (parallel to mat)
      */
-    public int armCollectPositionUp = -360; //-440
-    public int armPickupPosition = -330; //-440
+    public int armCollectPositionUp = -440; //-440
+    public int armPickupPosition = -440; //-375
     /**
      * Position for arm when collecting
      */
@@ -283,14 +283,13 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
                     // TODO: Implement preset for lower baskets
             }
             driveBase.driveTo(0.5, POS_NET_SCORE_EARLY);
-            driveBase.driveTo(0.5, POS_NET_SCORE);
-            driveBase.moveMotor(driveBase.slide, slideOut, 0.6, true);
+            sleep(50);
+            driveBase.driveTo(0.5, POS_NET_SCORE, 2, 3);
+            driveBase.moveMotor(driveBase.slide, slideOut, 0.6, false);
 
             driveBase.setLED(DraculaBase.LEDColor.GREEN);
             scoreStart = false;
-        }
-        if (scoreStart == false) {
-            driveBase.setLED(DraculaBase.LEDColor.ORANGE);
+        } else {
             scoreSample();
 
             driveBase.moveMotor(driveBase.arm, armTravelPosition, .1, false);
