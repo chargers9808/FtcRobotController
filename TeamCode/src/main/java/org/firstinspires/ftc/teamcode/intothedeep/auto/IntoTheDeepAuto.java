@@ -36,7 +36,11 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
         DataHolder.setOdometry(driveBase.odometryComputer);
 
 //        FieldTracker.findPosition( getPosition().getSensor() );
-        FieldTracker.setBotRef( new Pose2DGobilda( DistanceUnit.INCH, 9, 44, AngleUnit.DEGREES, 0));
+        if( getPosition().getLocation() == Position.Location.NET) {
+            FieldTracker.setBotRef(POS_NET_START);
+        } else {
+            FieldTracker.setBotRef(POS_OBS_START);
+        }
 
         closeGripper();
         sleep(100);
@@ -57,8 +61,10 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
         // y = SCORE_FRONT_DIST
         setGripRotation(Grip_Position.GRIP_90DEG);
         driveBase.gyroTurn(0.5, dropAngle);
+//      driveBase.tankDrive(.1, 2);
+        driveBase.driveTo(.1, 14, 15, dropAngle);
         sleep(100); //200
-        driveBase.moveMotor(driveBase.arm, AUTO_ARM_SCORE_POS, 0.3, true); //power:.2
+        driveBase.moveMotor(driveBase.arm, AUTO_ARM_SCORE_POS-80, 0.5, true); //power:.2
         sleep(150);
         scoreSample();
     }

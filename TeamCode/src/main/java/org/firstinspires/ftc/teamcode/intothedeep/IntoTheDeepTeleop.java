@@ -79,10 +79,13 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
 
     protected void resetOdometry() {
         initOdometry();
+
         if( driveBase.distanceToWall(DraculaBase.SensorDir.RIGHT) < 100 ) {
-            FieldTracker.findPosition(DraculaBase.SensorDir.RIGHT);
+            FieldTracker.setBotRef(POS_OBS_START);
+            //FieldTracker.findPosition(DraculaBase.SensorDir.RIGHT);
         } else if( driveBase.distanceToWall(DraculaBase.SensorDir.LEFT) < 100 ) {
-            FieldTracker.findPosition(DraculaBase.SensorDir.LEFT);
+            FieldTracker.setBotRef(POS_NET_START);
+            //FieldTracker.findPosition(DraculaBase.SensorDir.LEFT);
         }
     }
 
@@ -160,12 +163,6 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
 
             if( gamepad1.b) {
                 travel();
-            }
-
-            // TODO: Do we want this still?
-            if (gamepad1.left_stick_button) {
-                DataHolder.setHeading(0);
-                driveBase.imu.resetYaw();
             }
 
             processArm();

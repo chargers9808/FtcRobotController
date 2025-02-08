@@ -3,20 +3,22 @@ package org.firstinspires.ftc.teamcode.intothedeep.auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.DraculaBase;
+import org.firstinspires.ftc.teamcode.FieldTracker;
+import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
 
 @Autonomous(name = "Net Auto 9808", group = "Auto")
 public class Both extends IntoTheDeepAuto {
     private final Position position = new Position(Position.Location.NET);
     protected Position getPosition() { return position; }
 
-    protected void collectAndScore( double angle, int slidePos, Grip_Position gripPos, double driveDist, double scoreAngle, boolean score) {
+    protected void collectAndScore( double angle, int slidePos, Grip_Position gripPos, double driveDist, double scoreAngle) {
         driveBase.gyroTurn(0.5, angle );
         setGripRotation(gripPos);
 
-        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-275, .8, false);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-250, .7, false); //250
         sleep(50);
         driveBase.tankDrive(0.5, driveDist);
-        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-50, .5, true);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-50, 0.5, true);
         //driveBase.moveMotor(driveBase.slide, slidePos, 0.5, true);
         //sleep(100);
         driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth, 0.3, false);
@@ -25,69 +27,59 @@ public class Both extends IntoTheDeepAuto {
         closeGripper();
         sleep(175); //300
 
-        if( score ) {
-            driveBase.moveMotor(driveBase.arm, AUTO_ARM_SCORE_POS-200, 0.6, true);
-            driveBase.tankDrive(0.5, -1 * driveDist);
-            scoreAuto(scoreAngle);
-        }
-    }
-
-    protected void park() {
-        driveBase.gyroTurn(.5, 350);
-        driveBase.moveMotor(driveBase.arm, armCollectPositionUp, 0.4, false);
-        driveBase.moveMotor(driveBase.slide, slideIn, 0.4, false);
-        driveBase.tankDrive(0.5, 20);
+        driveBase.moveMotor(driveBase.arm, AUTO_ARM_SCORE_POS-200, 0.8, true);
+        driveBase.tankDrive(0.5, -1 * driveDist);
+        scoreAuto(scoreAngle);
     }
 
     protected void run_auto() {
 //        driveBase.moveMotor(driveBase.arm, armTravelPosition+100, 0.8, false);
-        driveBase.moveMotor(driveBase.arm, armTravelPosition+1100, 0.8, true);
+        driveBase.moveMotor(driveBase.arm, armTravelPosition+1350, 0.8, true);
         driveBase.moveMotor(driveBase.slide, slideOut, .6, false);
-        driveBase.moveMotor(driveBase.arm, armTravelPosition, 0.4, false);
+        driveBase.moveMotor(driveBase.arm, armTravelPosition, 0.5, false);
 
         // Score preloaded
-//        driveBase.tankDriveUntil(.5, SCORE_LEFT_DIST-2, false, false);
-//        driveBase.gyroTurn(0.5, 90.0);
-//        driveBase.tankDriveUntil(.4, SCORE_FRONT_DIST+5, true, false);
-//        driveBase.driveSidewaysUntil(.5, SCORE_LEFT_DIST, false);
-        driveBase.tankDriveUntil(.5, 6, false, false);
-        driveBase.driveTo(.4, 16, 14, 135); //y15 10:25 1/18
+//        driveBase.tankDrive(.5, 6);
+        driveBase.driveTo(.5,18, 44, 0, 2, 45);
+        //driveBase.driveTo(.5, 18, 22, 135, 2, 10);
+        driveBase.driveTo(.4, 16, 16.5, 135);
+		
 
         scoreAuto(); // Loaded
 
-        collectAndScore( 3.0, slideOut, Grip_Position.GRIP_0DEG, 2, 140.0, true);
-        collectAndScore( 345, slideOut, Grip_Position.GRIP_0DEG, 3, 140.0, true); //3
-//        collectAndScore( 21.5, slideOut, Grip_Position.GRIP_135DEG, 2, 140.0, true);
+        double driveDist = 3.5;
 
-        driveBase.gyroTurn(0.5, 17);
+        collectAndScore( 4.0, slideOut, Grip_Position.GRIP_0DEG, driveDist, 140.0); //3.0
+        collectAndScore( 344, slideOut, Grip_Position.GRIP_0DEG, driveDist, 140.0); //3 345
+
+        driveBase.gyroTurn(0.5, 16);
         setGripRotation(2);
 
-        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-50, 0.7, false); //pwr .5
+        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-250, 0.7, false); // - 40
         sleep(50);
-        driveBase.tankDrive(0.5, 3); //3
-        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-50, 0.5, true);
+        driveBase.tankDrive(0.5, driveDist);//3
 
+        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-100, 0.5, true); //-50
+
+        driveBase.gyroTurn(.3, 21);
         setGripRotation(3);
-        driveBase.gyroTurn(.3, 22);
         sleep(150);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth, 0.3, false);
 
-        driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth, 0.2, false);
-
-        sleep(50); //250
+        sleep(100); //250
         closeGripper();
         sleep(175); //300
 
-        driveBase.gyroTurn(0.5, 20);
-        driveBase.moveMotor(driveBase.arm, AUTO_ARM_SCORE_POS-200, 0.6, true);
-        driveBase.tankDrive(0.5, -1 * 3); //3
+        //driveBase.gyroTurn(0.5, 16); // 20
+        driveBase.moveMotor(driveBase.arm, AUTO_ARM_SCORE_POS-200, 0.7, true);
+        driveBase.tankDrive(0.5, -1 * driveDist); //3
         scoreAuto(135);
         sleep(50);
 
-        //park();
-        driveBase.moveMotor(driveBase.arm, armTravelPosition, 0.6, false);
-        driveBase.moveMotor(driveBase.slide, +100, .6, false);
-        driveBase.tankDrive(.7, -2);
-        driveBase.moveMotor(driveBase.arm, armCollectPositionDown, 0.6, false);
+        driveBase.moveMotor(driveBase.arm, armTravelPosition, 0.7, false);
+        driveBase.moveMotor(driveBase.slide, slideIn, .7, false);
+        driveBase.tankDrive(.7, -4);
+        driveBase.moveMotor(driveBase.arm, armCollectPositionDown, 0.7, false);
         driveBase.gyroTurn(0.5, 0);
     }
 }

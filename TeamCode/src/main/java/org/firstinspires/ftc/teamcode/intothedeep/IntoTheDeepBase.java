@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.DataHolder;
 import org.firstinspires.ftc.teamcode.LinearOpMode9808;
 import org.firstinspires.ftc.teamcode.gobilda.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
+import org.firstinspires.ftc.teamcode.intothedeep.auto.Position;
 
 public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBase {
     /**
@@ -40,7 +41,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
             DistanceUnit.INCH, 14.5, 15.5,
             AngleUnit.DEGREES, 135); //135
     protected Pose2DGobilda POS_NET_SCORE_EARLY = new Pose2DGobilda(
-            DistanceUnit.INCH, 16, 17,
+            DistanceUnit.INCH, 18, 18,
             AngleUnit.DEGREES, 135); //135
     protected Pose2DGobilda POS_NET_SCORE_END = new Pose2DGobilda(
             DistanceUnit.INCH, 22, 22,
@@ -48,6 +49,9 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     protected Pose2DGobilda POS_OBS_PICKUP = new Pose2DGobilda(
             DistanceUnit.INCH, 11, 106, //x10 y106
             AngleUnit.DEGREES, 270);
+
+    protected Pose2DGobilda POS_NET_START = new Pose2DGobilda(DistanceUnit.INCH, 9, 44, AngleUnit.DEGREES, 0);
+    protected Pose2DGobilda POS_OBS_START = new Pose2DGobilda(DistanceUnit.INCH, 9, 92, AngleUnit.DEGREES, 0);
 
     /**
      * Power setting for sweeping in a sample
@@ -109,7 +113,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     /**
      * Position when arm is ready for travel
      */
-    public int armTravelPosition = -1990;
+    public int armTravelPosition = -1890; //1990
     /**
      * Position when arm is ready to score
      */
@@ -117,8 +121,8 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
     /**
      * Position for arm to clear the submersible bar (parallel to mat)
      */
-    public int armCollectPositionUp = -440; //-440
-    public int armPickupPosition = -440; //-375
+    public int armCollectPositionUp = -360; //-440
+    public int armPickupPosition = -330; //-440
     /**
      * Position for arm when collecting
      */
@@ -263,6 +267,8 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         sleep(50); //150
 
         driveBase.moveMotor(driveBase.arm, armTravelPosition, .1, false);
+//      driveBase.tankDrive(.3, -2);
+        driveBase.driveTo( .3, POS_NET_SCORE);
     }
 
     protected void scoreOdo(Basket pos) {
@@ -494,4 +500,14 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         telemetry.update();
     }
     protected void opModeDiagnostics() {    }
+
+    protected void outputPosition() {
+        driveBase.odometryComputer.bulkUpdate();
+        Pose2DGobilda pos = FieldTracker.getPosition();
+        telemetry.addData("X", pos.getX(DistanceUnit.INCH));
+        telemetry.addData("Y", pos.getY(DistanceUnit.INCH));
+        telemetry.addLine("----------------------------");
+        telemetry.update();
+        sleep(10000);
+    }
 }

@@ -4,6 +4,7 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.LED;
 
 import org.firstinspires.ftc.teamcode.DraculaBase.*;
+import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
 
 public class Position {
     public enum Location {
@@ -57,6 +58,10 @@ public class Position {
 
     public SensorDir getSensor() {
         return sensorDir;
+    }
+
+    public Location getLocation() {
+        return position;
     }
 
     public static LEDColor posColor(Location loc) {
