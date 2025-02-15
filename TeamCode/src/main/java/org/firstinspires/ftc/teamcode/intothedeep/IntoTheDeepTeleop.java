@@ -195,6 +195,7 @@ public class IntoTheDeepTeleop extends IntoTheDeepBase {
         }
         if( gamepad1.dpad_right ) {
             driveBase.moveMotor(driveBase.lift, liftIn, LIFT_POWER, true);
+            driveBase.moveMotor(driveBase.arm, -80, .5, false);
         }
         if( gamepad1.dpad_up ) {
             driveBase.incrementMotorSafe(driveBase.lift, LIFT_INCREMENT, LIFT_POWER, liftIn, liftOut);

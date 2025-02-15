@@ -41,23 +41,22 @@ public class Both extends IntoTheDeepAuto {
         // Score preloaded
 //        driveBase.tankDrive(.5, 6);
         driveBase.driveTo(.5,18, 44, 0, 2, 45);
-        //driveBase.driveTo(.5, 18, 22, 135, 2, 10);
-        driveBase.driveTo(.4, 16, 16.5, 135);
-		
+//        driveBase.driveTo(.5, 18, 22, 135, 2, 10);
+        driveBase.driveTo(.5, 14, 15, 135);
 
         scoreAuto(); // Loaded
 
-        double driveDist = 3.5;
+        double driveDist = 3;
 
         collectAndScore( 4.0, slideOut, Grip_Position.GRIP_0DEG, driveDist, 140.0); //3.0
-        collectAndScore( 344, slideOut, Grip_Position.GRIP_0DEG, driveDist, 140.0); //3 345
+        collectAndScore( 344, slideOut, Grip_Position.GRIP_0DEG, driveDist+1, 140.0); //3 345
 
         driveBase.gyroTurn(0.5, 16);
         setGripRotation(2);
 
         driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-250, 0.7, false); // - 40
         sleep(50);
-        driveBase.tankDrive(0.5, driveDist);//3
+        driveBase.tankDrive(0.5, driveDist+1);//3
 
         driveBase.moveMotor(driveBase.arm, armCollectPositionDownBoth-100, 0.5, true); //-50
 
@@ -72,7 +71,7 @@ public class Both extends IntoTheDeepAuto {
 
         //driveBase.gyroTurn(0.5, 16); // 20
         driveBase.moveMotor(driveBase.arm, AUTO_ARM_SCORE_POS-200, 0.7, true);
-        driveBase.tankDrive(0.5, -1 * driveDist); //3
+        driveBase.tankDrive(0.5, -1 * driveDist+1); //3
         scoreAuto(135);
         sleep(50);
 

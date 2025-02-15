@@ -59,12 +59,13 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
         // Expects to start this at the position
         // x = SCORE_LEFT_DIST
         // y = SCORE_FRONT_DIST
-        setGripRotation(Grip_Position.GRIP_90DEG);
+//        setGripRotation(Grip_Position.GRIP_90DEG);
         driveBase.gyroTurn(0.5, dropAngle);
-//      driveBase.tankDrive(.1, 2);
-        driveBase.driveTo(.1, 14, 15, dropAngle);
-        sleep(100); //200
-        driveBase.moveMotor(driveBase.arm, AUTO_ARM_SCORE_POS-80, 0.5, true); //power:.2
+        driveBase.driveTo(.3, 14, 15, dropAngle); //speed: .1 11:13am
+//        sleep(100); // 200 10:35am 100 10:24am
+        driveBase.moveMotor(driveBase.arm, AUTO_ARM_SCORE_POS-80, 0.3, true); //power:.5 10:26am
+        sleep(100);
+        setGripRotation(Grip_Position.GRIP_90DEG);
         sleep(150);
         scoreSample();
     }

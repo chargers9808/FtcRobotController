@@ -15,16 +15,24 @@ public class HangObservation extends IntoTheDeepAuto {
     private final Position position = new Position(Position.Location.OBSERVATION);
     protected Position getPosition() { return position; }
     private int hangingCount = 0;
+    private boolean firstPickup = true;
 
     private final double FIRST_HANG_Y_OFFSET = 4.0;//6.0;
 
     private final double TO_FC_X_OFFSET = 8.0;
-    private final double TO_FC_Y_OFFSET = 78.0;
+    private final double TO_FC_Y_OFFSET = 82.0;
 
     private Pose2DGobilda hangPos;
 
     protected void wallPickup() {
-        driveBase.driveTo( .3, 17.5, 116, 180); //x14
+        driveBase.moveMotor(driveBase.slide, slideIn, .5, true);
+        if (firstPickup) {
+            driveBase.driveTo(.3, 18, 116, 180, .5, 3); //x14
+            firstPickup = false;
+        }
+        else {
+            driveBase.driveTo(.3, 17.5, 116, 180, .5, 3); //x14
+        }
         pickupSpecimenFromWall();
 //        sleep(100);
         closeGripper();
@@ -63,20 +71,21 @@ public class HangObservation extends IntoTheDeepAuto {
         //driveBase.driveTo( .5, 15 + TO_FC_X_OFFSET, 26.5 + TO_FC_Y_OFFSET, 0,2, headingThreshold); //-22.5 y
         //12.5 + TO_FC_X...
         driveBase.tankDrive( .5, -3);
-        driveBase.driveTo( .5, 36, 29 + TO_FC_Y_OFFSET, 0, 2, headingThreshold);
+//        driveBase.driveTo( .5, 36, 29 + TO_FC_Y_OFFSET, 0, 2, headingThreshold);
+        driveBase.driveTo( .5, 36, 28 + TO_FC_Y_OFFSET, 0);
 
         // Get in place
-        driveBase.driveTo( .5, farX + TO_FC_X_OFFSET, 29 + TO_FC_Y_OFFSET, 0, 2, headingThreshold);
-        driveBase.driveTo( .5, farX + TO_FC_X_OFFSET, 40.5+ TO_FC_Y_OFFSET, 0, 2, headingThreshold);
+//        driveBase.driveTo( .5, farX + TO_FC_X_OFFSET, 29 + TO_FC_Y_OFFSET, 0, 2, headingThreshold);
+//        driveBase.driveTo( .5, farX + TO_FC_X_OFFSET, 44+ TO_FC_Y_OFFSET, 0, 2, headingThreshold);
+        driveBase.driveTo( .5, farX + TO_FC_X_OFFSET, 31 + TO_FC_Y_OFFSET, 0, 2, 1); //y:29+...
+        driveBase.driveTo( .5, farX + TO_FC_X_OFFSET, 42+ TO_FC_Y_OFFSET, 0, 2, 3);
         //sleep(50);
 
-
         // Plow
-        driveBase.driveTo( .5, 13 + TO_FC_X_OFFSET, 40.5 + TO_FC_Y_OFFSET, 0);
-
+        driveBase.driveTo( .5, 13 + TO_FC_X_OFFSET, 42 + TO_FC_Y_OFFSET, 0);
 
         // Pickup and score
-        driveBase.driveTo( .5, 20 + TO_FC_X_OFFSET, 43 + TO_FC_Y_OFFSET, 90, 1, headingThreshold); //y 53 10:14 1/18
+        driveBase.driveTo( .5, 20 + TO_FC_X_OFFSET, 42 + TO_FC_Y_OFFSET, 90, 1, headingThreshold); //y 53 10:14 1/18
         wallPickup();
         driveBase.driveTo(.5, 28 + TO_FC_X_OFFSET, (hangingCount * 2.5) - FIRST_HANG_Y_OFFSET + TO_FC_Y_OFFSET, 0.0, 5, 5);
         scoreSpecimen();
@@ -89,7 +98,7 @@ public class HangObservation extends IntoTheDeepAuto {
         travel();
 
         driveBase.moveMotor(driveBase.slide, slideIn, .5,false);
-        driveBase.driveTo( 0.5, new Pose2DGobilda(DistanceUnit.INCH, 15, 105, AngleUnit.DEGREES, 0));
+        driveBase.driveTo( 0.5, new Pose2DGobilda(DistanceUnit.INCH, 13, 120, AngleUnit.DEGREES, 0));
 
         telemetry.addData( "Runtime", getRuntime());
         telemetry.update();

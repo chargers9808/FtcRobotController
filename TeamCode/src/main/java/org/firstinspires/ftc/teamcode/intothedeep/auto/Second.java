@@ -27,7 +27,7 @@ public class Second extends IntoTheDeepAuto {
 //      Drive Off Wall
         driveBase.tankDrive(.5, 5);
         driveBase.driveSidewaysUntil(.5, 9, false);
-        score(Basket.TOP); // Loaded
+//        score(Basket.TOP); // Loaded
 
 //      Second Sample
         autoSamples(sample2Offset, forwardDistance, 39.0);
