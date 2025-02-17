@@ -259,7 +259,7 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         }
     }
 
-    protected void scoreSample() {
+    protected void scoreSample(boolean auto) {
         //Outtake
         openGripper();
         sleep(250); //200
@@ -267,8 +267,10 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
         sleep(50); //150
 
         driveBase.moveMotor(driveBase.arm, armTravelPosition, .1, false);
-//      driveBase.tankDrive(.3, -2);
-        driveBase.driveTo( .3, POS_NET_SCORE);
+        if (auto) {
+            driveBase.tankDrive(.5, -2);
+//            driveBase.driveTo(.3, POS_NET_SCORE);
+        }
     }
 
     protected void scoreOdo(Basket pos) {
@@ -296,12 +298,15 @@ public abstract class IntoTheDeepBase extends LinearOpMode9808 implements GameBa
             driveBase.setLED(DraculaBase.LEDColor.GREEN);
             scoreStart = false;
         } else {
-            scoreSample();
+            scoreSample(false);
 
             driveBase.moveMotor(driveBase.arm, armTravelPosition, .1, false);
 
             // Back up from baskets
-            driveBase.driveTo(0.5, POS_NET_SCORE_END);
+//            driveBase.driveTo(0.5, POS_NET_SCORE_EARLY);
+//            driveBase.driveTo(0.5, POS_NET_SCORE_END);
+            driveBase.tankDrive(.5, -6);
+            driveBase.gyroTurn(.5,0);
             driveBase.setLED(DraculaBase.LEDColor.GREEN);
 
             // Retract the slide

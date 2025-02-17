@@ -27,7 +27,7 @@ public class HangObservation extends IntoTheDeepAuto {
     protected void wallPickup() {
         driveBase.moveMotor(driveBase.slide, slideIn, .5, true);
         if (firstPickup) {
-            driveBase.driveTo(.3, 18, 116, 180, .5, 3); //x14
+            driveBase.driveTo(.3, 17.5, 116, 180, .5, 3); //x14
             firstPickup = false;
         }
         else {
@@ -97,6 +97,7 @@ public class HangObservation extends IntoTheDeepAuto {
         scoreSpecimen();
         travel();
 
+        driveBase.moveMotor(driveBase.arm, armCollectPositionDown, 0.7, false);
         driveBase.moveMotor(driveBase.slide, slideIn, .5,false);
         driveBase.driveTo( 0.5, new Pose2DGobilda(DistanceUnit.INCH, 13, 120, AngleUnit.DEGREES, 0));
 

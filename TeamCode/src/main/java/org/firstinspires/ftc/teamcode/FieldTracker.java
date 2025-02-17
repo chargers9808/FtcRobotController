@@ -12,7 +12,7 @@ public class FieldTracker {
     /**
      * Offset from the rear distance sensor to the center line of the bot
      */
-    private static double offsetX = 9.0;
+    private static double offsetX = 8.75;
 
     /**
      * Offset from the left distance sensor to the center line of the bot

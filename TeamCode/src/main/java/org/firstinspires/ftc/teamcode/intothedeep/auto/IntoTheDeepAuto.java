@@ -67,7 +67,7 @@ abstract public class IntoTheDeepAuto extends IntoTheDeepBase {
         sleep(100);
         setGripRotation(Grip_Position.GRIP_90DEG);
         sleep(150);
-        scoreSample();
+        scoreSample(true);
     }
 
     abstract protected void run_auto();

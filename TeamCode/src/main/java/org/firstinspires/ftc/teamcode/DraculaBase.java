@@ -840,5 +840,11 @@ public class DraculaBase {
 
         applyMecPower2(0,0,0);
         gyroTurn(speed, targetHeading);
+
+//        DataHolder.setAll(
+//                getFieldHeading(),
+//                arm.getCurrentPosition(),
+//                slide.getCurrentPosition()
+//        );
     }
 }

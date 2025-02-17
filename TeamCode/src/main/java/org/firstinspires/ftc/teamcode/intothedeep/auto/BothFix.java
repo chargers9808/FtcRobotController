@@ -1,15 +1,9 @@
 package org.firstinspires.ftc.teamcode.intothedeep.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.teamcode.DraculaBase;
-import org.firstinspires.ftc.teamcode.FieldTracker;
-import org.firstinspires.ftc.teamcode.gobilda.Pose2DGobilda;
-
-@Autonomous(name = "Net Auto 9808", group = "Auto")
-@Disabled
-public class Both extends IntoTheDeepAuto {
+@Autonomous(name = "Net Auto 9808 (Fixed)", group = "Auto")
+public class BothFix extends IntoTheDeepAuto {
     private final Position position = new Position(Position.Location.NET);
     protected Position getPosition() { return position; }
 
@@ -42,13 +36,14 @@ public class Both extends IntoTheDeepAuto {
 
         // Score preloaded
 //        driveBase.tankDrive(.5, 6);
-        driveBase.driveTo(.5,18, 44, 0, 2, 45);
+        driveBase.driveTo(.5,20, 44, 0, 2, 45);
 //        driveBase.driveTo(.5, 18, 22, 135, 2, 10);
-        driveBase.driveTo(.5, 14, 15, 135);
+//        driveBase.driveTo(.5, 16, 15, 135);
+        driveBase.driveTo(.3, 14, 15, 135);
 
         scoreAuto(); // Loaded
 
-        double driveDist = 3;
+        double driveDist = 2.5;
 
         collectAndScore( 4.0, slideOut, Grip_Position.GRIP_0DEG, driveDist, 140.0); //3.0
         collectAndScore( 344, slideOut, Grip_Position.GRIP_0DEG, driveDist+1, 140.0); //3 345
